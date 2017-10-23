@@ -1,0 +1,5 @@
+已知hash.txt是secure.exe将flag文件加密后得到的
+（secure.exe flag.txt hash.txt）
+
+请逆向出flag.txt得到通关flag
+
