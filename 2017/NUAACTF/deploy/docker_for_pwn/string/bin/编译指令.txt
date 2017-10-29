@@ -1,3 +1,0 @@
-gcc string.c -Wl,-z,relro,-z,now -fstack-protector-all -o string.bin
--Wl,-z,relro,-z,now: ¿ªÆôRELRO
--fstack-protector-all: ¿ªÆôCANARY
