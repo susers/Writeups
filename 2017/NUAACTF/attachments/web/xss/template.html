@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="main.css">
+    <title>Another alert(1) to win [%difficulty% version]</title>
+</head>
+<body>
+    <h1>Another alert(1) to win [%difficulty% version]</h1>
+    <h3>Problem <small>(The variable <var>input</var> is your input.)</small></h3>
+    <pre id="problem">Input is null...</pre>
+    <h3>Your input <small>(Will be passed to parameter <var>input</var> above.)</small></h3>
+    <textarea id="textarea" type="text" placeholder="alert(1) to win..." oninput="localCheck()" autofocus></textarea>
+    <div id="tab" class="rs-tab rs-tab-warning">Not the answer yet...</div>
+    <h3>Console output</h3>
+    <pre id="output"> </pre>
+    <iframe id="iframe" sandbox="allow-scripts"></iframe>
+    <script>window.problemText = %text%;</script>
+    <script src="main.js"></script>
+</body>
+</html>
