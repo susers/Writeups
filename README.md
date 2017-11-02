@@ -13,7 +13,7 @@
 ```shell
 .\TEMPLATE
 │  Readme.md--------------|题目描述文档
-│  Write-up.md------------|writeup
+│  Writeup.md------------|writeup
 │
 ├─attachments------------|题目文件
 ├─deploy-----------------|online型题目部署脚本
