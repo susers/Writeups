@@ -1,0 +1,37 @@
+get buf unsign s[256]
+
+get buf t[256]
+
+we have key:hello world
+
+we have flag:????????????????????????????????
+
+
+for i:0 to 256
+    
+set s[i]:i
+
+for i:0 to 256
+    set t[i]:key[(i)mod(key.lenth)]
+
+for i:0 to 256
+    set j:(j+s[i]+t[i])mod(256)
+        swap:s[i],s[j]
+
+for m:0 to 37
+    set i:(i + 1)mod(256)
+    set j:(j + S[i])mod(256)
+    swap:s[i],s[j]
+    set x:(s[i] + (s[j]mod(256))mod(256))
+    set flag[m]:flag[m]^s[x]
+
+fprint flagx to file
+
+
+
+
+
+
+
+
+
