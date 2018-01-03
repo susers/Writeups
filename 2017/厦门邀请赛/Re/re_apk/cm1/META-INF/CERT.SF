@@ -1,0 +1,34 @@
+Signature-Version: 1.0
+SHA1-Digest-Manifest: HJykwFlTN+Pw7s9OCjSZx9QxSfg=
+Created-By: 1.0 (Android)
+
+Name: res/drawable-xhdpi-v4/ic_launcher.png
+SHA1-Digest: A33f/6Xb1ogZl4jZlmsi6//HTbE=
+
+Name: lib/armeabi/libcm.so
+SHA1-Digest: PXdQzmhWee7t5HYJ/Sae51/VncQ=
+
+Name: AndroidManifest.xml
+SHA1-Digest: b2AcNE1Mi8jEWBugszw2Ejza/Zo=
+
+Name: lib/armeabi-v7a/libcm.so
+SHA1-Digest: T8gVHUN/RmJJUA+jS4SIwKo2fhM=
+
+Name: res/drawable-hdpi-v4/ic_launcher.png
+SHA1-Digest: tYiGDUvOwHeh/pZhFgJ5InuO0zk=
+
+Name: res/layout/activity_main.xml
+SHA1-Digest: gMS1jZQxvzDbVCa899lpqFHHzh8=
+
+Name: resources.arsc
+SHA1-Digest: S0O8B2MLq7tNRQNt2ydv8Kys3Mw=
+
+Name: res/drawable-mdpi-v4/ic_launcher.png
+SHA1-Digest: 3LjWSTDaK+LzxXCMhp8d8TFwiHg=
+
+Name: classes.dex
+SHA1-Digest: 2ja0+YngzP5r3RIJS70FPGxFowU=
+
+Name: res/menu/main.xml
+SHA1-Digest: vWtTIEWEoRDX4maLjYGC7ClcehM=
+
