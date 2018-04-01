@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="/assets/css/atelier-lakeside.dark.min.css" rel="stylesheet">
+<title>marking page</title>
+<style>
+html,body{
+width:100%;
+}
+.container{
+width:80%;
+margin:0 auto;
+}
+img{
+max-width:100%;
+}
+</style>
+</head>
+<body>
+<div class="content" style="visibility:hidden;height:0">{{content}}</div>
+<div class="container"></div>
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/marked.min.js"></script>
+<script src="/assets/js/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script>
+
+var rendererMD = new marked.Renderer();
+    marked.setOptions({
+      renderer: rendererMD,
+      gfm: true,
+      tables: true,
+      breaks: false,
+      pedantic: false,
+      sanitize: false,
+      smartLists: true,
+      smartypants: false
+    });
+    var markdownString = $('.content').html();
+    marked.setOptions({
+        highlight: function (code) {
+        return hljs.highlightAuto(code).value;
+      }
+    });
+    var imgcount=0;	
+
+    $('.container').html(marked(markdownString));
+    $('img').onload=function(){
+	    imgcount++;
+    }
+setTimeout(checkload,500);
+function checkload(){
+	if(imgcount==$('img').length){
+		console.log("page loaded");
+	}
+	else{
+		setTimeout(checkload,500);	
+	}
+}
+</script>
+</body>
+</html>

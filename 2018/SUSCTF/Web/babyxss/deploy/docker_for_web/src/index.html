@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Markdown2png - Sustools</title>
+
+	<!-- Bootstrap -->
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		
+		html,
+		body {
+			height: 100%;
+		}
+		.mybody{
+			width:100%;
+			min-height:100%;position:relative;
+		}
+		
+
+		img {
+			max-width: 100%;
+		}
+	
+	</style>
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<div class="mybody">
+	<nav class="navbar navbar-inverse navbar-dark bg-dark">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#defaultNavbar1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Sus tools</a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="defaultNavbar1">
+				<ul class="nav navbar-nav">
+
+					<li>
+						<a href="#">Md2png</a>
+					</li>
+
+				</ul>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="https://susers.github.io">Sus blog</a>
+					</li>
+
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<h1 class="text-center">Markdown to png</h1>
+				<h4 class="text-center">Convert your markdown text to png</h4>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-top:20px;">
+		<div class="row">
+			<div class="col-md-5 col-xs-12 text-center board" style="padding:10px 10px;border:1px solid antiquewhite;">
+				<textarea style="width:95%;overflow:auto;resize:none;border:thin solid grey;border-radius:10px;padding:15px;font-family: Lucida Grande, Lucida Sans Unicode, Lucida Sans, DejaVu Sans, Verdana,' sans-serif'"
+				 placeholder="input your markdown text here"></textarea>
+			</div>
+			<div class="col-md-2 col-xs-12 text-center button-layer" style="padding:10px 10px;">
+				<button class="btn btn-success" style="position:relative;top:50%;" id="convert">click here to convert!</button>
+			</div>
+			<div class="col-md-5 col-xs-12 showboard" style="border:1px solid antiquewhite;border-radius:15px;overflow:auto">
+
+			</div>
+		</div>
+
+
+
+
+
+
+
+	</div>
+	<div class="footer container-fluid" style="border:1px solid #C4C4C4;position:absolute;bottom:0;width:100%">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<p class="text-center" style="margin:5px 0;">Copyright &copy; 2018-2030;All Rights Reserved</p>
+			</div>
+		</div>
+	</div>
+</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.bootcss.com/marked/0.3.17/marked.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			console.log("changing!");
+			$('textarea').css('height', $('textarea').css('width'));
+			$('.showboard').css('height', $('.board').css('height'));
+			if ($('body').width() > 768) {
+				console.log('large!');
+				$('.button-layer').css('height', $('.board').css('height'));
+			}
+			else {
+				console.log('min!');
+				$('.button-layer').css('height', 'auto');
+				//$('.button-layer').css('line-height',$('.button-layer').css('height'));
+			}
+		})
+		$(window).resize(function () {
+			console.log("resizing!");
+			$('textarea').css('height', $('textarea').css('width'));
+			$('.showboard').css('height', $('.board').css('height'));
+			if ($('body').width() > 768) {
+				console.log('large!');
+				$('.button-layer').css('height', $('.board').css('height'));
+			}
+			else {
+				console.log('min!');
+				$('.button-layer').css('height', 'auto');
+				//$('.button-layer').css('line-height',$('.button-layer').css('height'));
+			}
+		})
+		$('#convert').click(function () {
+			$('.showboard').html("<img src='/assets/pics/loading.gif'/>");
+			$.post('/deal.php', { 'content': $('textarea').val() }, function (data) {
+				console.log(data);
+				$('.showboard').html('<img src="' + data['ans'] + '"/>');
+			})
+		})
+	</script>
+</body>
+
+</html>
