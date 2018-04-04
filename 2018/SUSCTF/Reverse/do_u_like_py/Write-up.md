@@ -60,6 +60,7 @@ print "".join([format(_, '02x') for _ in s])
 ```
 
 - Step 2
+
 上一步得到的代码是由 `lambda` 表达式和 `List comprehension` 递推列表混淆过的代码，分析后可以得出，加密共分为3个阶段
 
 第一阶段对明文长度进行补齐，使其为4的倍数
@@ -71,4 +72,5 @@ print "".join([format(_, '02x') for _ in s])
 本题在了解相关内容的前提下还需要一定的时间与耐心 ^_^
 
 [未混淆代码](/2018/SUSCTF/Reverse/do_u_like_py/files_for_writeups/code.c)
+
 [解密代码](/2018/SUSCTF/Reverse/do_u_like_py/files_for_writeups/Crack.py)
