@@ -12,4 +12,4 @@ ELF文件由MoVfuscator编译，程序中包含一个充当字典的字符串和
 
 上面这种解法难度较大，所以在编写题目时加入了正确内容回显，可以使用逐位爆破解题。比赛过程中也放出了hint提示爆破思路。
 
-[解密脚本](/2018/SUSCTF/Reverse/MoVfuscation1/files_for_writeups/Crack.py)
+[解密脚本](/2018/SUSCTF/Reverse/movfuscation1/files_for_writeups/Crack.py)
