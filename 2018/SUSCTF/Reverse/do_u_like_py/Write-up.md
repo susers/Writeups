@@ -70,5 +70,5 @@ print "".join([format(_, '02x') for _ in s])
 
 本题在了解相关内容的前提下还需要一定的时间与耐心 ^_^
 
-[未混淆代码](/2018/SUSCTF/Reverse/do_u_like_py/code.c)
-[解密代码](/2018/SUSCTF/Reverse/do_u_like_py/Crack.py)
+[未混淆代码](/2018/SUSCTF/Reverse/do_u_like_py/files_for_writeups/code.c)
+[解密代码](/2018/SUSCTF/Reverse/do_u_like_py/files_for_writeups/Crack.py)
