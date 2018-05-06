@@ -1,0 +1,41 @@
+http://3s8jkj8fsa8h.isec.anscen.cn	//misc2 400 
+
+http://1e3g6S39v5M9.isec.anscen.cn	//misc4 200
+
+http://2S8h7F84v4M0.isec.anscen.cn	//misc5 200
+
+http://3jhg9aks3.isec.anscen.cn  //web4 200 
+
+http://8V7q7x69b0zw.isec.anscen.cn  //逆向 200
+ 
+http://6f8F8D7v9C0s.isec.anscen.cn  //逆向apk 300
+
+http://10sBB7f7sSo9.isec.anscen.cn  //web2  300
+
+
+//web3  400
+http://4260057.isec.anscen.cn  //web3题目地址
+http://34ddwer36ydh.isec.anscen.cn  //web3系统地址
+10.0.0.100.9999  //公司内网地址
+http://34ddwer36ydh.isec.anscen.cn/setup92.rar //web3
+//一道题
+
+http://c580aae.isec.anscen.cn	//pwn 500
+
+http://6f62391.isec.anscen.cn // pwn2 500
+
+http://11tFs8qSa0Df.isec.anscen.cn	//iot1，破解wav中的信息  300
+
+192.168.13.15	//iot2  200
+
+192.168.109.88	//iot3，获取管理员密码 300
+
+
+
+re2 9z2qd6cf98cx.isec.anscen.cn 500pts
+
+reapk2 7f7vf9scF87G.isec.anscen.cn 500pts
+
+misc5 100 5ff8ff8c0v2r
+
+misc6 z0x9f9f87a3lp
