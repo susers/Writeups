@@ -13,8 +13,8 @@ Misc
 - offline
 
 ## Flag
+DDCTF{9af3c9d377b61d269b11337f330c935f}
 
-``
 ## Score
 
 100
