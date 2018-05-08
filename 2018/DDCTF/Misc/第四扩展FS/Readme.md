@@ -16,7 +16,7 @@ Misc
 
 ## Flag
 
-``
+DDCTF{chux1ngmeiHao}
 
 ## Score
 
