@@ -76,6 +76,6 @@ signed __int64 __fastcall sub_1E84(const char *a1, int a2)
 
 所以我们只需要用脚本将 `byte_203040` 的数据异或即为IDEA加密后的密文，再对IDEA进行解密即可
 
-[预处理](/2018/RedHat CTF/Reverse/icm/files_for_writeups/PreProcess.py)
+[预处理](/2018/RedHat%20CTF/Reverse/icm/files_for_writeups/PreProcess.py)
 
-[IDEA解密](/2018/RedHat CTF/Reverse/icm/files_for_writeups/Crack.c)
+[IDEA解密](/2018/RedHat%20CTF/Reverse/icm/files_for_writeups/Crack.c)
