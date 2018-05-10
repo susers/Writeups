@@ -1,11 +1,3 @@
-这题主要漏洞点在
-
-[![](https://p5.ssl.qhimg.com/t015366b1823f02b6db.png)](https://p5.ssl.qhimg.com/t015366b1823f02b6db.png)
-
-那么我们可以利用返回的level1的C2和level2的C2与G爆破出r[0]-r[1]；
-再利用level1的C1和level2的C1与K求出M就可以解密了，详见脚本：
-
-```
 # -*- coding: utf-8 -*-
 
 def extended_gcd(a, b):
@@ -115,5 +107,3 @@ CC = curve.add(C1_, Point(C3.x, curve.p - C3.y))
 M = curve.add(CC,Point(curve.multiply(K, r0_r1).x,curve.p - curve.multiply(K, r0_r1).y))
 
 print hex(M.x ^ flag)[2:].replace("L","").decode('hex')
-
-```

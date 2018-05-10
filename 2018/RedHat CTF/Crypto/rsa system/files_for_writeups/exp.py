@@ -1,4 +1,3 @@
-```
 # coding=utf-8
 
 from pwn import *
@@ -74,4 +73,3 @@ while len(flag) != 38:
     p.close()
 
 print flag
-```
