@@ -1,6 +1,7 @@
-# biubiubiu
+## Title
+biubiubiu
 
-# Steps
+## Steps
 * 非预期解:
 文件包含，fuzz发现可包含nginx的日志文件，于是修改UA为```<?php eval($_REQUEST[test]);?>```即可getshell,查看conn.php文件可以获得mysql的连接信息，于是写php脚本连接mysql服务器，发现数据表名为admin，获取admin表内的所有信息即可获得flag.  
 conn.php
