@@ -7,7 +7,7 @@ biubiubiu
 Web
     
 # Flag
-
+flag{dbc98dd7-90fb-44f4-8dbe-35a72f07ec9d}
 
 # Score
 1000
