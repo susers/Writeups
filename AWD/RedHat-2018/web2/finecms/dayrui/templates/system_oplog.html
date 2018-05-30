@@ -1,0 +1,75 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<div class="mytopsearch">
+	<form method="post" action="" name="searchform" id="searchform">
+		<label>{fc_lang('日志月份')} ：</label>
+		<label style="margin-right: 10px;">{dr_field_input('time', 'Date', array('option'=>array('format'=>'Y-m-d','width'=>120)), (int)$time)}</label>
+		<label style="margin-right: 10px;"><button type="submit" class="btn green btn-sm" name="submit" > <i class="fa fa-search"></i> {fc_lang('搜索')}</button></label>
+		<label>{fc_lang('删除日志时请到日志保存目录：/cache/optionlog/年月/，以"天"为文件名')}</label>
+	</form>
+</div>
+
+<div class="portlet light bordered">
+	<div class="portlet-body">
+		<div class="table-scrollable v3table">
+			<div class="table-list">
+				<table width="100%">
+				<thead>
+				<tr>
+					<th align="left" width="120">{fc_lang('操作时间')}</th>
+					<th align="left" width="100">Ip</th>
+					<th align="left" width="100">{fc_lang('操作人')}</th>
+					<th align="left"></th>
+				</tr>
+				</thead>
+				<tbody>
+				{loop $list $id $t}
+				{php $t=dr_string2array($t);}
+				<tr>
+					<td align="left">{dr_date($t['time'], null, 'red')}</td>
+					<td align="left"><input id="dr_{$id}_ip" type="hidden" value="{$t['ip']}" /><a href="javascript:dr_dialog_ip('{$id}_ip');">{$ci->dip->address($t.ip)}</a></td>
+					<td align="left"><a href="javascript:dr_dialog_member('{$t.uid}');">{$t['username']}</a></td>
+					<td align="left">{$t['action']}</td>
+				</tr>
+				{/loop}
+				<tr>
+					<td colspan="4" align="left" style="border:none">
+					</td>
+				</tr>
+				</tbody>
+				</table>
+				<div id="pages"><a>{fc_lang('共%s条', $total)}</a>{$pages}</div>
+			</div>
+		</div>
+	</div>
+</div>
+{template nfooter.html}

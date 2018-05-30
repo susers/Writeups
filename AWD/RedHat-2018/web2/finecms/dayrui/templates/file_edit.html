@@ -1,0 +1,51 @@
+{template header.html}
+<script type="text/javascript">
+$(function() {
+	{if IS_POST}
+	dr_tips('{fc_lang('操作成功，正在刷新...')}', 3, 1);
+	{/if}
+});
+</script>
+
+<link href="{THEME_PATH}admin/global/plugins/codemirror/theme/neat.css" rel="stylesheet" type="text/css" />
+<link href="{THEME_PATH}admin/global/plugins/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" />
+
+<script src="{THEME_PATH}admin/global/plugins/codemirror/lib/codemirror.js" type="text/javascript"></script>
+<script src="{THEME_PATH}admin/global/plugins/codemirror/mode/javascript/javascript.js" type="text/javascript"></script>
+<script src="{THEME_PATH}admin/global/plugins/codemirror/mode/htmlmixed/htmlmixed.js" type="text/javascript"></script>
+<script src="{THEME_PATH}admin/global/plugins/codemirror/mode/css/css.js" type="text/javascript"></script>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		CodeMirror.fromTextArea(document.getElementById("system_file"), {
+			lineNumbers: !0,
+			matchBrackets: !0,
+			styleActiveLine: !0,
+			theme: "neat",
+			mode: "javascript"
+		})
+	});
+</script>
+<div class="subnav">
+	<div class="content-menu ib-a blue line-x">
+		{$menu}
+
+	</div>
+	<div class="bk10"></div>
+	<div class="table-list">
+		<form action="" method="post" name="myform" id="myform">
+        	<div class="explain-col">
+                <font color="gray">{fc_lang('当前目录')}：{str_replace(WEBPATH, '/', $path)}</font>
+            </div>
+            <div class="bk10"></div>
+			<textarea name="code" id="system_file" style="height:450px;width:99%;">{$body}</textarea>
+			{if $is_name}
+			<div class="bk10"></div>
+			<input style=" margin-top: 20px" class="input-text" type="text" placeholder="{fc_lang('文件别名')}" name="name" value="{$name}" size="50" />
+			{/if}
+			<div class="bk10"></div>
+			<input type="submit" class="button pt" name="dosubmit" value="{fc_lang('保存')}" />
+			<input type="button" class="button pt" name="button" onclick="window.location.href='{$back}'" value="{fc_lang('返回')}" />
+		</form>
+	</div>
+</div>
+{template footer.html}

@@ -1,0 +1,151 @@
+{template "nheader.html"}
+<script type="text/javascript">
+    $(function() {
+        dr_theme({$is_theme});
+    });
+    function dr_theme(id) {
+        if (id == 1) {
+            $("#dr_theme_html").html($("#dr_web").html());
+        } else {
+            $("#dr_theme_html").html($("#dr_local").html());
+        }
+    }
+</script>
+<div id="dr_local" style="display: none">
+	<label class="col-md-2 control-label">{fc_lang('主题风格')}：</label>
+	<div class="col-md-9">
+		<label><select class="form-control" name="data[theme]">
+			<option value="default"> -- </option>
+			{loop $theme $t}
+			<option{if $t==$data['site'][$sid]['theme']} selected=""{/if} value="{$t}">{$t}</option>
+			{/loop}
+		</select></label>
+		<span class="help-block">{fc_lang('位于网站主站根目录下：根目录/statics/风格名称/')}</span>
+	</div>
+</div>
+<div id="dr_web" style="display: none">
+	<label class="col-md-2 control-label">{fc_lang('远程资源')}：</label>
+	<div class="col-md-9">
+		<input class="form-control  input-xlarge" type="text" placeholder="http://" name="data[theme]" value="{php echo strpos($data['site'][$sid]['theme'], 'http') === 0 ? $data['site'][$sid]['theme'] : '';}">
+		<span class="help-block">{fc_lang('网站将调用此地址的css,js,图片等静态资源')}</span>
+	</div>
+</div>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small> </small>
+</h3>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+	<div class="portlet light bordered myfbody">
+		<div class="portlet-title tabbable-line">
+			<ul class="nav nav-tabs" style="float:left;">
+				<li class="active">
+					<a href="#tab_0" data-toggle="tab"> <i class="fa fa-cog"></i> {fc_lang('模块配置')} </a>
+				</li>
+
+			</ul>
+		</div>
+		<div class="portlet-body">
+			<div class="tab-content">
+
+				<div class="tab-pane active" id="tab_0">
+
+				<div class="form-body">
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{fc_lang('模块名称')}：</label>
+						<div class="col-md-9">
+							<label>
+								<input class="form-control" name="site[name]" value="{$data.site.name}">
+							</label>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{fc_lang('URL规则')}：</label>
+						<div class="col-md-9">
+							<label>
+								<select class="form-control" name="site[urlrule]">
+									<option value="0"> -- </option>
+									{list action=cache name=urlrule return=u}
+									{if $u.type==2}<option value="{$u.id}" {if $u.id==$data['site']['urlrule']}selected{/if}> {$u.name} </option>{/if}
+									{/list}
+								</select>
+							</label>
+							<label>&nbsp;&nbsp;<a href="{dr_url('urlrule/index')}" style="color:blue !important">{fc_lang('[URL规则管理]')}</a></label>
+						</div>
+					</div>
+
+					<?php !$data['site']['search_title'] && $data['site']['search_title'] = '[第{page}页{join}][{keyword}{join}][{param}{join}]{modulename}{join}{'.'SITE_NAME}';?>
+
+					<div class="form-group">
+						<label class="col-md-2 control-label">{fc_lang('搜索标题')}：</label>
+						<div class="col-md-9">
+							<input class="form-control" type="text" name="site[search_title]" value="{$data['site']['search_title']}" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{fc_lang('搜索关键字')}：</label>
+						<div class="col-md-9">
+							<input class="form-control" type="text" name="site[search_keywords]" value="{$data['site']['search_keywords']}" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">{fc_lang('搜索描述信息')}：</label>
+						<div class="col-md-9">
+							<input class="form-control" type="text" name="site[search_description]" value="{$data['site']['search_description']}" >
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+
+	<div class="myfooter">
+		<div class="row">
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{template "nfooter.html"}

@@ -1,0 +1,118 @@
+{template "nheader.html"}
+<script type="text/javascript">
+$(function() {
+    // 错误提示
+	{if $error}
+	dr_tips('{$error.msg}', 3, '{intval($error.status)}');
+	{/if}
+
+});
+
+
+</script>
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+    <input name="page" id="page" type="hidden" value="{$page}" />
+    <input name="action" id="dr_action" type="hidden" value="back" />
+    <input name="dr_id" id="dr_id" type="hidden" value="{$data.id}" />
+    <input name="dr_module" id="dr_module" type="hidden" value="{APP_DIR}" />
+    <div class="page-bar">
+        <ul class="page-breadcrumb mylink">
+            {$menu.link}
+        </ul>
+        <ul class="page-breadcrumb myname">
+            {$menu.name}
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    {loop $menu.quick $t}
+                    <li>
+                        <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                    </li>
+                    {/loop}
+                    <li class="divider"> </li>
+                    <li>
+                        <a href="javascript:window.location.reload();">
+                            <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top:20px;margin-bottom: 50px;">
+        <div class="col-md-9">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject font-green sbold uppercase">{fc_lang('基本内容')}</span>
+                    </div>
+                    {if $draft_list}
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn green-haze btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> <i class="fa fa-edit"></i> {fc_lang('草稿')} <span class="badge badge-success" id="dr_cg_nums">{count($draft_list)}</span>
+                                <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right" style="width:320px">
+                                {loop $draft_list $t}
+                                <li id="dr_cgbox_{$t.id}">
+                                    <a href="javascript:;" class="dr_cgbox_select" id="dr_row_cgbox_{$t.id}" did="{$t.id}" islock="0">{if $t.title}{$t.title}{else}---{/if} <span class="badge badge-s-danger" onclick="delete_draft('{$t.id}')"> <i class="fa fa-trash"></i> {dr_date($t.inputtime)}</span></a>
+                                </li>
+                                {/loop}
+                            </ul>
+                        </div>
+                    </div>
+                    {/if}
+                </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('栏目分类')}：</label>
+                            <div class="col-md-9">
+                                <label>{$select}</label>
+
+                            </div>
+                        </div>
+                        {str_replace('col-md-9', 'col-md-10', $myfield)}
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-md-3">
+            <div class="portlet light bordered">
+                <div class="portlet-body">
+                    <div class="form-body">
+                        {$sysfield}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="myfooter">
+        <div class="row">
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn green" onclick="$('#dr_action').val('back')"> <i class="fa fa-save"></i> {fc_lang('保存并返回')}</button>
+                                {if !$data.id}
+                                <button type="submit" class="btn default" onclick="$('#dr_action').val('continue')"> <i class="fa fa-save"></i> {fc_lang('保存并继续')}</button>
+                                {/if}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{template footer.html}

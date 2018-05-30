@@ -1,0 +1,43 @@
+{template "mheader.html"}
+<script type="text/javascript">
+    $(function(){
+        {if $result_error}
+        dr_tips('{$result_error.msg}', 3);
+        {/if}
+    });
+</script>
+
+<div class="blog-module shadow">
+	<div class="blog-module-title">修改资料</div>
+
+	<div class="member-form">
+
+		<form action="" method="post" class="form-horizontal" novalidate="novalidate">
+			<input type="hidden" name="data[uid]" value="{$member.uid}">
+			<div class="form-body">
+
+				<div class="form-group">
+					<label class="col-md-2 control-label">邮箱：</label>
+					<div class="col-md-10" style="padding-top: 10px;">
+						{$member.email}
+					</div>
+				</div>
+				{$myfield}
+			</div>
+
+			<div class="form-actions">
+				<div class="row">
+					<div class="col-md-offset-2 col-md-3">
+						<button type="submit" class="mysubmit btn green"><i class="fa fa-save"></i> 保存</button>
+					</div>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+
+
+
+{template "mfooter.html"}

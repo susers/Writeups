@@ -1,0 +1,311 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function() {
+	set_required({intval($data['setting']['validate']['required'])});
+	show_field_option("{$data['fieldtype']}");
+	{if $result}
+	dr_tips('<font color=red>{$result}</font>', 3);
+	{/if}
+	{if $code}
+	d_tips('{$code}', 0);
+	{/if}
+});
+function dr_form_check() {
+	if (d_required('name')) return false;
+	if (d_required('fieldname')) return false;
+	return true;
+}
+function show_field_option(type) {
+	$("#dr_loading").show();
+	$.post('{MEMBER_PATH}index.php?s=member&c=api&m=field&rand='+Math.random(),{ type:type, module:'{$module}', relatedid:'{$relatedid}', relatedname:'{$relatedname}', id:{intval($data.id)}}, function(data){
+		$('#dr_option').html(data);
+		App.init();
+		$("#dr_loading").hide();
+
+	});
+}
+function set_required(id) {
+	if (id == 0) {
+		$('#required').hide();
+	} else {
+		$('#required').show();
+	}
+}
+function dr_confirm_zb(title) {
+    art.dialog.confirm("<font color=red><b>"+title+"</b></font>", function() {
+        return true;
+    },function() {
+        $("#iszb1").attr("checked", true);
+        $("#iszb2").attr("checked", false);
+    });
+}
+</script>
+<form class="form-horizontal" action="" method="post" name="myform" id="myform" onsubmit="return dr_form_check()">
+<input name="page" id="page" type="hidden" value="{$page}" />
+	<div class="page-bar">
+		<ul class="page-breadcrumb mylink">
+			{$menu.link}
+
+		</ul>
+		<ul class="page-breadcrumb myname">
+			{$menu.name}
+		</ul>
+		<div class="page-toolbar">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+					<i class="fa fa-angle-down"></i>
+				</button>
+				<ul class="dropdown-menu pull-right" role="menu">
+					{loop $menu.quick $t}
+					<li>
+						<a href="{$t.url}">{$t.icon} {$t.name}</a>
+					</li>
+					{/loop}
+					<li class="divider"> </li>
+					<li>
+						<a href="javascript:window.location.reload();">
+							<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<h3 class="page-title">
+		<small>{fc_lang('运用自定义字段功能会大大增强内容管理功能')}</small>
+	</h3>
+	<div class="portlet light bordered" style="margin-bottom:70px;">
+		<div class="portlet-title tabbable-line">
+			<ul class="nav nav-tabs" style="float:left;">
+				<li class="active">
+					<a href="#tab_0" data-toggle="tab"> <i class="fa fa-cog"></i> {fc_lang('基本设置')} </a>
+				</li>
+				<li class="">
+					<a href="#tab_1" data-toggle="tab"> <i class="fa fa-crop"></i> {fc_lang('数据验证')} </a>
+				</li>
+				<li class="">
+					<a href="#tab_2" data-toggle="tab"> <i class="fa fa-user"></i> {fc_lang('字段权限')} </a>
+				</li>
+			</ul>
+		</div>
+		<div class="portlet-body">
+			<div class="tab-content">
+
+				<div class="tab-pane active" id="tab_0">
+					<div class="form-body">
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('别名')}：</label>
+							<div class="col-md-9">
+								<label><input class="form-control" type="text" name="data[name]" value="{htmlspecialchars($data.name)}" id="dr_name" onblur="d_topinyin('fieldname','name');" /></label>
+								<span class="help-block" id="dr_name_tips">{fc_lang('为字段取个名字，例如：文档标题、作者、来源等等')}</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('名称')}：</label>
+							<div class="col-md-9">
+								<label><input class="form-control" type="text"  name="data[fieldname]" value="{$data.fieldname}" {if $data.id}disabled{/if} id="dr_fieldname" /></label>
+								<span class="help-block" id="dr_fieldname_tips">{fc_lang('只能由英文字母、数字组成')}</span>
+							</div>
+						</div>
+						{if $ismain}
+						<input name="data[ismain]" type="hidden" value="1" />
+						{else}
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('主表')}：</label>
+							<div class="col-md-9">
+								<div class="radio-list">
+									<label class="radio-inline"><input type="radio" id="iszb1" name="data[ismain]" value="0" {if $id}disabled{/if} {dr_set_radio('ismain', $data.ismain, '0', TRUE)} /> {fc_lang('否')}</label>
+									<label class="radio-inline"><input type="radio" id="iszb2" name="data[ismain]" onclick="dr_confirm_zb('{fc_lang("主表字段太多时可能会影响性能，您确认要进行此操作吗？")}')" value="1" {if $id}disabled{/if} {dr_set_radio('ismain', $data.ismain, '1')} /> {fc_lang('是')}</label>
+								</div>
+								<span class="help-block">{fc_lang('选“是”时，在list循环或者搜索时可以调用该字段；选“否”时会将字段添加到附表中不能参与list循环或搜索')}</span>
+							</div>
+						</div>
+						{/if}
+						{if $issearch}
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('是否搜索')}：</label>
+							<div class="col-md-9">
+								<input type="checkbox" name="data[issearch]" value="1" {if $data['issearch']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+								<span class="help-block">{fc_lang('选择“是”时，栏目搜索时会用的到，无实际意义')}</span>
+							</div>
+						</div>
+						{/if}
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('类别')}：</label>
+							<div class="col-md-9">
+								<label><select class="form-control" id="dr_fieldtype" name="data[fieldtype]" onChange="show_field_option(this.value)" {if $id}disabled{/if}>
+									<option value=""> -- </option>
+									{loop $ftype $t}
+									<option value="{$t.id}" {if $t.id==$data.fieldtype} selected="selected"{/if}> {$t.name}（{$t.id}） </option>
+									{/loop}
+									</select></label>
+								<label id="dr_loading" style="display:none">&nbsp;&nbsp;&nbsp;<img src="{THEME_PATH}admin/images/loading-mini.gif" height="10" /></label>
+							</div>
+						</div>
+					</div>
+					<div class="form-body" id="dr_option">
+
+					</div>
+				</div>
+				<div class="tab-pane" id="tab_1">
+					<div class="form-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('是否必填')}：</label>
+							<div class="col-md-9">
+								<div class="radio-list">
+									<label class="radio-inline"><input type="radio" name="data[setting][validate][required]" value="0" {if $data['setting']['validate']['required']==0}checked{/if} onclick="set_required(0)" /> {fc_lang('否')}</label>
+									<label class="radio-inline"><input type="radio" name="data[setting][validate][required]" value="1" {if $data['setting']['validate']['required']==1}checked{/if} onclick="set_required(1)" /> {fc_lang('是')}</label>
+								</div>
+							</div>
+						</div>
+						<div id="required" style="display:none">
+							<div class="form-group">
+								<label class="col-md-2 control-label">{fc_lang('正则验证')}：</label>
+								<div class="col-md-9">
+									<label><input class="form-control" type="text" name="data[setting][validate][pattern]" value="{$data['setting']['validate']['pattern']}" id="dr_pattern" size="30" /></label>
+									<label><select class="form-control" onchange="javascript:$('#dr_pattern').val(this.value)" name="pattern_select">
+										<option value="">{fc_lang('正则验证')}</option>
+										<option value="/^[0-9.-]+$/">{fc_lang('数字')}</option>
+										<option value="/^[0-9-]+$/">{fc_lang('整数')}</option>
+										<option value="/^[a-z]+$/i">{fc_lang('字母')}</option>
+										<option value="/^[0-9a-z]+$/i">{fc_lang('数字+字母')}</option>
+										<option value="/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/">E-mail</option>
+										<option value="/^[0-9]{5,20}$/">QQ</option>
+										<option value="/^http:\/\//">{fc_lang('URL链接')}</option>
+										<option value="/^(1)[0-9]{10}$/">{fc_lang('手机号码')}</option>
+										<option value="/^[0-9-]{6,13}$/">{fc_lang('电话号码')}</option>
+										<option value="/^[0-9]{6}$/">{fc_lang('邮政编码')}</option>
+									</select></label>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">{fc_lang('验证提示')}：</label>
+								<div class="col-md-9">
+									<input class="form-control" type="text" name="data[setting][validate][errortips]" value="{$data['setting']['validate']['errortips']}" id="dr_errortips" />
+									<span class="help-block">{fc_lang('当字段校验未通过时的提示信息，如“标题必须在80字以内”等等')}</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('禁止修改')}：</label>
+							<div class="col-md-9">
+								<input type="checkbox" name="data[setting][validate][isedit]" value="1" {if $data['setting']['validate']['isedit']}checked{/if} data-on-text="{fc_lang('是')}" data-off-text="{fc_lang('否')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+								<span class="help-block">{fc_lang('提交之后将不能修改字段值')}</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('XSS过滤')}：</label>
+							<div class="col-md-9">
+								<input type="checkbox" name="data[setting][validate][xss]" value="1" {if $data['setting']['validate']['xss']}checked{/if} data-on-text="{fc_lang('关闭')}" data-off-text="{fc_lang('开启')}" data-off-color="success" data-on-color="danger" class="make-switch" data-size="small">
+								<span class="help-block">{fc_lang('开启之后相关字符会被替换掉')}</span>
+							</div>
+						</div>
+						<div class="form-group hide">
+							<label class="col-md-2 control-label">{fc_lang('校验函数/方法')}：</label>
+							<div class="col-md-9">
+								<label><input class="form-control" type="text" name="data[setting][validate][check]" value="{$data['setting']['validate']['check']}" id="dr_check" /></label>
+								<span class="help-block">{fc_lang('例如对会员名的重复验证等，格式参考手册，请勿乱填')}</span>
+							</div>
+						</div>
+						<div class="form-group hide">
+							<label class="col-md-2 control-label">{fc_lang('过滤函数')}：</label>
+							<div class="col-md-9">
+								<label><input class="form-control" type="text" name="data[setting][validate][filter]" value="{$data['setting']['validate']['filter']}" id="dr_filter" /></label>
+								<span class="help-block">{fc_lang('如url补全、去除html、生成随机码等等，格式参考手册，请勿乱填')}</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('字段提示')}：</label>
+							<div class="col-md-9">
+								<input class="form-control" type="text" name="data[setting][validate][tips]" value="{$data['setting']['validate']['tips']}" />
+								<span class="help-block">{fc_lang('对字段简短的提示，来说明这个字段是用来干什么的')}</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('表单附加属性')}：</label>
+							<div class="col-md-9">
+								<textarea class="form-control" style="height:120px" name="data[setting][validate][formattr]">{$data['setting']['validate']['formattr']}</textarea>
+								<span class="help-block">{fc_lang('可以通过此处加入js事件、ajax验证、css等（慎用style与class）')}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane" id="tab_2">
+					<div class="form-body">
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('禁用')}：</label>
+							<div class="col-md-9">
+								<input type="checkbox" name="data[disabled]" value="1" {if $data['disabled']}checked{/if} data-on-text="{fc_lang('是')}" data-off-text="{fc_lang('否')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+								<span class="help-block">{fc_lang('禁用了就不能使用')}</span>
+							</div>
+						</div>
+						<div class="form-group hide">
+							<label class="col-md-2 control-label">{fc_lang('在表单哪个位置显示')}：</label>
+							<div class="col-md-9">
+								<div class="radio-list">
+									<label class="radio-inline"><input type="radio" name="data[setting][is_right]" value="0" {if !$data['setting']['is_right']}checked{/if}  /> {fc_lang('默认')}</label>
+									<label class="radio-inline"><input type="radio" name="data[setting][is_right]" value="1" {if 1==$data['setting']['is_right']}checked{/if} /> {fc_lang('右侧')}</label>
+									<label class="radio-inline"><input type="radio" name="data[setting][is_right]" value="2" {if 2==$data['setting']['is_right']}checked{/if} /> {fc_lang('手动')}</label>
+								</div>
+								<span class="help-block">{fc_lang('选择“右侧”时，发布模型内容时字段显示在右侧部分; 当选择"手动"时，需要开发者手动调用 ')}
+							<?php echo '{';?>$diyfield}
+								</span>
+							</div>
+						</div>
+						<div class="form-group hide">
+							<label class="col-md-2 control-label">{fc_lang('后台不显示该字段')}：</label>
+							<div class="col-md-9">
+								<div class="checkbox-list">
+									{loop $role $t}
+									{if $t.id>1}
+									<label class="checkbox-inline"><input type="checkbox" name="data[setting][show_admin][]" value="{$t.id}" {if @in_array($t.id, $data.setting.show_admin)} checked{/if} /> {$t.name}</label>
+									{/if}
+									{/loop}
+								</div>
+								<span class="help-block">{fc_lang('勾选之后，该角色将不会看到这个字段')}</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('前端显示')}：</label>
+							<div class="col-md-9">
+								<input type="checkbox" name="data[ismember]" value="1" {if $data['ismember']}checked{/if} data-on-text="{fc_lang('是')}" data-off-text="{fc_lang('否')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+								<span class="help-block">{fc_lang('如果想前端表单或者会员中心不显示那么请选择“否”，否则选“是”')}</span>
+							</div>
+						</div>
+						<div class="form-group hide">
+							<label class="col-md-2 control-label">{fc_lang('前端不显示该字段')}：</label>
+							<div class="col-md-9">
+								<div class="checkbox-list">
+									<label class="checkbox-inline"><input type="checkbox" name="data[setting][show_member][]" value="0" {if @in_array(0, $data.setting.show_member)} checked{/if} /> {fc_lang('游客')}</label>
+									{list action=cache name=MEMBER.group}
+									<label class="checkbox-inline"><input type="checkbox" name="data[setting][show_member][]" value="{$t.id}" {if @in_array($t.id, $data.setting.show_member)} checked{/if} /> {$t.name}</label>
+									{/list}
+								</div>
+								<span class="help-block">{fc_lang('勾选之后，该会员组将不会看到这个字段，如果“前端显示”关闭了此功能就无效')}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="myfooter">
+		<div class="row">
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{template footer.html}

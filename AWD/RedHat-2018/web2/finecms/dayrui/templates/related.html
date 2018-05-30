@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>admin</title>
+<link href="{THEME_PATH}admin/css/index.css" rel="stylesheet" type="text/css" />
+<link href="{THEME_PATH}admin/css/table_form.css" rel="stylesheet" type="text/css" />
+<link href="{THEME_PATH}js/swfupload/swfupload.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">var memberpath = "{MEMBER_PATH}";</script>
+<script type="text/javascript" src="{THEME_PATH}js/{SITE_LANGUAGE}.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/jquery.min.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/jquery.artDialog.js?skin=default"></script>
+<script type="text/javascript" src="{THEME_PATH}js/validate.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/admin.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/dayrui.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/swfupload/swfupload.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/swfupload/fileprogress.js"></script>
+<script type="text/javascript" src="{THEME_PATH}js/swfupload/handlers.js"></script>
+</head>
+<body style="font-size:12px">
+<div class="subnav">
+	<div class="explain-col">
+        <form method="post" action="" name="searchform" id="searchform">
+		{$select}
+		<select name="data[field]">
+			{loop $field $t}
+			{if $t.ismain}
+			<option value="{$t.fieldname}" {if $param.field==$t.fieldname}selected{/if}>{$t.name}</option>
+			{/if}
+			{/loop}
+		</select> ：
+		<input type="text" class="input-text" value="{$param.keyword}" size="40" placeholder="{fc_lang('多个Id可以用“,”分隔')}" name="data[keyword]" />&nbsp;
+		<input type="submit" value="{fc_lang('搜索')}" class="button" name="search" />
+		</form>
+	</div>
+	<div class="bk10"></div>
+	<div class="table-list">
+		<table width="100%">
+		<thead>
+		<tr>
+			<th width="20" align="right"><input name="dr_select" id="dr_select" type="checkbox" onClick="dr_selected()" />&nbsp;</th>
+			<th width="50" align="center">Id</th>
+			<th align="left">{fc_lang('主题')}</th>
+			<th width="120" align="left">{fc_lang('更新时间')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{loop $list $t}
+		<tr>
+			<td align="right"><input name="ids[]" type="checkbox" class="dr_select" value="{$t.id}" />&nbsp;</td>
+			<td align="center">{$t.id}</td>
+			<td align="left" id="dr_row_{$t.id}"><a href="{$t.url}" target="_blank">{dr_keyword_highlight(dr_strcut(dr_clearhtml($t.title), 60), $param.keyword)}</a></td>
+			<td align="left">{dr_date($t.updatetime, NULL, 'red')}</td>
+		</tr>
+		{/loop}
+		</tbody>
+		</table>
+		</form>
+
+	</div>
+</div>

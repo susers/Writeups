@@ -1,0 +1,78 @@
+.DynarchCalendar-focused {
+  background-color: #fff;
+}
+
+.DynarchCalendar-topBar {
+  background: url("brushed-steel.jpg") no-repeat 50% -50px;
+}
+
+.DynarchCalendar-bottomBar {
+  background: url("brushed-steel.jpg") no-repeat 50% -80px;
+}
+
+.DynarchCalendar-menu {
+  background-color: #fed;
+}
+
+.DynarchCalendar-hover-title,
+.DynarchCalendar-hover-navBtn,
+.DynarchCalendar-hover-bottomBar-today,
+.DynarchCalendar-menu table td div.DynarchCalendar-hover-navBtn {
+  background: transparent url("coolbg.png") repeat-x 0 50%;
+}
+.DynarchCalendar-hover-title div,
+.DynarchCalendar-hover-navBtn div { background-color: transparent; }
+
+.DynarchCalendar-pressed-title,
+.DynarchCalendar-pressed-navBtn,
+.DynarchCalendar-pressed-bottomBar-today,
+.DynarchCalendar-menu table td div.DynarchCalendar-pressed-navBtn {
+  background: #db2 url("coolbg.png") repeat-x 0 50%;
+  color: #000 !important;
+}
+.DynarchCalendar-pressed-title div,
+.DynarchCalendar-pressed-navBtn div { background-color: transparent; color: #000; }
+
+.DynarchCalendar-hover-week,
+.DynarchCalendar-focused .DynarchCalendar-hover-week {
+  background: transparent url("coolbg.png") repeat-x 0 50%;
+}
+
+.DynarchCalendar {
+  background: url("gold.jpg") no-repeat 50% 30px;
+}
+
+.DynarchCalendar-weekNumber {
+  border-right: 1px solid #f92;
+}
+
+
+
+.DynarchCalendar-hover-date {
+  background-image: url("coolbg.png");
+  background-position: 0 50%;
+  background-repeat: repeat-x;
+  border-color: #f92;
+}
+
+.DynarchCalendar-day-selected {
+  background-color: #f92;
+  color: #000 !important;
+  background-image: url("coolbg.png");
+  background-position: 0 50%;
+  background-repeat: repeat-x;
+}
+
+.DynarchCalendar-day-today.DynarchCalendar-day-selected {
+  background-color: #f92;
+  color: #00f !important;
+}
+
+.DynarchCalendar-tooltipCont,
+.DynarchCalendar-focused .DynarchCalendar-tooltipCont {
+  background: #db2 url("brushed-steel.jpg") no-repeat 50% -100px;
+}
+
+.DynarchCalendar-focused .DynarchCalendar-body {
+  background: url("../shadow-b.png") repeat-x 0 0;
+}

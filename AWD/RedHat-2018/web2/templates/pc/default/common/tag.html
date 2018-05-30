@@ -1,0 +1,56 @@
+<?php $indexc=1;?>{template "header.html"}
+
+<div class="blog-body">
+    <div class="blog-container">
+        <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+            <a href="/" title="网站首页">网站首页</a>
+            {if $parent}
+                <a href="{$parent.url}">{$parent.name}</a>
+            {/if}
+            <a><cite>TAG: {$tag.name}</cite></a>
+        </blockquote>
+        <div class="blog-main">
+            {if $tag.id}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <span class="caption-subject font-green">{$tag.name}</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            {$tag.content}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+
+            <div class="row">
+                <!-- 调用全部内容模型,并循环输出相关内容数据 -->
+                {list action=cache name=module return=c}
+                <div class="col-md-6">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <span class="caption-subject"><a class="font-green" href="{$c.url}">{$tag.name}的{$c.name}</a></span>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <ul class="list-unstyled fc-list-row">
+                                <!-- 调用$c.dirname模型的相关tag内容 显示5条 -->
+                                {list action=related module=$c.dirname field=title,url tag=$tag.tags num=5}
+                                <li><span class="badge badge-empty badge-success"></span> <a href="{$t.url}" class="title">{dr_strcut($t.title, 35)}</a></li>
+                                {/list}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {/list}
+            </div>
+        </div>
+    </div>
+</div>
+
+{template "footer.html"}

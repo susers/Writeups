@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+    <title>admin</title>
+    <link href="{THEME_PATH}admin/css/index.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/css/table_form.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="{THEME_PATH}admin/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/my.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <script type="text/javascript">var siteurl = "{SITE_PATH}{SELF}";var memberpath = "{MEMBER_PATH}";var sys_theme = "{THEME_PATH}admin/";</script>
+    <script type="text/javascript" src="{THEME_PATH}js/{SITE_LANGUAGE}.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/jquery.cookie.js"></script>
+
+    <link rel="stylesheet" href="{THEME_PATH}js/ui-dialog.css">
+    <script type="text/javascript" src="{THEME_PATH}js/dialog-plus.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/jquery.artDialog.js?skin=default"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/validate.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/admin.js"></script>
+    <script type="text/javascript" src="{THEME_PATH}js/dayrui.js"></script>
+    <script type="text/javascript">
+        var dr_login = 1;
+        $(function() {
+            top.$("#rightMain").attr("url", "{SELF}"+window.location.search);
+            //离开提示失效
+            var _t;
+            var blnCheckUnload = false;
+            window.onunloadcancel = function(){
+                clearTimeout(_t);
+                top.$('.page-loading').remove();
+            }
+            window.onbeforeunload = function() {
+                if (blnCheckUnload) {
+                    setTimeout(function(){_t = setTimeout(onunloadcancel, 0)}, 0);
+                    return "{fc_lang('本页面的数据未被保存')}";
+                }
+            }
+            $("[type='submit'], [type='button']").click(function(){
+                blnCheckUnload = false;
+            });
+            $(":input").change(function(){
+                blnCheckUnload = true;
+            });
+
+            {if !$mymain || !$sysfield}
+            top.hideNavHide();
+            {/if}
+                    $(".table-list tr").last().addClass("dr_border_none");
+                    $("#pages a").first().addClass("noloading");
+                    $(".subnav .content-menu span").last().remove();
+                    //art.dialog.close();
+                    $("input[name='dr_select']").click(function(){
+                        $(".dr_select").attr("checked",$(this).attr("checked"));
+                    });
+                    // 排序操作
+                    $('.table-list thead th').click(function(e) {
+                        var _class = $(this).attr("class");
+                        if (_class == undefined) return;
+                        var _name = $(this).attr("name");
+                        var _order = '';
+                        if (_class == "sorting") {
+                            _order = 'desc';
+                        } else if (_class == "sorting_desc") {
+                            _order = 'asc';
+                        } else {
+                            _order = 'desc';
+                        }
+                        {php if (isset($param['search']) && $param['search']) $get['search'] = 1;}
+                        var url = "{dr_url(1, $get)}&order="+_name+" "+_order;
+                        location.href=url;
+                    });
+                    // 适应浏览器分辨率
+                    var width = $(window).width();
+                    $('.table-list td, .table-list th').each(function(e){
+                        if (width < 1000 && $(this).attr('hide')) {
+                            $(this).hide();
+                        }
+                    });
+                    var h = 0;
+                    $(".dr_row_hide").each(function(){
+                        var hh = $(this).height();
+                        if (h > 0 && hh != h) {
+                            $('.table-list td, .table-list th').each(function(e){
+                                if ($(this).attr('hide')) {
+                                    $(this).hide();
+                                }
+                            });
+                        } else {
+                            h = hh;
+                        }
+                    });
+                    // 关闭加载窗口
+                    top.$('.page-loading').remove();
+                    $('.onloading, #pages a, .sorting, .sorting_desc, .sorting_asc, :submit').click(function(){
+                        top.dr_loading();
+                    });
+                    $('.sp-choose, .noloading').click(function(){
+                        top.$('.page-loading').remove();
+                    });
+                });
+    </script>
+</head>
+<body>
+<style>
+    .mydate {
+        height: 28px;
+        border: 1px solid #d0d0d0;
+    }
+    .row {
+        clear: both;
+    }
+    .col-md-3 {
+        float: left;
+        width: 33%;
+    }
+    .explain-col .input-text {
+        height: 24px;
+        background: #fff;
+    }
+</style>

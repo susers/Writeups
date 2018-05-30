@@ -1,0 +1,1 @@
+var PortletAjax=function(){var t=function(){$("#my_portlet .portlet-title a.reload").click(function(t){t.preventDefault(),t.stopPropagation(),App.alert({type:"danger",icon:"warning",message:"Custom reload handler!",container:$("#my_portlet .portlet-body")})})};return{init:function(){t()}}}();jQuery(document).ready(function(){PortletAjax.init()});

@@ -1,0 +1,153 @@
+{template nheader.html}
+<div class="page-bar">
+    <ul class="page-breadcrumb mylink">
+        {$menu.link}
+
+    </ul>
+    <ul class="page-breadcrumb myname">
+        {$menu.name}
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                {loop $menu.quick $t}
+                <li>
+                    <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                </li>
+                {/loop}
+                <li class="divider"> </li>
+                <li>
+                    <a href="javascript:window.location.reload();">
+                        <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h3 class="page-title">
+    <small></small>
+</h3>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+    <div class="portlet light bordered myfbody">
+
+        <div class="portlet-body">
+
+            <div class="row">
+                <div class="portlet-body form">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" style="padding-top: 10px;">{fc_lang('类型')}：</label>
+                        <div class="col-md-9">
+                            <div class="radio-list">
+                                <label class="radio-inline"><input name="is_all" type="radio" value="0" onclick="dr_set_type(0)" checked="checked" /> {fc_lang('单发')}</label>
+                                <label class="radio-inline"><input name="is_all" type="radio" value="1" onclick="dr_set_type(1)" /> {fc_lang('指定群发')}</label>
+                                <label class="radio-inline"><input name="is_all" type="radio" value="2" onclick="dr_set_type(2)" /> {fc_lang('指定会员组')}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group dr_0">
+                        <label class="col-md-2 control-label">{fc_lang('邮箱')}：</label>
+                        <div class="col-md-9">
+                            <label><input class="form-control" type="text" name="data[mail]" value="" ></label>
+                        </div>
+                    </div>
+                    <div class="form-group dr_1" style="display:none">
+                        <label class="col-md-2 control-label">{fc_lang('邮箱')}：</label>
+                        <div class="col-md-9">
+                            <textarea class="form-control" style="height:150px" name="data[mails]" />{$data.format}</textarea>
+                            <span class="help-block">多个{fc_lang('邮箱')}按“回车符号”分隔，一行一个{fc_lang('邮箱')}</span>
+                        </div>
+                    </div>
+                    <div class="form-group dr_2" style="display:none">
+                        <label class="col-md-2 control-label">{fc_lang('会员组')}：</label>
+                        <div class="col-md-9">
+                            <label><select name="data[groupid]" class="form-control">
+                                <option value=""> {fc_lang('全部')} </option>
+                                {list action=cache name=MEMBER.group}
+                                <option value="{$t.id}"> {$t.name} </option>
+                                {/list}
+                            </select></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">{fc_lang('标题')}：</label>
+                        <div class="col-md-9">
+                            <input class="form-control" type="text" name="data[title]" value="" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">{fc_lang('发送内容')}：</label>
+                        <div class="col-md-9">
+                            {dr_field_input('message', 'Ueditor', array('option' => array( 'mode' => 1, 'height' => 300, 'width' => '100%')), '')}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="myfooter">
+        <div class="row">
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12 text-center dr_botton">
+                                <button type="button" onclick="dr_send()" class="btn green"> <i class="fa fa-location-arrow"></i> {fc_lang('发送')}</button>
+                                <span id="dr_send_note"></span>
+                            </div>
+                            <div class="col-md-12 text-center dr_submit" style="display: none">
+                                <button type="submit" class="btn green"> <i class="fa fa-location-arrow"></i> {fc_lang('发送')}</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+<!--
+function dr_send() {
+    var data = $("#myform").serialize();
+	$("#dr_send_note").html('<img src="{THEME_PATH}admin/images/loading.gif">');
+	$("#dr_message").val(editor.getContent());
+	$.ajax({type: "POST",dataType:"json", url: "{dr_url('mail/ajaxsend')}&"+Math.random(), data: data,
+		success: function(data) {
+			if (data.status == 1) {
+				$("#dr_send_note").html('<font color=green>'+data.code+'</font>');
+			} else {
+				$("#dr_send_note").html('<font color=red>'+data.code+'</font>');
+			}
+		},
+		error: function(HttpRequest, ajaxOptions, thrownError) {
+			$("#dr_send_note").html('');
+			alert(thrownError + "\r\n" + HttpRequest.statusText + "\r\n" + HttpRequest.responseText);
+		}
+	});
+	return false;
+}
+function dr_set_type(i) {
+    $('.dr_0').hide();
+    $('.dr_1').hide();
+    $('.dr_2').hide();
+    $('.dr_'+i).show();
+    if (i == '2') {
+        $('.dr_botton').hide();
+        $('.dr_submit').show();
+        $('#myform').attr('action', '{dr_url('mail/ajaxsend')}');
+    } else {
+        $('.dr_botton').show();
+        $('.dr_submit').hide();
+        $('#myform').attr('action', '');
+    }
+}
+//-->
+</script>
+{template nfooter.html}

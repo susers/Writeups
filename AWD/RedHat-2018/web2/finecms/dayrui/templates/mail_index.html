@@ -1,0 +1,95 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function() {
+	{if $result}
+	dr_tips('{fc_lang('操作成功，正在刷新...')}', 3, 1);
+	{/if}
+});
+function test_email(id) {
+	$("#dr_sending_"+id).html("Sending ... ");
+	$.post("{dr_url('mail/test')}&id="+id+"&"+Math.random(), function(data){
+		alert(data);
+		$("#dr_sending_"+id).html("");
+	});
+}
+</script>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('支持SMTP协议邮件发送，一组邮件服务器发送失败后，下一组服务器会尝试再次发送')}</small>
+</h3>
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+			<thead>
+			<tr>
+				<th></th>
+				<th>{fc_lang('排序')}</th>
+				<th>{fc_lang('服务器')}</th>
+				<th>{fc_lang('邮箱名称')}</th>
+				<th>{fc_lang('端口号')}</th>
+				<th class="dr_option"></th>
+			</tr>
+			</thead>
+			<tbody>
+			{loop $list $t}
+			<tr>
+				<td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.id}" /></td>
+				<td><input class="input-text displayorder" type="text" name="data[{$t.id}]" value="{intval($t.displayorder)}" size="3"/></td>
+				<td>{$t.host}</td>
+				<td>{$t.user}</td>
+				<td>{$t.port}</td>
+				<td class="dr_option">
+				{if $this->ci->is_auth('admin/mail/edit')}<a class="aedit" href="{dr_dialog_url(dr_url('mail/edit',array('id'=>$t.id)), 'edit')}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>{/if}
+				<a class="ago" href="javascript:;" onclick="test_email('{$t.id}')"> <i class="fa fa-location-arrow"></i> {fc_lang('发送测试')}</a>
+				<span id="dr_sending_{$t.id}"></span>
+				</td>
+			</tr>
+			{/loop}
+			<tr class="mtable_bottom">
+				<th width="20" align="right" ><input class="toggle md-check" name="dr_select" id="dr_select" type="checkbox" onClick="dr_selected()" />&nbsp;</th>
+				<td colspan="5" >
+				{if $this->ci->is_auth('admin/mail/del')}<button type="button" class="btn red btn-sm" name="option" onClick="dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}');$('#action').val('del')"><i class="fa fa-trash"></i> {fc_lang('删除')}</button>&nbsp;&nbsp;{/if}
+				{if $this->ci->is_auth('admin/mail/edit')}<button type="button" class="btn green btn-sm"  name="button" onClick="dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}');$('#action').val('update')"><i class="fa fa-refresh"></i> {fc_lang('排序')}</button>
+					&nbsp;<div class="onShow">{fc_lang('排序按从小到大排列，最大支持99')}</div>{/if}
+				</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+{template nfooter.html}

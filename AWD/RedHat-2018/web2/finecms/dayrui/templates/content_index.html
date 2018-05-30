@@ -1,0 +1,209 @@
+{template nheader.html}
+<script type="text/javascript">
+function dr_confirm_move() {
+	var d = top.dialog({
+		title: lang["tips"],
+		fixed: true,
+		content: '<img src="/statics/js/skins/icons/question.png"> {fc_lang("您确定要这样操作吗？")}',
+		okValue: lang['ok'],
+		ok: function () {
+			$('#action').val('move');
+			var _data = $("#myform").serialize();
+			var _url = window.location.href;
+			if ((_data.split('ids')).length-1 <= 0) {
+				d.close().remove();
+				dr_tips(lang['select_null'], 2);
+				return true;
+			}
+			// 将表单数据ajax提交验证
+			$.ajax({type: "POST",dataType:"json", url: _url, data: _data,
+				success: function(data) {
+					d.close().remove();
+					//验证成功
+					if (data.status == 1) {
+						dr_tips(data.code, 3, 1);
+						$("input[name='ids[]']:checkbox:checked").each(function(){
+							$.post("{$html_url}c=show&m=create_html&id="+$(this).val(), {}, function(){});
+						});
+						$.post("{$html_url}c=home&m=create_list_html&id="+$('#move_id').val(), {}, function(){});
+						setTimeout('window.location.reload(true)', 3000); // 刷新页
+						return true;
+					} else {
+						dr_tips(data.code, 3, 2);
+						return true;
+					}
+				},
+				error: function(HttpRequest, ajaxOptions, thrownError) {
+					alert(HttpRequest.responseText);
+				}
+			});
+		},
+		cancelValue: lang['cancel'],
+		cancel: function () {}
+	});
+	d.show();
+}
+function dr_status(id, v) {
+	var title = "";
+	if (v == 9) {
+		title = "<font color=red><b>{fc_lang('您确定要将它关闭吗？')}</b></font>";
+	} else {
+		title = "<font color=blue><b>{fc_lang('您确定要将它开启吗？')}</b></font>";
+	}
+	var d = top.dialog({
+		title: lang["tips"],
+		fixed: true,
+		content: '<img src="/statics/js/skins/icons/question.png"> '+title,
+		okValue: lang['ok'],
+		ok: function () {
+			$.ajax({type: "POST",dataType:"json", url: "{dr_url('content/status')}&mid={$mid}&id="+id+"&v="+v, success: function(data) {
+				//验证成功
+				if (data.status == 1) {
+					dr_tips(data.code, 3, 1);
+
+					setTimeout('window.location.reload(true)', 3000); // 刷新页
+				} else {
+					dr_tips(data.code);
+				}
+			},
+				error: function(HttpRequest, ajaxOptions, thrownError) {
+					alert(HttpRequest.responseText);
+				}
+			});
+			return true
+		},
+		cancelValue: lang['cancel'],
+		cancel: function () {}
+	});
+	d.show();
+}
+</script>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="mytopsearch">
+	<form method="post" class="row" action="" name="searchform" id="searchform">
+		<input name="search" id="search" type="hidden" value="1" />
+		<div class="col-md-12">
+			<label style="padding-right: 5px;">{$select2}</label>
+			<label style="padding-right: 10px;"><i class="fa"></i></label>
+			<label>
+				<select name="data[field]" class="form-control">
+					<option value="id" {if $param.field=='id'}selected{/if}>Id</option>
+					{loop $field $t}
+					{if $t.ismain && $t.fieldname != 'inputtime' && $t.fieldname != 'updatetime'}
+					<option value="{$t.fieldname}" {if $param.field==$t.fieldname}selected{/if}>{$t.name}</option>
+					{/if}
+					{/loop}
+				</select>
+			</label>
+			<label><i class="fa fa-caret-right"></i></label>
+			<label style="padding-right: 20px;"><input type="text" class="form-control" placeholder="{fc_lang('多个Id可以用“,”分隔')}" value="{$param['keyword']}" name="data[keyword]" /></label>
+			<label>{fc_lang('录入时间')} ：</label>
+			<label>{dr_field_input('start', 'Date', array('option'=>array('format'=>'Y-m-d','width'=>'110')), (int)$param.start)}</label>
+			<label><i class="fa fa-minus"></i></label>
+			<label style="margin-right:10px">{dr_field_input('end', 'Date', array('option'=>array('format'=>'Y-m-d','width'=>'110')), (int)$param.end)}</label>
+			<label><button type="submit" class="btn green btn-sm" name="submit" > <i class="fa fa-search"></i> {fc_lang('搜索')}</button></label>
+		</div>
+	</form>
+</div>
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+					<thead>
+					<tr>
+						<th></th>
+						<th width="50" style="text-align:center">{fc_lang('排序')}</th>
+						<th class="{ns_sorting('title')}" name="title">{fc_lang('主题')}</th>
+						<th width="120"  class="{ns_sorting('catid')}" name="catid">{fc_lang('栏目分类')}</th>
+						<th width="160" class="{ns_sorting('updatetime')}" name="updatetime">{fc_lang('更新时间')}</th>
+						<th width="80" class="{ns_sorting('status')}" name="status">{fc_lang('状态')}</th>
+						<th>{fc_lang('操作')}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{loop $list $t}
+					<tr class="dr_row_hide" id="dr_row_{$t.id}">
+						<td><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.id}" /></td>
+						<td style="text-align:center"><input class="input-text displayorder" type="text" name="data[{$t.id}][displayorder]" value="{$t.displayorder}" /></td>
+						<td><a title="{dr_clearhtml($t.title)}" class="onloading" href="{if $t.status == 9}{dr_url_prefix($t.url)}{else}{SITE_URL}index.php?c=show&id={$t.id}{/if}" target="_blank" >{if $t.thumb}<img src="{THEME_PATH}admin/images/img.png" align="absmiddle" height="18" width="15">&nbsp;{/if}{dr_keyword_highlight(dr_strcut(dr_clearhtml($t.title), 40), $param.keyword)}{if $t.link_id >0}<img align="absmiddle" src="{THEME_PATH}admin/images/link2.png">{/if}</a></td>
+						<td><a title="{dr_cat_value($t['catid'], 'name')}" href="{dr_url('content/index', array('mid'=>$mid, 'catid'=>$t.catid))}">{dr_strcut(dr_cat_value($t['catid'], 'name'), 12)}</a></td>
+						<td>{dr_date($t.updatetime, NULL, 'red')}</td>
+						<td><label>{if $t.status == 9}<a class="btn blue btn-xs" href="javascript:dr_status('{$t.id}', '{$t.status}');">{fc_lang('正常')}</a>{else}<a class="btn red btn-xs" href="javascript:dr_status({$t.id}, '{$t.status}');">{fc_lang('关闭')}</a>{/if}</label></td>
+						<td>
+							{if $clink}
+							<label>
+								<div class="btn-group">
+									<button type="button" class="btn dark btn-xs dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true"> <i class="fa fa-plug"></i> {fc_lang('插件')}
+										<i class="fa fa-angle-down"></i>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										{loop $clink $a}
+										<li><a class="onloading" href="{str_replace(array('{mid}', '{id}'), array($mid, $t.id), $a.url)}"><i class="{$a.icon}"></i> {$a.name} {if $a.field}<span class="badge badge-info"> {intval($t[$a['field']])} </span>{/if} </a></li>
+										{/loop}
+									</ul>
+								</div>
+							</label>
+							{/if}
+							<label>
+								<a href="{dr_url('content/edit',array('mid'=>$mid, 'id'=>$t.id))}" class="btn btn-xs green onloading">
+									<i class="fa fa-edit"></i> {fc_lang('修改')}</a>
+							</label>
+						</td>
+					</tr>
+					{/loop}
+					<tr class="mtable_bottom">
+						<th width="20" ><input name="dr_select" class="toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+						<td colspan="99" >
+							{if !$get.flag}
+							<label><button type="button" class="btn red btn-sm" name="option" onClick="$('#action').val('del');dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}')"> <i class="fa fa-trash"></i> {fc_lang('删除')}</button></label>
+							{else}
+							<label><button type="button" class="btn red btn-sm" name="option" onClick="$('#action').val('flag');dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}')"> <i class="fa fa-flag"></i> {fc_lang('移出')}</button></label>
+							{/if}
+
+							<label><button type="button" class="btn green btn-sm" name="option" onClick="$('#action').val('order');dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}')"> <i class="fa fa-edit"></i>  {fc_lang('排序')}</button></label>
+							<label><button type="button" class="btn blue btn-sm" name="option" onClick="dr_confirm_move();"> <i class="fa fa-share"></i>  {fc_lang('移动至')}</button></label>
+							<label>{$select}</label>
+
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+			</div>
+	</div>
+</div>
+
+</form>
+<div id="pages"><a>{fc_lang('共%s条', $param.total)}</a>{$pages}</div>
+{template nfooter.html}

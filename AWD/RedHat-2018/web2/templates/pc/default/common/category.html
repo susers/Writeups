@@ -1,0 +1,103 @@
+{template "header.html"}
+<link href="{HOME_THEME_PATH}css/home.css" rel="stylesheet" />
+<script src="{HOME_THEME_PATH}js/home.js"></script>
+<!-- 主体 -->
+<div class="blog-body">
+
+    <!-- 这个一般才是真正的主体内容 -->
+    <div class="blog-container">
+        <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+            <a href="/" title="网站首页">网站首页</a>
+            {dr_catpos($catid, '', true, '<a href="[url]">[name]</a>')}
+            <a><cite>列表</cite></a>
+        </blockquote>
+
+        <div class="blog-main">
+
+            <div class="blog-main-left">
+
+                {list action=category pid=$catid tid=1 return=c}
+                <div class="blog-module shadow">
+                    <div class="blog-module-title"><a href="{$c.url}">{$c.name}</a></div>
+                    <div class="index-div-ul">
+                        <ul class="fa-ul blog-module-ul index-ul">
+                            {list action=module catid=$c.id order=displayorder,updatetime num=16}
+                            <li><a href="{$t.url}">{dr_strcut($t.title, 40)}</a></li>
+                            {/list}
+                        </ul>
+
+                    </div>
+                </div>
+                {/list}
+
+
+            </div>
+            <!--右边小栏目-->
+            <div class="blog-main-right">
+
+
+                <div class="article-category shadow">
+                    <div class="article-category-title">分类导航</div>
+
+                    <!--循环同级栏目或者子栏目-->
+                    {loop $related $c}
+                    <a href="{$c.url}">{$c.name}</a>
+                    {/loop}
+                    <div class="clear"></div>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">本类热门</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=hits num=15}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">随便看看</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=rand num=15}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">站内搜索</div>
+                    <div class="blogroll" style="padding: 10px 0">
+                        <form method="get" action="/index.php" class="form-horizontal" role="form" >
+                            <input type="hidden" name="c" value="search">
+                            <div class="input-group">
+								<span class="input-group-btn">
+									<select name="mid" class="form-control input-xsmall" style="margin-right: 10px">
+										{list action=cache name=module}
+										<option value="{$t.dirname}">{$t.name}</option>
+										{/list}
+									</select>
+								</span>
+                                <input name="keyword" type="text" class="form-control">
+                                <span class="input-group-btn">
+									<button class="btn blue" type="submit">搜索</button>
+								</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">tag标签</div>
+                    <ul class="blogroll">
+                        {list action=tags order=rand num=30}
+                        <li><a href="{$t.url}">{$t.name}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+{template "footer.html"}

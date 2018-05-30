@@ -1,0 +1,94 @@
+{template nheader.html}
+<script type="text/javascript">
+function dr_test() {
+	$.ajax({
+		type: "GET",
+		url: "{ADMIN_URL}test/",
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		success: function (data) {
+			alert(data);
+		},
+		error: function (msg) {
+			alert('服务器不支持伪静态，首先需要确定服务器支持rewrite模型并开启了，其次需要正确配置上面的方法');
+		}
+	});
+}
+function dr_todo() {
+	$("#dr_result").html("<img src='{THEME_PATH}admin/images/loading.gif'>");
+	$.ajax({
+		type: "GET",
+		url: "{dr_url('route/todo')}",
+		contentType: "application/json; charset=utf-8",
+		dataType: "text",
+		success: function (data) {
+			$("#dr_result").html(data);
+		},
+		error: function (msg) {
+			alert(msg);
+		}
+	});
+}
+</script>
+<style type="text/css">
+#dr_result td {
+	height:22px !important;
+	line-height:22px !important;
+	padding:0;
+	margin:0;
+}
+</style>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h3 class="page-title">
+	<small>{fc_lang('<li>当前服务器是：<b>%s</b></li><li>%s</li>', $name, '')}</small>
+</h3>
+<div class="portlet light bordered">
+	<div class="portlet-title">
+		<div class="caption">
+			<span class="caption-subject font-green sbold">{$name}</span>
+		</div>
+	</div>
+	<div class="portlet-body">
+		<p>{$note}</p>
+		{if $code}
+		<p><textarea name="" style="width:90%; height:{php echo $count * 40;}px;">{$code}</textarea></li>
+		{/if}
+		<p>伪静态规则配置文件：/config/rewrite.php </p>
+		<p style="color:blue">以下是通过当前系统的URL规则生成的对应伪静态解析规则, 可供开发者参考, 把以下规则放到配置文件中时需要注意规则是否冲突和规则是否重复问题</p>
+		<p>
+			<a href="javascript:;" class="btn blue" onClick="dr_todo()"> {fc_lang('生成伪静态')} </a>
+			<a href="javascript:;" class="btn default" onClick="dr_test()"> {fc_lang('环境检测')} </a>
+		</p>
+		<div id="dr_result">
+
+		</div>
+	</div>
+</div>
+{template nfooter.html}

@@ -1,0 +1,84 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="mytopsearch">
+	<form method="post" action="" name="searchform" id="searchform">
+		{if IS_PC}<label>{fc_lang('会员名称')}：</label>{/if}
+		<label><input type="text" class="form-control" placeholder="{fc_lang('会员名称')}" value="{$_POST['keyword']}" name="keyword" /></label>
+		<label><button type="submit" class="btn green btn-sm" name="submit" > <i class="fa fa-search"></i> {fc_lang('搜索')}</button></label>
+	</form>
+</div>
+
+
+<form action="" method="post" name="myform" id="myform">
+	<input type="hidden" name="action" value="del">
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+					<thead>
+					<tr>
+						<th width="20"></th>
+						<th width="200">{fc_lang('会员账号')}</th>
+						<th width="200">{fc_lang('管理名称')}</th>
+						<th>{fc_lang('操作')}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{loop $list $t}
+					<tr id="dr_row_{$t.uid}">
+						<td><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.uid}" /></td>
+
+						<td><a href="javascript:;" onclick="dr_dialog_member('{$t.uid}')">{dr_keyword_highlight($t.username, $param.keyword)}</a></td>
+						<td>{$t.realname}</td>
+						<td class="dr_option">
+							<a class="label label-sm label-info" href="{dr_dialog_url(dr_url('root/edit',array('id' => $t.uid)), 'edit')}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>
+							{if $t.uid>1}<a class="label label-sm label-danger" href="javascript:;" onClick="return dr_dialog_del('{fc_lang('您确定要这样操作吗？')}','{dr_url('root/del',array('id' => $t.uid))}');"> <i class="fa fa-trash"></i> {fc_lang('删除')}</a>{/if}
+						</td>
+					</tr>
+					{/loop}
+					<tr class="mtable_bottom">
+						<th><input class="toggle md-check" name="dr_select" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+						<td colspan="99">
+
+							<button data-toggle="confirmation" id="bs_confirmation_delete" data-original-title="{fc_lang('确定将会员从管理员中移除？')}" type="button" class="btn red btn-sm" name="option" > <i class="fa fa-trash"></i> {fc_lang('删除')}</button>
+
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</form>
+
+
+{template nfooter.html}

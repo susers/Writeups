@@ -1,0 +1,65 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<div class="mytopsearch">
+	<form method="post" action="" name="searchform" id="searchform">
+		<label>{fc_lang('日志月份')} ：</label>
+		<label style="margin-right: 10px;">{dr_field_input('time', 'Date', array('option'=>array('format'=>'Y-m-d','width'=>120)), (int)$time)}</label>
+		<label style="margin-right: 10px;"><button type="submit" class="btn green btn-sm" name="submit" > <i class="fa fa-search"></i> {fc_lang('搜索')}</button></label>
+		<label>{fc_lang('删除日志时请到日志保存目录：/cache/errorlog/年月/，以"天"为文件名')}</label>
+	</form>
+</div>
+
+<div class="portlet light bordered">
+	<div class="portlet-body">
+		<div class="table-scrollable v3table">
+			<div class="table-list">
+				<table width="100%">
+				<thead>
+				<tr>
+					<th align="left" width="170">{fc_lang('发生时间')}</th>
+					<th align="left"></th>
+				</tr>
+				</thead>
+				<tbody>
+				{loop $list $id $t}
+				<tr>
+					<td align="left">{$t['time']}</td>
+					<td align="left">{$t['error']}</td>
+				</tr>
+				{/loop}
+				</tbody>
+				</table>
+				<div id="pages"><a>{fc_lang('共%s条', $total)}</a>{$pages}</div>
+			</div>
+		</div>
+	</div>
+</div>
+{template nfooter.html}

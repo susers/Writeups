@@ -1,0 +1,111 @@
+<?php $indexc=1;?>{template "header.html"}
+<link href="{HOME_THEME_PATH}css/detail.css" rel="stylesheet" />
+<div class="blog-body">
+    <div class="blog-container">
+        <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+            <a href="/" title="网站首页">网站首页</a>
+            {dr_catpos($get.catid, '', true, '<a href="[url]">[name]</a>')}
+            <a><cite>搜索内容</cite></a>
+        </blockquote>
+
+
+        <div class="blog-main">
+
+
+            <div class="page-content-inner">
+                <div class="search-page search-content-1">
+                    <div class="portlet light ">
+                        <div class="portlet-title tabbable-line">
+                            <ul class="nav nav-tabs" style="float:left;">
+                                {list action=cache name=module}
+                                <li class="{if $mid==$t.dirname}active{/if}">
+                                    <a href="{dr_search_url($params, 'mid', $t.dirname)}"> {$t.name} </a>
+                                </li>
+                                {/list}
+                            </ul>
+                        </div>
+                        <div class="portlet-body">
+                            <p style="line-height:30px">
+                                <strong>分类：</strong>
+                                <a class="label {if !$get.catid || $cat.child}label-success{else}label-default{/if}" href="{dr_search_url($params, 'catid', NULL)}">不限</a>
+                                <!--调用栏目分类，这种用法只能用于模型列表与搜索页面-->
+                                {loop $related $t}
+                                {if $t.mid==$mid}
+                                <a class="label {if $t.id==$get.catid}label-success{else}label-default{/if}" href="{dr_search_url($params, 'catid', $t.id)}">{$t.name}</a>
+                                {/if}
+                                {/loop}
+                            </p>
+                            <div class="search-bar ">
+                                <div class="input-group">
+                                    <input type="text" onkeypress="if(event.keyCode==13) {searchByClass();return false;}"name='keyword' value='{$keyword}' id='dr_search_keyword'  class="form-control" placeholder="输入关键字搜索">
+                                    <span class="input-group-btn">
+                                        <button class="btn blue uppercase bold" onclick="searchByClass()" type="button">搜索</button>
+                                    </span>
+                                    <script type="text/javascript">
+                                        function searchByClass(){
+                                            var url="{dr_search_url($params, 'keyword', 'dayruicom')}";
+                                            var value=$("#dr_search_keyword").val();
+                                            if (value) {
+                                                location.href=url.replace('dayruicom', value);
+                                            } else {
+                                                dr_tips("输入关键字");
+                                            }
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="blog-main-left">
+                        <!--分页显示列表数据-->
+                        {list action=sql module=$mid sql='$search_sql' page=1 pagesize=10 urlrule=$urlrule}
+                        <div class="article shadow">
+                            {if !IS_MOBILE}
+                            <div class="article-left">
+                                <img src="{dr_thumb($t.thumb)}" style="width: 150px" />
+                            </div>
+                            {/if}
+                            <div class="article-right" {if IS_MOBILE} style="float: left"{/if}>
+                                <div class="article-title">
+                                    <a href="{$t.url}">{$t.title}</a>
+                                </div>
+                                <div class="article-abstract">
+                                    {$t.description}
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="article-footer">
+                                <span><i class="fa fa-list"></i>&nbsp;&nbsp;<a href="{dr_cat_value($t.catid, 'url')}">{dr_cat_value($t.catid, 'name')}</a></span>
+                                <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;{$t.updatetime}</span>
+                                {if $t.keywords}
+                                <?php $tag = explode(',',$t.keywords);?>
+                                <span><i class="fa fa-tag"></i>&nbsp;&nbsp;
+                        {loop $tag $c}<a href="{dr_tags_url($c)}">{$c}</a>{/loop}
+                        </span>
+                                {/if}
+                                <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;{$t.hits}</span>
+                            </div>
+                        </div>
+                        {/list}
+
+                        <div class="search-pagination">
+                            <ul class="pagination">
+                                {$pages}
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+{template "footer.html"}

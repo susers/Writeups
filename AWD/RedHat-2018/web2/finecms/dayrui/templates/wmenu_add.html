@@ -1,0 +1,137 @@
+{template nheader.html}
+<script type="application/javascript">
+    $(function(){
+        dr_set_value("{$data.type}");
+    });
+    function dr_set_value(i) {
+        $('.dvalue').hide();
+        $('.dr_html_'+i).show();
+    }
+</script>
+<style>
+    #user_result .badge{
+        margin-top: 10px;margin-right: 10px;
+    }
+    .sc_result img {
+        width: 200px;
+        height: 200px;
+    }
+</style>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+    <div class="page-bar">
+        <ul class="page-breadcrumb mylink">
+            {$menu.link}
+        </ul>
+        <ul class="page-breadcrumb myname">
+            {$menu.name}
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> {fc_lang('操作菜单')}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    {loop $menu.quick $t}
+                    <li>
+                        <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                    </li>
+                    {/loop}
+                    <li class="divider"> </li>
+                    <li>
+                        <a href="javascript:window.location.reload();">
+                            <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <h3 class="page-title">
+        <small></small>
+    </h3>
+    <div class="portlet light bordered myfbody">
+
+        <div class="portlet-title">
+            <div class="caption">
+                <span class="caption-subject font-green sbold uppercase">自定义菜单</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+
+            <div class="row">
+                <div class="portlet-body form">
+
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">顶级菜单：</label>
+                        <div class="col-md-9">
+                            <label>
+                            <select class="form-control" name="data[pid]">
+                                <option value="0">作为一级菜单</option>
+                                {loop $top $t}
+                                <option value="{$t.id}" {if $t.id==$pid}selected{/if}>{$t.name}</option>
+                                {/loop}
+                            </select>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label">菜单名称：</label>
+                        <div class="col-md-9">
+                            <label>
+                                <input type="text" class="form-control" name="data[name]" value="{$data.name}">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" style="padding-top: 10px;">动作事件：</label>
+                        <div class="col-md-9">
+                            <div class="radio-list">
+                                {loop $type $i $name}
+                                <label class="radio-inline"><input onclick="dr_set_value('{$i}')" {if $i==$data.type}checked{/if} name="data[type]" type="radio" value="{$i}" /> {$name}</label>
+                                {/loop}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group dvalue dr_html_url">
+                        <label class="col-md-2 control-label">链接地址：</label>
+                        <div class="col-md-9">
+                                <input type="text" class="form-control" name="value[url]" value="{$data.value}">
+
+                            <div class="help-block"> 填写以http开头的完整的网站地址 </div>
+                        </div>
+                    </div>
+                    <div class="form-group dvalue dr_html_member">
+                        <label class="col-md-2 control-label">链接地址：</label>
+                        <div class="col-md-9">
+                                <input type="text" class="form-control" name="value[member]" value="{$data.value}">
+
+                            <div class="help-block"> 输入一个登录授权后的跳转URL，例如会员中心：{MEMBER_URL} </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="myfooter">
+        <div class="row">
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{template nfooter.html}

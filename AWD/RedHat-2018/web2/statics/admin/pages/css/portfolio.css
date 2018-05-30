@@ -1,0 +1,116 @@
+/* Cubic Bezier Transition */
+/***
+Portfolio
+***/
+.portfolio-content {
+  padding-top: 10px; }
+  .portfolio-content .cbp-l-filters-buttonCenter .cbp-filter-item,
+  .portfolio-content .cbp-l-filters-buttonCenter .cbp-filter-counter,
+  .portfolio-content .cbp-l-filters-big .cbp-l-filters-big .cbp-filter-item,
+  .portfolio-content .cbp-l-grid-work-title,
+  .portfolio-content .cbp-l-clients-title-block,
+  .portfolio-content .cbp-l-grid-masonry-projects-title,
+  .portfolio-content .cbp-l-grid-masonry-projects-desc,
+  .portfolio-content .cbp-l-grid-mosaic .cbp-l-caption-title,
+  .portfolio-content .cbp-l-grid-mosaic .cbp-l-caption-desc,
+  .portfolio-content .cbp-l-slider-title-block div,
+  .portfolio-content .cbp-l-grid-slider-team-name,
+  .portfolio-content .cbp-l-grid-slider-team-position,
+  .portfolio-content .cbp-l-grid-slider-team-desc,
+  .portfolio-content .cbp-l-grid-slider-testimonials-footer,
+  .portfolio-content .cbp-l-testimonials-title-block,
+  .portfolio-content .cbp-l-grid-testimonials-footer,
+  .portfolio-content .cbp-caption-expand .cbp-caption-defaultWrap,
+  .portfolio-content .cbp-caption-expand .cbp-l-caption-body {
+    font-family: "Open Sans", sans-serif !important; }
+  .portfolio-content .text-center {
+    text-align: center; }
+  .portfolio-content .cbp-l-project-related-link:hover {
+    text-decoration: none; }
+  .portfolio-content .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active,
+  .portfolio-content .cbp-l-filters-button .cbp-filter-counter {
+    background-color: #2F353B;
+    border-color: #2F353B;
+    color: #fff; }
+    .portfolio-content .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active:before,
+    .portfolio-content .cbp-l-filters-button .cbp-filter-counter:before {
+      border-top-color: #2F353B; }
+  .portfolio-content .cbp-l-project-desc-title span,
+  .portfolio-content .cbp-l-project-details-title span {
+    border-bottom-color: #e7505a;
+    text-transform: uppercase;
+    font-weight: 600; }
+  .portfolio-content.portfolio-2 .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active,
+  .portfolio-content.portfolio-2 .cbp-l-filters-button .cbp-filter-counter {
+    background-color: #32C5D2;
+    border-color: #32C5D2;
+    color: #fff; }
+    .portfolio-content.portfolio-2 .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active:before,
+    .portfolio-content.portfolio-2 .cbp-l-filters-button .cbp-filter-counter:before {
+      border-top-color: #32C5D2; }
+  .portfolio-content.portfolio-2 .cbp-l-grid-mosaic .cbp-caption-activeWrap {
+    background-color: rgba(50, 197, 210, 0.9); }
+    .portfolio-content.portfolio-2 .cbp-l-grid-mosaic .cbp-caption-activeWrap .cbp-l-caption-title,
+    .portfolio-content.portfolio-2 .cbp-l-grid-mosaic .cbp-caption-activeWrap .cbp-l-caption-desc {
+      color: #fff; }
+  .portfolio-content.portfolio-3 .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active,
+  .portfolio-content.portfolio-3 .cbp-l-filters-button .cbp-filter-counter {
+    background-color: #3598DC;
+    border-color: #3598DC;
+    color: #fff; }
+    .portfolio-content.portfolio-3 .cbp-l-filters-button .cbp-filter-item.cbp-filter-item-active:before,
+    .portfolio-content.portfolio-3 .cbp-l-filters-button .cbp-filter-counter:before {
+      border-top-color: #3598DC; }
+  .portfolio-content.portfolio-3 .cbp-caption-zoom .cbp-caption-activeWrap {
+    background-color: rgba(0, 0, 0, 0.7); }
+  .portfolio-content.portfolio-3 .cbp-l-project-desc-title span,
+  .portfolio-content.portfolio-3 .cbp-l-project-details-title span {
+    border-bottom-color: #3598DC; }
+  .portfolio-content.portfolio-3 .cbp-l-filters-dropdown {
+    margin-bottom: 25px; }
+  .portfolio-content.portfolio-4 .cbp-caption-zoom .cbp-caption-activeWrap {
+    background-color: rgba(0, 0, 0, 0.7); }
+  .portfolio-content.portfolio-4 .cbp-l-filters-alignCenter {
+    margin-bottom: 25px; }
+    .portfolio-content.portfolio-4 .cbp-l-filters-alignCenter .cbp-filter-item {
+      margin-bottom: 0; }
+  .portfolio-content .cbp-l-filters-dropdown-floated {
+    margin-top: 0; }
+  .portfolio-content .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownHeader {
+    line-height: 31px; }
+  .portfolio-content .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownList .cbp-filter-item {
+    line-height: 31px; }
+  .portfolio-content .cbp-popup-singlePage .cbp-popup-content {
+    max-width: 1170px; }
+  .portfolio-content .cbp-l-filters-button {
+    margin-bottom: 25px; }
+  .portfolio-content .cbp-l-loadMore-button {
+    margin-bottom: 60px; }
+  .portfolio-content .btn {
+    padding: 6px 12px; }
+
+.cbp-popup-wrap,
+.cbp-popup-singlePage-open {
+  z-index: 10105 !important; }
+
+.portfolio-tile {
+  margin-bottom: 30px; }
+
+.cbp-l-filters-dropdownWrap {
+  background: none;
+  border: 1px solid #2F353B; }
+  .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownHeader {
+    color: #2F353B;
+    font-size: 12px; }
+    .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownHeader:after {
+      border-color: #2F353B transparent; }
+  .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownList {
+    background: #ffffff; }
+    .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownList .cbp-filter-item {
+      font-size: 12px;
+      color: #2F353B;
+      border: 0; }
+      .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownList .cbp-filter-item:hover {
+        background: #f3f4f5; }
+      .cbp-l-filters-dropdownWrap .cbp-l-filters-dropdownList .cbp-filter-item.cbp-filter-item-active {
+        background: #e5e8ea; }

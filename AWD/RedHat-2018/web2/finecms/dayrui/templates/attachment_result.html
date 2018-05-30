@@ -1,0 +1,80 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h3 class="page-title">
+	<small></small>
+</h3>
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="del" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+					<thead>
+					<tr>
+						<th width="20" align=""></th>
+						<th align="">{fc_lang('原文件名')}</th>
+						<th align="">{fc_lang('扩展名')}</th>
+						<th align="">{fc_lang('文件大小')}</th>
+						<th align="">{fc_lang('录入作者')}</th>
+						<th align="">{fc_lang('上传时间')}</th>
+					</tr>
+					</thead>
+					<tbody>
+					{loop $list $t}
+					<tr id="dr_row_{$t['id']}">
+						<td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t['id']}" /></td>
+						<td><a onclick="dr_show_file_info('{$t['id']}')" href="javascript:;">{dr_strcut($t['filename'], 60)}</a></td>
+						<td><span class="label label-sm label-info">{$t['fileext']}</span></td>
+						<td>{dr_format_file_size($t['filesize'])}</td>
+						<td><a href="javascript:;" onclick="dr_dialog_member('{$t.uid}')">{dr_strcut($t.author, 10)}</a></td>
+						<td>{dr_date($t['inputtime'], NULL, 'red')}</td>
+
+					</tr>
+					{/loop}
+					<tr class="mtable_bottom">
+						<th width="20"><input name="dr_select" class=" toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" />&nbsp;</th>
+						<td colspan="7">
+							{if $this->ci->is_auth('admin/attachment/del')}
+							<button data-toggle="confirmation" id="dr_confirm_set_all" data-original-title="{fc_lang('您确定要这样操作吗？')}" type="button" class="btn red btn-sm" name="option"> <i class="fa fa-trash"></i> {fc_lang('删除')}</button>
+							{/if}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</div>
+</form>
+<div id="pages"><a>{fc_lang('共%s条', $totals)}</a>{$pages}</div>
+{template nfooter.html}

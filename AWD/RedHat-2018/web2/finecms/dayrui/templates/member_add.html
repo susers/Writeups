@@ -1,0 +1,70 @@
+<script type="text/javascript">
+//防止回车提交表单
+$(function() {
+	document.onkeydown = function(e){ 
+		var ev = document.all ? window.event : e;
+		if (ev.keyCode==13) {
+			$("#mark").val("1"); // 标识不能提交表单
+		}
+	}
+});
+function dr_form_check() {
+	if ($("#mark").val() == 0) { 
+		return true;
+	} else {
+		return false;
+	}
+}
+{if $all}
+$('.dr_all').show();$('.dr_one').hide();
+{else}
+$('.dr_all').hide();$('.dr_one').show();
+{/if}
+</script>
+<form style="width:450px;" class="form-horizontal" action="" method="post" id="myform" name="myform" onsubmit="return dr_form_check()">
+<input name="mark" id="mark" type="hidden" value="0">
+<div class="form-body">
+
+    <div class="form-group">
+        <label class="col-md-3 control-label">{fc_lang('模式')}：</label>
+        <div class="col-md-9">
+            <div class="radio-list" style="padding-left: 20px;">
+                <label class="radio-inline"><input name="all" type="radio" value="0" onClick="$('.dr_all').hide();$('.dr_one').show();" {if !$all}checked{/if}> {fc_lang('单个')}</label>
+                <label class="radio-inline"><input name="all" type="radio" value="1" onClick="$('.dr_all').show();$('.dr_one').hide();" {if $all}checked{/if}> {fc_lang('批量')}</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group dr_one">
+        <label class="col-md-3 control-label">{fc_lang('账号')}：</label>
+        <div class="col-md-7">
+            <input class="form-control" type="text" name="data[username]" id="dr_username" value="{$data.username}" >
+        </div>
+    </div>
+    <div class="form-group dr_one">
+        <label class="col-md-3 control-label">{fc_lang('密码')}：</label>
+        <div class="col-md-7">
+            <input class="form-control" type="text" name="data[password]" id="dr_password" value="{$data.password}" >
+        </div>
+    </div>
+    <div class="form-group dr_one">
+        <label class="col-md-3 control-label">{fc_lang('邮箱')}：</label>
+        <div class="col-md-7">
+            <input class="form-control" type="text" name="data[email]" id="dr_email" value="{$data.email}" >
+        </div>
+    </div>
+    <div class="form-group dr_one">
+        <label class="col-md-3 control-label">{fc_lang('手机')}：</label>
+        <div class="col-md-7">
+            <input class="form-control" type="text" name="data[phone]" id="dr_phone" value="{$data.phone}" >
+        </div>
+    </div>
+    <div class="form-group dr_all">
+        <label class="col-md-3 control-label">{fc_lang('批量')}：</label>
+        <div class="col-md-9">
+            <textarea class="form-control" style="width:260px;height:150px" name="info" />{$info}</textarea>
+            <font color="#999999" id="dr_info_tips">{fc_lang('格式：会员名称|密码|email|手机号 [回车换行]')}</font>
+        </div>
+    </div>
+
+</div>
+</form>

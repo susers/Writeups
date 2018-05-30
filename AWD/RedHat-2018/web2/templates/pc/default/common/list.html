@@ -1,0 +1,82 @@
+{template "header.html"}
+<link href="{HOME_THEME_PATH}css/article.css" rel="stylesheet" />
+<div class="blog-body">
+    <div class="blog-container">
+        <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+            <a href="/" title="网站首页">网站首页</a>
+            {dr_catpos($catid, '', true, '<a href="[url]">[name]</a>')}
+            <a><cite>列表</cite></a>
+        </blockquote>
+        <div class="blog-main">
+            <div class="blog-main-left">
+                <!--分页显示列表数据-->
+                {list action=module catid=$catid order=displayorder,updatetime page=1}
+                <div class="article shadow">
+                    <div class="article-left">
+                        <img src="{dr_thumb($t.thumb)}" />
+                    </div>
+                    <div class="article-right">
+                        <div class="article-title">
+                            <a href="{$t.url}">{$t.title}</a>
+                        </div>
+                        <div class="article-abstract">
+                            {$t.description}
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="article-footer">
+                        <span><i class="fa fa-list"></i>&nbsp;&nbsp;<a href="{dr_cat_value($t.catid, 'url')}">{dr_cat_value($t.catid, 'name')}</a></span>
+                        <span><i class="fa fa-clock-o"></i>&nbsp;&nbsp;{$t.updatetime}</span>
+                        {if $t.keywords}
+                        <?php $tag = explode(',',$t.keywords);?>
+                        <span><i class="fa fa-tag"></i>&nbsp;&nbsp;
+                        {loop $tag $c}<a href="{dr_tags_url($c)}">{$c}</a>{/loop}
+                        </span>
+                        {/if}
+                        <span class="article-viewinfo"><i class="fa fa-eye"></i>&nbsp;{$t.hits}</span>
+                    </div>
+                </div>
+                {/list}
+                <div class="search-pagination">
+                    <ul class="pagination">
+                        {$pages}
+                    </ul>
+                </div>
+            </div>
+            <div class="blog-main-right">
+
+                <div class="article-category shadow">
+                    <div class="article-category-title">分类导航</div>
+
+                    <!--循环同级栏目或者子栏目-->
+                    {loop $related $c}
+                    <a href="{$c.url}">{$c.name}</a>
+                    {/loop}
+                    <div class="clear"></div>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">本类热门</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=hits num=15}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+
+                        {/list}
+                    </ul>
+                </div>
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">随便看看</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=rand num=15}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+                <!--右边悬浮 平板或手机设备显示-->
+                <div class="category-toggle"><i class="fa fa-chevron-left"></i></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+{template "footer.html"}

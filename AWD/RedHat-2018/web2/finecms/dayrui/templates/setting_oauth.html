@@ -1,0 +1,85 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function(){
+	$("#dr_remove").sortable();
+	{if $result}
+	dr_tips('{$result}', 3, 1);
+	{/if}
+});
+</script>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('修改配置时要保存之后才会生效；鼠标移至图标处可实现排序')}</small>
+</h3>
+<form action="" method="post" name="myform" id="myform">
+<div class="portlet light bordered">
+	<div class="portlet-body">
+		<div class="table-scrollable v3table">
+		<table class="table">
+		<thead>
+		<tr>
+			<th>OAuth</th>
+			<th>App Id</th>
+			<th>App Key</th>
+			<th class="dr_option">{fc_lang('可用')}</th>
+		</tr>
+		</thead>
+		<tbody id="dr_remove">
+		{loop $oauth $id $name}
+		{php $t=$data[$id];$i=$id;}
+		<tr>
+			<td>{$name}</td>
+			<td><input class="input-text" type="text" style="width:200px" name="data[key][{$i}]" value="{$t['key']}" /></td>
+			<td><input class="input-text" type="text" style="width:300px" name="data[secret][{$i}]" value="{$t['secret']}" /></td>
+			<td class="dr_option"><input name="data[use][{$id}][{$i}]" type="checkbox" value="1" {if $t['use']}checked{/if} /></td>
+		</tr>
+		{/loop}
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+	<div class="myfooter">
+		<div class="row">
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{template nfooter.html}

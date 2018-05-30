@@ -1,0 +1,100 @@
+{template nheader.html}
+{php $_pages=$pages;}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<div class="mytopsearch">
+	<form method="post" action="" name="searchform" id="searchform">
+
+		<label>
+			<select class="form-control" name="data[field]">
+				{loop $field $t}
+				<option value="{$t.fieldname}" {if $param.field==$t.fieldname}selected{/if}>{$t.name}</option>
+				{/loop}
+				<option value="uid" {if $param.field=='uid'}selected{/if}>uid</option>
+			</select>
+		</label>
+		<label><input type="text" class="form-control" value="{$param.keyword}" placeholder="{fc_lang('多个Id可以用“,”分隔')}" name="data[keyword]" /></label>
+		<label><button type="submit" class="btn green btn-sm"> <i class="fa fa-search"></i> {fc_lang('搜索')}</button></label>
+	</form>
+</div>
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="del" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+		<thead>
+		<tr>
+			<th width="10"></th>
+			<th>Uid</th>
+			<th class="{ns_sorting('username')}" name="username" >{fc_lang('账号')}</th>
+			<th class="{ns_sorting('email')}" name="email" >{fc_lang('邮箱')}</th>
+			<th class="{ns_sorting('phone')}" name="phone" >{fc_lang('电话')}</th>
+			<th class="{ns_sorting('name')}" name="name" >{fc_lang('姓名')}</th>
+			<th class="{ns_sorting('regtime')}" name="regtime" >{fc_lang('注册时间')}</th>
+			<th class="dr_option">{fc_lang('操作')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{loop $list $t}
+		<tr id="dr_row_{$t.uid}">
+			<td><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.uid}" /></td>
+			<td>{$t.uid}</td>
+			<td>{dr_keyword_highlight($t.username, $param.keyword)}</td>
+			<td>{dr_keyword_highlight($t.email, $param.keyword)}</td>
+			<td>{dr_keyword_highlight($t.phone, $param.keyword)}</td>
+			<td>{dr_keyword_highlight($t.name, $param.keyword)}</td>
+			<td>{dr_date($t.regtime, NULL, 'red')}</td>
+			<td class="dr_option">
+			{if $this->ci->is_auth('member/admin/home/edit')}<a class="aedit" {if $t.id==1}href="javascript:;"{else}href="{dr_url('member/edit',array('uid'=>$t.uid))}"{/if}> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>{/if}
+			</td>
+		</tr> 
+		{/loop}
+		<tr class="mtable_bottom">
+        	<th width="20"  ><input name="dr_select" class="toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+			<td colspan="10"  >
+            {if $this->ci->is_auth('member/admin/home/del')}
+				<label><button type="button" class="btn red btn-sm" name="option" onClick="$('#action').val('del');dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}')"><i class="fa fa-trash"></i> {fc_lang('删除')}</button></label>
+            {/if}
+
+			</td>
+		</tr>
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+</form>
+<div id="pages"><a>{fc_lang('共%s条', $param['total'])}</a>{$_pages}</div>
+{template nfooter.html}

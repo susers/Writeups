@@ -1,0 +1,106 @@
+{template nheader.html}
+<script type="text/javascript">
+function dr_get_block(id, i) {
+	if (i == 1) {
+		var html = '{'+'dr_block('+id+')'+'}';
+	} else if (i == 2) {
+		var html = '{'+'dr_block('+id+')'+'}';
+	} else if (i == 3) {
+		var html = '{'+'dr_get_file('+'dr_block('+id+')'+')}';
+	} else if (i == 4) {
+		var html = '{'+'php $block='+'dr_block('+id+');'+'}';
+		html+= '<br>{';
+		html+= 'loop ';
+		html+= '$block';
+		html+= '.file $file}';
+		//html+= '<br>{'+'loop'+' $block.file'+' file}';
+		html+= '<br>{'+'dr_get_file($file'+')}';
+		html+= '<br>{/'+'loop '+'}';
+	}
+	var body = '<div style="padding:20px;font-size:14px">'+html+'</div>';
+	var throughBox = art.dialog.through;
+	throughBox({
+		content: body,
+		title: "{fc_lang('调用方式')}"
+	});	
+}
+</script>
+
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<h3 class="page-title">
+	<small>{fc_lang('自定义内容用于存储一小段信息，各个页面能够灵活的调用')}</small>
+</h3>
+
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="del" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+				<thead>
+				<tr>
+					<th width="20" align="right"></th>
+					<th >{fc_lang('名称')}</th>
+					<th width="100">{fc_lang('类型')}</th>
+					<th class="dr_option">{fc_lang('操作')}</th>
+				</tr>
+				</thead>
+				<tbody>
+				{loop $list $t}
+				{php $t=dr_get_block_value($t);}
+				<tr>
+					<td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t['id']}" /></td>
+					<td>{$t['name']}</td>
+					<td>{$type[$t['i']]}</td>
+					<td class="dr_option">
+					{if $this->ci->is_auth('admin/block/edit')}<a class="aedit" href="{dr_url('block/edit',array('id'=>$t['id']))}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>{/if}
+					<a class="alist" href="javascript:;" onclick="dr_get_block('{$t.id}', '{$t.i}')"> <i class="fa fa-search"></i> {fc_lang('调用方式')}</a>
+					</td>
+				</tr>
+				{/loop}
+				<tr class="mtable_bottom">
+					<th width="20" ><input name="dr_select" class="toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" />&nbsp;</th>
+					<td colspan="5" >
+					{if $this->ci->is_auth('admin/block/del')}
+						<button data-toggle="confirmation" id="dr_confirm_set_all" data-original-title="{fc_lang('您确定要这样操作吗？')}" type="button" class="btn red btn-sm" name="option"> <i class="fa fa-trash"></i> {fc_lang('删除')}</button>
+						{/if}
+					</td>
+				</tr>
+				</tbody>
+				</table>
+		</div>
+	</div>
+</div>
+</form>
+{template nfooter.html}

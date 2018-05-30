@@ -1,0 +1,80 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('站点是系统的核心部分，各个站点数据独立，可以设置站点分库管理')}</small>
+</h3>
+<form action="" method="post" name="myform" id="myform">
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+						<thead>
+						<tr>
+							<th width="20" align="right"></th>
+							<th width="50" align="center">{fc_lang('状态')}</th>
+							<th width="50" align="center">Site</th>
+							<th width="200" align="left">{fc_lang('网站名称')}</th>
+							<th width="250" align="left">{fc_lang('网站域名')}</th>
+							<th align="left" class="dr_option">{fc_lang('操作')}</th>
+						</tr>
+						</thead>
+						<tbody>
+						{loop $list $sid $t}
+						{if $admin.adminid == 1 || ($admin.adminid > 1 && @in_array($sid, $admin.role.site))}
+						<tr>
+							<td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$sid}" /></td>
+							<td align="center"><a href="{dr_url('site/config',array('id' => $sid))}"><img src="{THEME_PATH}admin/images/{php echo $t['setting']['SITE_CLOSE'] ? 0 : 1}.gif" /></a></td>
+							<td align="center"><a href="{dr_url('site/config',array('id' => $sid))}">{$sid}</a></td>
+							<td align="left"><input class="input-text" style="height: 25px;" type="text" name="data[{$sid}][name]" value="{$t.name}" required /></td>
+							<td align="left"><input class="input-text" style="height: 25px;" type="text" name="data[{$sid}][domain]" value="{$t.domain}" required /></td>
+							<td align="left" class="dr_option">
+								<a class="ago" href="http://{$t.domain}{SITE_PATH}" target="_blank"> <i class="fa fa-paper-plane"></i> {fc_lang('访问')}</a>{if $this->ci->is_auth('site/config')}<a class="aedit" href="{dr_url('site/config',array('id' => $sid))}"> <i class="fa fa-cog"></i> {fc_lang('配置')}</a>{/if}
+								{if $this->ci->is_auth('site/del') && $sid > 1}<a class="adel" href="javascript:;" onClick="return dr_confirm_url('{fc_lang('您确定要这样操作吗？')}','{dr_url('site/del', array('id' => $t.id))}');"> <i class="fa fa-trash"></i> {fc_lang('删除')}</a>{/if}
+
+							</td>
+						</tr>
+						{/if}
+						{/loop}
+						<tr class="mtable_bottom">
+							<th align="right"><input class="toggle md-check" name="dr_select" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+							<td colspan="6" align="left">
+								{if $this->ci->is_auth('site/edit')}<botton type="submit" class="btn green btn-sm noloading" name="submit" onClick="return dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}');"> <i class="fa fa-edit"></i> {fc_lang('修改')}</botton>{/if}
+							</td>
+						</tr>
+						</tbody>
+					</table>
+		</div>
+	</div>
+</div>
+</form>
+
+{template nfooter.html}

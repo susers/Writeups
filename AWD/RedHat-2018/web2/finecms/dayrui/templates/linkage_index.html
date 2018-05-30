@@ -1,0 +1,91 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('联动菜单可以作为地区菜单、类型菜单等等，也可以按站点来设置联动菜单值')}</small>
+</h3>
+<form action="" method="post" name="myform" id="myform">
+<div class="portlet mylistbody">
+	<div class="portlet-body">
+		<div class="table-scrollable" style="overflow-y:initial;overflow-x:initial">
+
+			<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+		<thead>
+		<tr>
+			<th width="20"></th>
+			<th width="40">Id</th>
+			<th>{fc_lang('名称')}</th>
+			<th>{fc_lang('标识代码')}</th>
+			<th>{fc_lang('类型')}</th>
+			<th class="dr_option">{fc_lang('操作')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{loop $list $t}
+		<tr>
+			<td><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.id}" /></td>
+			<td>{$t.id}</td>
+			<td>{$t.name}</td>
+			<td>{$t.code}</td>
+			<td>{if $t.type}{fc_lang('站点独立')}{else}{fc_lang('全局共享')}{/if}</td>
+			<td class="dr_option">
+			{if $this->ci->is_auth('admin/linkage/edit')}<a class="aedit" href="{dr_dialog_url(dr_url('linkage/edit',array('id'=>$t.id)), 'edit')}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>{/if}
+			{if $this->ci->is_auth('admin/linkage/data')}<a class="alist" href="{dr_url('linkage/data',array('key'=>$t.id))}"> <i class="fa fa-navicon"></i> {fc_lang('联动菜单数据')}</a>{/if}
+			{if $this->ci->is_auth('admin/linkage/add')}
+				<label>
+					<div class="btn-group">
+						<button type="button" class="btn red btn-xs dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true"> <i class="fa fa-sign-in"></i> {fc_lang('常用数据导入')}
+							<i class="fa fa-angle-down"></i>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							{loop $dt_data $i $n}
+							<li><a style="margin-right:0px; padding: 8px !important;" href="javascript:" onClick="return dr_confirm_url('<font color=red><b>{fc_lang('该操作将会现有的菜单覆盖掉，您确定吗？')}</b></font>','{dr_url('linkage/import')}&id={$i}&lid={$t.id}');"> {fc_lang($n)}</a></li>
+							{/loop}
+						</ul>
+					</div>
+				</label>
+				{/if}
+			</td>
+		</tr>
+		{/loop}
+		<tr class="mtable_bottom">
+			<th><input name="dr_select" class="toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+			<td colspan="62">
+			{if $this->ci->is_auth('admin/linkage/del')}
+				<button type="button" class="btn red btn-sm" name="option" onClick="dr_confirm_del_all()"><i class="fa fa-trash"></i> {fc_lang('删除')}</button>{/if}
+			</td>
+		</tr>
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+</form>
+{template nfooter.html}

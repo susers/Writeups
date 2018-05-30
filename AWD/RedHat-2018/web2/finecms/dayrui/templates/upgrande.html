@@ -1,0 +1,75 @@
+{template nheader.html}
+<script type="text/javascript">
+    $(function(){
+        $.ajax({type: "GET", url:'{dr_url('upgrade/vlist')}', dataType:'text',jsonp:"callback",
+            success: function (data) {
+            $("#dr_table_html").html(data);
+        }
+    });
+    });
+</script>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb mylink">
+        {$menu.link}
+    </ul>
+    <ul class="page-breadcrumb myname">
+        {$menu.name}
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                {loop $menu.quick $t}
+                <li>
+                    <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                </li>
+                {/loop}
+                <li class="divider"> </li>
+                <li>
+                    <a href="javascript:window.location.reload();">
+                        <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h3 class="page-title">
+    <small>{$note}</small>
+</h3>
+
+<div class="portlet light bordered">
+    <div class="portlet-body">
+        <div class="table-scrollable v3table">
+            <div style="padding: 10px 10px">
+                <p><a href="https://gitee.com/dayrui/finecms/" target="_blank">FineCMS程序版本 v{DR_VERSION} bulid {str_replace('.','', DR_UPDATE)} </a></p>
+
+            </div>
+            <div id="dr_table_html" style="padding: 10px 10px">
+                <p> 版本检测中... </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="portlet bordered light " style="margin-top:30px;">
+
+    <div class="portlet-title" id="update">
+        <div class="caption">
+            <span class="caption-subject font-green-sharp">升级方法</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+
+        <br>
+        <p>下载最新版源码，覆盖config/version.php和finecms目录下的全部文件即可完成升级。</p>
+        <p>解压覆盖到网站目录中，更新后台缓存，查看版本号和更新时间，如果是最新版本号和最新的更新时间，表示升级成功！</p>
+
+
+    </div>
+</div>
+
+{template nfooter.html}
