@@ -1,0 +1,132 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function() {
+	{if $result}
+	dr_tips('{$result}');
+	{/if}
+	dr_set_post("{intval($data['setting']['post'])}");
+});
+function dr_set_post(id) {
+	if (id == 1) {
+		$(".dr_post").show();
+	} else {
+		$(".dr_post").hide();
+	}
+}
+</script>
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+	<div class="page-bar">
+		<ul class="page-breadcrumb mylink">
+			{$menu.link}
+
+		</ul>
+		<ul class="page-breadcrumb myname">
+			{$menu.name}
+		</ul>
+		<div class="page-toolbar">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+					<i class="fa fa-angle-down"></i>
+				</button>
+				<ul class="dropdown-menu pull-right" role="menu">
+					{loop $menu.quick $t}
+					<li>
+						<a href="{$t.url}">{$t.icon} {$t.name}</a>
+					</li>
+					{/loop}
+					<li class="divider"> </li>
+					<li>
+						<a href="javascript:window.location.reload();">
+							<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<h3 class="page-title">
+		<small>{fc_lang('表单可以用于前端数据展示与收集，如留言板、反馈、证书展示，需要配合前端页面使用')}</small>
+	</h3>
+	<div class="portlet light bordered">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject font-green sbold uppercase">{fc_lang('表单')}</span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<div class="form-body">
+
+				<div class="form-group">
+					<label class="col-md-2 control-label">{fc_lang('名称')}：</label>
+					<div class="col-md-9">
+						<label><input type="text" class="form-control" name="data[name]" value="{$data['name']}" id="dr_name" onblur="d_topinyin('table','name');"></label>
+						<span class="help-block"> {fc_lang('给它一个描述名称')} </span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">{fc_lang('表名称')}：</label>
+					<div class="col-md-9">
+						<label><input type="text" class="form-control" name="data[table]" value="{$data['table']}" {if $data['id']}disabled{/if} id="dr_table"></label>
+						<span class="help-block"> {fc_lang('只能由英文字母、数字组成')} </span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-2 control-label">{fc_lang('开启前端提交')}：</label>
+					<div class="col-md-9">
+						<div class="radio-list">
+							<label class="radio-inline"><input name="data[setting][post]" type="radio" value="1" onclick="dr_set_post(1)" {if $data['setting']['post']}checked{/if} /> {fc_lang('开启')}</label>
+							<label class="radio-inline"><input name="data[setting][post]" type="radio" value="0" onclick="dr_set_post(0)" {if !$data['setting']['post']}checked{/if} /> {fc_lang('关闭')}</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group dr_post">
+					<label class="col-md-2 control-label">{fc_lang('表单验证码')}：</label>
+					<div class="col-md-9">
+						<input type="checkbox" name="data[setting][code]" value="1" {if $data['setting']['code']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+					</div>
+				</div>
+
+				<div class="form-group dr_post">
+					<label class="col-md-2 control-label">{fc_lang('邮件通知')}：</label>
+					<div class="col-md-9">
+						<label><input type="text" class="form-control" name="data[setting][send]" value="{$data['setting']['send']}"></label>
+						<span class="help-block"> {fc_lang('前端提交后将会把提交信息发送到这个邮箱中')} </span>
+					</div>
+				</div>
+				<div class="form-group dr_post">
+					<label class="col-md-2 control-label">{fc_lang('邮件模板')}：</label>
+					<div class="col-md-9">
+						<textarea name="data[setting][template]" class="form-control" style="height:120px">{$data['setting']['template']}</textarea>
+						<span class="help-block"> {fc_lang('字段调用标签：{字段名称}')} </span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-label">{fc_lang('提交成功跳转URL')}：</label>
+					<div class="col-md-9">
+						<input type="text" class="form-control input-xlarge" name="data[setting][rt_url]" value="{$data['setting']['rt_url']}" >
+						<span class="help-block"> {fc_lang('当用户提交表单成功之后跳转的链接')} </span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="myfooter">
+		<div class="row">
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{template nfooter.html}

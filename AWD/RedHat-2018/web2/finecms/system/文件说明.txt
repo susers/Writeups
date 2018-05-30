@@ -1,0 +1,5 @@
+此目录是ci框架目录，本目录文件保持与ci官方源码一致。
+https://codeigniter.org.cn/
+
+如何升级ci框架？
+到ci官方下载最新版框架源码，覆盖system目录即可完成升级，finecms程序未破坏ci框架内核，可以放心升级框架。

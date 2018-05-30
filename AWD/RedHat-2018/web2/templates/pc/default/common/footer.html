@@ -1,0 +1,33 @@
+<!-- 底部 -->
+<footer class="blog-footer">
+    <p><span>FineCMS公益软件 v{DR_VERSION}</span></p>
+</footer>
+<!--侧边导航-->
+<ul class="layui-nav layui-nav-tree layui-nav-side blog-nav-left layui-hide" lay-filter="nav">
+    <li class="layui-nav-item {if $indexc}layui-this{/if}">
+        <a href="/">网站首页</a>
+    </li>
+    {list action=category pid=0}
+    <li class="layui-nav-item {if in_array($catid, $t.catids)}layui-this{/if}">
+        <a href="{$t.url}">{$t.name}</a>
+    </li>
+    {/list}
+</ul>
+<!--分享窗体-->
+<div class="blog-share layui-hide">
+    <div class="blog-share-body">
+        <div style="width: 200px;height:100%;">
+            <div class="bdsharebuttonbox">
+                <a class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                <a class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                <a class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                <a class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!--遮罩-->
+<div class="blog-mask animated layui-hide"></div>
+
+</body>
+</html>

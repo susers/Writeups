@@ -1,0 +1,95 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function() {
+	{if $error}
+	dr_tips("{$error}");
+	{/if}
+}); 
+</script>
+<div class="page-bar">
+    <ul class="page-breadcrumb mylink">
+        {$menu.link}
+
+    </ul>
+    <ul class="page-breadcrumb myname">
+        {$menu.name}
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                {loop $menu.quick $t}
+                <li>
+                    <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                </li>
+                {/loop}
+                <li class="divider"> </li>
+                <li>
+                    <a href="javascript:window.location.reload();">
+                        <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<h3 class="page-title">
+    <small></small>
+</h3>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+    <div class="portlet light bordered myfbody">
+
+        <div class="portlet-title">
+            <div class="caption">
+                <span class="caption-subject font-green sbold uppercase">{fc_lang('搜索')}</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+
+            <div class="row">
+                <div class="portlet-body form">
+                    <div class="form-body">
+
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('按扩展名搜索')}：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" value="{$data.ext}" name="data[ext]" />
+                                <span class="help-block">{fc_lang('多个扩展名以“,”分隔，如“jpg,gif,png,rar,zip”')}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('按会员名搜索')}：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" value="{$member.username}" name="data[author]" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="myfooter">
+        <div class="row">
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn green"> <i class="fa fa-search"></i> {fc_lang('搜索')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{template nfooter.html}

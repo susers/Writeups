@@ -1,0 +1,123 @@
+{template nheader.html}
+<script type="text/javascript">
+$(function() {
+	$(".select-cat").click(function(){
+		var action = $(this).attr("action");
+		var childs = $(this).attr("childs");
+		var catid = $(this).attr("catid");
+		var catids= new Array(); //定义一数组
+		catids = childs.split(","); //字符分割
+		if (action == 'close') {
+			$.cookie('dr_{SITE_ID}_share_{$this->ci->router->class}_'+catid, null,{path:"/",expires: -1});
+			$(this).attr("action", "open");
+			$(this).html("[-]");
+			for (i=0;i<catids.length ;i++ ) {   
+				if (catids[i] != catid) {
+					$(".dr_catid_"+catids[i]).show();
+				}
+			}
+		} else {
+			// 关闭状态存储cookie
+			$.cookie('dr_{SITE_ID}_share_{$this->ci->router->class}_'+catid, 1);
+			$(this).attr("action", "close");
+			$(this).html("[+]");
+			for (i=0;i<catids.length ;i++ ) {   
+				if (catids[i] != catid) {
+					$(".dr_catid_"+catids[i]).hide();
+				}
+			}
+		}
+	});
+	$(".select-cat").each(function(){
+		var childs = $(this).attr("childs");
+		var catid = $(this).attr("catid");
+		var cache = $.cookie('dr_{SITE_ID}_share_{$this->ci->router->class}_'+catid);
+		if (cache) {
+			$(this).attr("action", "close");
+			$(this).html("[+]");
+			var catids= new Array(); //定义一数组
+			catids = childs.split(","); //字符分割
+			for (i=0;i<catids.length ;i++ ) {   
+				if (catids[i] != catid) {
+					$(".dr_catid_"+catids[i]).hide();
+				}
+			}
+		} 
+	});
+});
+function dr_html() {
+	alert('aa');
+}
+</script>
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<h3 class="page-title">
+	<small></small>
+</h3>
+
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="order" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+			<thead>
+			<tr>
+				<th width="20" align="right"></th>
+				<th width="50" style="text-align: center">{fc_lang('排序')}</th>
+				<th width="50">{fc_lang('Id')}</th>
+				<th>{fc_lang('名称')}</th>
+				<th>{fc_lang('目录')}</th>
+				<th width="70" style="text-align: center">{fc_lang('类型')}</th>
+				<th width="70" style="text-align: center">{fc_lang('模型')}</th>
+				<th class="dr_option">{fc_lang('操作')}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{$list}
+			<tr class="mtable_bottom">
+				<th>
+					<input name="dr_select" id="dr_select" class="toggle md-check" type="checkbox" onClick="dr_selected()" />
+				</th>
+				<td colspan="99">
+					<button data-toggle="confirmation" id="dr_confirm_set_all" data-original-title="{fc_lang('您确定要这样操作吗？')}" type="button" class="btn red btn-sm" name="option"> <i class="fa fa-trash"></i> {fc_lang('删除')}</button>
+					<button data-toggle="confirmation" id="dr_confirm_order" data-original-title="{fc_lang('排序按从小到大排列，最大支持99')}" type="button" class="btn green btn-sm" name="option"> <i class="fa fa-edit"></i> {fc_lang('排序')}</button>
+				</td>
+			</tr>
+			</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</form>
+{template nfooter.html}

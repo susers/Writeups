@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>{$meta_title}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="www.dayrui.com" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="{THEME_PATH}admin/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="{THEME_PATH}admin/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="{THEME_PATH}admin/global/css/components-rounded.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="{THEME_PATH}admin/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="{THEME_PATH}admin/pages/css/login.min.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL STYLES -->
+
+    <!--[if lt IE 9]>
+    <script src="{THEME_PATH}admin/global/plugins/respond.min.js"></script>
+    <script src="{THEME_PATH}admin/global/plugins/excanvas.min.js"></script>
+    <![endif]-->
+    <!-- BEGIN CORE PLUGINS -->
+    <script src="{THEME_PATH}admin/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/js.cookie.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <script src="{THEME_PATH}admin/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN THEME GLOBAL SCRIPTS -->
+    <script src="{THEME_PATH}admin/global/scripts/app.min.js" type="text/javascript"></script>
+</head>
+<!-- END HEAD -->
+
+<body class=" login">
+<div class="menu-toggler sidebar-toggler"></div>
+<!-- END SIDEBAR TOGGLER BUTTON -->
+<!-- BEGIN LOGO -->
+<div class="logo">
+    <a href="javascript:;">
+        <img src="{$user.headimgurl}" width="50" /> </a>
+</div>
+<!-- END LOGO -->
+<!-- BEGIN LOGIN -->
+<div class="content">
+    <!-- BEGIN LOGIN FORM -->
+    {if $type}
+    <form class="login-form" id="dform" action="" method="post">
+        <input type="hidden" name="type" value="1">
+        <input type="hidden" name="code" value="{$code}">
+        <h3 class="form-title font-green">登录已有账号</h3>
+        <div class="alert alert-danger error_html" style="display:none">
+            <button class="close" data-close="alert"></button>
+            <span class="error_msg">  </span>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">会员账号/手机/邮箱</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="会员账号/手机/邮箱" name="data[username]" /> </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">登录密码</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="登录密码" name="data[password]" /> </div>
+        <div class="form-actions">
+            <button type="button" onClick="dr_dform()" class="btn green uppercase">立即绑定</button>
+        </div>
+        <div class="create-account">
+            <p>
+                <a href="javascript:;" onClick="$('#cform').show();$('#dform').hide();" class="uppercase">创建新账号</a>
+            </p>
+        </div>
+    </form>
+    <!-- END LOGIN FORM -->
+    <!-- BEGIN FORGOT PASSWORD FORM -->
+    <form class="forget-form" action="" id="cform" method="post" style="display:{if $type==2}block{else}none{/if}">
+        <input type="hidden" name="type" value="2">
+        <input type="hidden" name="code" value="{$code}">
+        <h3 class="form-title font-green">快速注册账号</h3>
+        <div class="alert alert-danger error_html" style="display:none">
+            <button class="close" data-close="alert"></button>
+            <span class="error_msg">  </span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">会员名称</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="会员名称" name="data[username]" />
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">手机号码</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="手机号码" name="data[phone]" />
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">安全邮箱</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="安全邮箱" name="data[email]" />
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">登录密码</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="登录密码" name="data[password]" />
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">确认密码</label>
+            <input class="form-control form-control-solid placeholder-no-fix" type="password" autocomplete="off" placeholder="确认密码" name="data[password2]" />
+        </div>
+
+        <div class="form-actions">
+            <button type="button" onClick="dr_cform()" class="btn green uppercase">立即绑定注册</button>
+        </div>
+        <div class="create-account">
+            <p>
+                <a href="javascript:;" onClick="$('#dform').show();$('#cform').hide();" class="uppercase">绑定已有账号</a>
+            </p>
+        </div>
+    </form>
+    <!-- END FORGOT PASSWORD FORM -->
+	{else}
+    <h3 class="form-title font-green">会员({$user.username})授权成功{$login}</h3>
+    {if $plug_url}<meta http-equiv="refresh" content="1; url={$plug_url}"> {/if}
+    {/if}
+</div>
+
+<div class="copyright"> {date('Y')} © 成都天睿程序设计. </div>
+</body>
+<script>
+function dr_dform() {
+	var data = $("#dform").serialize();
+	$.ajax({type: "POST",dataType:"json", url: "{dr_url('weixin/ajax_member')}", data: data,
+		success: function(data) {
+			if (data.status == 1) {
+				$(".content").html('<h3 class="form-title font-green">'+data.code+'</h3>');
+			} else {
+				$(".error_msg").html(data.code);
+				$(".error_html").show();
+			}
+		},
+		error: function(HttpRequest, ajaxOptions, thrownError) {
+			
+		}
+	});
+}
+
+function dr_cform() {
+	var data = $("#cform").serialize();
+	$.ajax({type: "POST",dataType:"json", url: "{dr_url('weixin/ajax_member')}", data: data,
+		success: function(data) {
+			if (data.status == 1) {
+				$(".content").html('<h3 class="form-title font-green">'+data.code+'</h3>');
+			} else {
+				$(".error_msg").html(data.code);
+				$(".error_html").show();
+			}
+		},
+		error: function(HttpRequest, ajaxOptions, thrownError) {
+			
+		}
+	});
+}
+</script>
+</html>

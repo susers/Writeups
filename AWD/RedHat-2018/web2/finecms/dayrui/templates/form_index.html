@@ -1,0 +1,72 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('表单可以用于前端数据展示与收集，如留言板、反馈、证书展示，需要配合前端页面使用')}</small>
+</h3>
+<div class="portlet mylistbody">
+	<div class="portlet-body">
+		<div class="table-scrollable">
+
+			<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+		<thead>
+		<tr>
+			<th width="70">{fc_lang('Id')}</th>
+			<th>{fc_lang('名称')}</th>
+			<th >{fc_lang('表名称')}</th>
+			<th>{fc_lang('提交页模板')}</th>
+			<th class="dr_option">{fc_lang('操作')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{loop $list $t}
+		<tr>
+			<td>{$t.id}</td>
+			<td>
+            <a href="{dr_url('form/edit', array('id' => $t.id))}">{$t.name}</a>
+
+            </td>
+			<td>{$t.table}</td>
+			<td>form_{$t.table}.html</td>
+			<td class="dr_option">
+			<a class="ago" href="{SITE_URL}index.php?c=form&mid={$t.table}" target="_blank"> <i class="fa fa-send"></i> {fc_lang('发布预览')}</a>
+			<a class="aadd" href="{dr_url('admin/field/index', array('rname'=>'form-'.SITE_ID, 'rid'=>$t.id))}"> <i class="fa fa-plus-square"></i> {fc_lang('字段')}</a>
+			<a class="aedit" href="{dr_url('form/edit', array('id'=>$t.id))}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>
+			<a class="adel" href="javascript:;" onClick="return dr_confirm_url('{fc_lang('您确定要这样操作吗？')}','{dr_url('form/del', array('id'=>$t.id))}');"> <i class="fa fa-trash"></i> {fc_lang('删除')}</a>
+            </td>
+		</tr>
+		{/loop}
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+
+{template nfooter.html}

@@ -1,0 +1,174 @@
+{template nheader.html}
+<script type="text/javascript">
+function test_email(value) {
+    $.get('{dr_url("member/ajax_email")}&uid={$data.uid}&email='+value+'&rand='+Math.random(), function(data){
+        if (data) {
+            $("#dr_email_tips").html(data);
+            $("#dr_email_tips").attr("class", "onError");
+        } else {
+            $("#dr_email_tips").html(" &nbsp;");
+            $("#dr_email_tips").attr("class", "onCorrect");
+        }
+    });
+}
+</script>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+    <input name="page" id="page" type="hidden" value="{$page}" />
+    <div class="page-bar">
+        <ul class="page-breadcrumb mylink">
+            {$menu.link}
+
+        </ul>
+        <ul class="page-breadcrumb myname">
+            {$menu.name}
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    {loop $menu.quick $t}
+                    <li>
+                        <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                    </li>
+                    {/loop}
+                    <li class="divider"> </li>
+                    <li>
+                        <a href="javascript:window.location.reload();">
+                            <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <h3 class="page-title">
+        <small></small>
+    </h3>
+
+    <div class="portlet light bordered myfbody">
+        <div class="portlet-title tabbable-line">
+            <ul class="nav nav-tabs" style="float:left;">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab"> <i class="fa fa-user"></i> {fc_lang('基本资料')} </a>
+                </li>
+                <li class="">
+                    <a href="#tab_1" data-toggle="tab"> <i class="fa fa-reorder"></i> {fc_lang('自定义字段')} </a>
+                </li>
+                <li class="">
+                    <a href="#tab_2" data-toggle="tab"> <i class="fa fa-weibo"></i> 第三方账号 </a>
+                </li>
+            </ul>
+        </div>
+        <div class="portlet-body">
+            <div class="tab-content">
+
+
+                <div class="tab-pane active" id="tab_0">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('账号')}：</label>
+                            <div class="col-md-9">
+                                <div class="form-control-static"><a onclick="dr_dialog_member('{$data.uid}')" href="javascript:;">{$data.username}</a></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('邮箱')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" onblur="test_email(this.value)" type="text" name="member[email]" value="{$data.email}" ></label>
+                                <span class="help-block" id="dr_email_tips"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('姓名')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" type="text" name="member[name]" value="{$data.name}" ></label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('手机')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" type="text" name="member[phone]" value="{$data.phone}" ></label>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('密码')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" type="text" name="member[password]" id="dr_password" value="" ></label>
+                                <span class="help-block">{fc_lang('留空表示不修改密码')}</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="tab-pane " id="tab_1">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('账号')}：</label>
+                            <div class="col-md-9">
+                                <div class="form-control-static"><a onclick="dr_dialog_member('{$data.uid}')" href="javascript:;">{$data.username}</a></div>
+                            </div>
+                        </div>
+                        {$myfield}
+
+                    </div>
+                </div>
+
+                <div class="tab-pane " id="tab_2">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('账号')}：</label>
+                            <div class="col-md-9">
+                                <div class="form-control-static"><a onclick="dr_dialog_member('{$data.uid}')" href="javascript:;">{$data.username}</a></div>
+                            </div>
+                        </div>
+
+                        {php $i=1;}
+                        {list action=cache name=OAUTH}
+                        {php $id=$t['id'];}
+                        {if isset($data['oauth'][$id])}
+                        <div class="form-group">
+                            <label class="col-md-2 control-label"><img align="absmiddle" src="{THEME_PATH}oauth/{$t.icon}.png"></label>
+                            <div class="col-md-9">
+                                <div class="form-control-static">{$data['oauth'][$id]['nickname']}</div>
+                            </div>
+                        </div>
+                        {php $i++;}
+                        {/if}
+                        {/list}
+
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="myfooter">
+        <div class="row">
+            <div class="portlet-body form">
+                <div class="form-body">
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{template nfooter.html}

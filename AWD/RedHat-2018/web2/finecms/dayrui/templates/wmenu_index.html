@@ -1,0 +1,105 @@
+{template nheader.html}
+<script type="text/javascript">
+</script>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb mylink">
+        {$menu.link}
+    </ul>
+    <ul class="page-breadcrumb myname">
+        {$menu.name}
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> {fc_lang('操作菜单')}
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                {loop $menu.quick $t}
+                <li>
+                    <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                </li>
+                {/loop}
+                <li class="divider"> </li>
+                <li>
+                    <a href="javascript:window.location.reload();">
+                        <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<h3 class="page-title">
+    <small>
+        <h3 class="page-title">
+            <small>
+                自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单，菜单最多4个汉字，多出来的部分将会以“...”代替。
+            </small>
+        </h3>
+    </small>
+</h3>
+
+<style>
+    .table>tbody>tr>td {
+        vertical-align: middle;
+    }
+</style>
+
+<div class="portlet light bordered">
+    <div class="portlet-body">
+        <div class="table-scrollable v3table">
+            <form action="" method="post" name="myform" id="myform">
+                <input name="action" id="action" type="hidden" value="order" />
+                <table class="table" width="100%">
+                    <thead>
+                    <tr>
+                        <th width="20" align="right"></th>
+                        <th width="50" align="center">{fc_lang('排序')}</th>
+                        <th width="200" align="left">菜单名称</th>
+                        <th style="text-align: center"></th>
+                        <th align="left" class="dr_option">{if $this->ci->is_auth('admin/wmenu/add')}<a class="add" title="{fc_lang('添加')}" href="{dr_url('wmenu/add', array('pid'=>0))}"></a>{/if}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {loop $list $c}
+                    <tr>
+                        <td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$c.id}"></td>
+                        <td align="center">
+                            <input class="input-text displayorder" type="text" name="data[{$c.id}][displayorder]" value="{$c.displayorder}"></td>
+                        <td><a href="{dr_url('wmenu/edit', array('id'=>$c.id))}">{$c.name}</a></td>
+                        <td align="center">{if !$c.data}<span class="badge badge-success">{$type[$c.type]}</span>{/if}</td>
+                        <td align="left" class="dr_option">
+                            <a class="aedit" href="{dr_url('wmenu/edit', array('id'=>$c.id))}"> <i class="fa fa-edit"></i> 修改菜单</a>
+                            <a class="aadd" href="{dr_url('wmenu/add', array('pid'=>$c.id))}"> <i class="fa fa-plus"></i> 添加下级</a>
+                        </td>
+                    </tr>
+                    {loop $c.data $t}
+                    <tr>
+                        <td align="right"><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.id}"></td>
+                        <td align="center">
+                            <input class="input-text displayorder" type="text" name="data[{$t.id}][displayorder]" value="{$t.displayorder}"></td>
+                        <td>&nbsp; ├─&nbsp;&nbsp;<a href="{dr_url('wmenu/edit', array('id'=>$t.id))}">{$t.name}</a></td>
+                        <td align="center"><span class="badge badge-success">{$type[$t.type]}</span></td>
+                        <td align="left" class="dr_option">
+                            <a  class="aedit"href="{dr_url('wmenu/edit', array('id'=>$t.id))}"> <i class="fa fa-edit"></i> 修改菜单</a>
+                        </td>
+                    </tr>
+                    {/loop}
+                    {/loop}
+                    <tr>
+                        <th align="right" style="padding-top:11px;"><input name="dr_select" class=" toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+                        <td colspan="7" align="left">
+                            {if $this->ci->is_auth('admin/wmenu/del')}<button type="button" class="btn red btn-sm" value="{fc_lang('删除')}" name="button" onClick="$('#action').val('del');return dr_confirm_del_all()"> <i class="fa fa-trash"></i> 删除</button>{/if}
+                            {if $this->ci->is_auth('admin/wmenu/edit')}<button type="button" class="btn green btn-sm" value="{fc_lang('排序')}" name="button" onclick="$('#action').val('order');return dr_confirm_del_all()"> <i class="fa fa-edit"></i> 排序</button><div class="onShow">{fc_lang('排序按从小到大排列，最大支持99')}</div>{/if}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+            <div id="pages"><a>{fc_lang('共%s条', $total)}</a>{$pages}</div>
+        </div>
+    </div>
+</div>
+{template nfooter.html}

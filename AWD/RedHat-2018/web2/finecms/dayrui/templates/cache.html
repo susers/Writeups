@@ -1,0 +1,51 @@
+{template nheader.html}
+
+<div class="page-bar">
+	<ul class="page-breadcrumb">
+		<li><a href="{dr_url('home/cache')}" class="blue"> <i class="fa fa-refresh"></i> {fc_lang('更新全站缓存')}</a> <i class="fa fa-circle"></i></li>
+		<li><a href="{dr_url('check/phpinfo')}" target="_blank"> <i class="fa fa-pie-chart"></i> {fc_lang('PHP环境')}</a></li>
+	</ul>
+</div>
+
+<h3 class="page-title">
+	<small>缓存更新完成之后，请按F5刷新整个页面。</small>
+</h3>
+
+<div class="portlet light bordered">
+	<div class="portlet-body">
+		<div class="table-list">
+		<table width="100%" id="dr_result">
+		{loop $list $id $t}
+        {if $id%3==0}<tr>{/if}
+			<td width="200" align="left">
+			    {$t.name}
+                &nbsp;&nbsp;
+                <span id="dr_cache_{$id}"><img src="{THEME_PATH}admin/images/loading-mini.gif" height="10"></span>
+			</td>
+        {if $id%3==2}</tr>{/if}
+		{/loop}
+		</table>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+{loop $list $id $t}
+$.ajax({
+	type: "GET",
+	url: "{$t.url}&"+Math.random(),
+	contentType: "application/json; charset=utf-8",
+	dataType: "text",
+	success: function (data) {
+		$("#dr_cache_{$id}").html('<i class="icon-ok"></i>');
+	},
+	error: function(HttpRequest, ajaxOptions, thrownError) {
+		$("#dr_cache_{$id}").html('<i style="color:red;" class="fa fa-close"></i>');
+		$("#dr_cache_{$id}").parent('td').attr('style', 'color:red');
+	}
+});
+{/loop}
+$.get("{dr_url('home/clear')}&"+Math.random(), function(){});
+</script>
+{template nfooter.html}

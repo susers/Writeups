@@ -1,0 +1,69 @@
+<script type="text/javascript">
+$(function() { //防止回车提交表单
+	document.onkeydown = function(e){ 
+		var ev = document.all ? window.event : e;
+		if (ev.keyCode==13) {
+			$("#mark").val("1"); // 标识不能提交表单
+		}
+	}
+	$(".table_form th").last().css('border','none');
+	$(".table_form td").last().css('border','none');
+});
+function dr_form_check() {
+	if ($("#mark").val() == 0) {
+		dr_tips("{fc_lang('正在执行中...')}", 999999, 2);
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<div class="table-list" style="width:400px;">
+<form action="" method="post" id="myform" name="myform" onsubmit="return dr_form_check()">
+<input name="mark" id="mark" type="hidden" value="0" />
+<table width="100%" class="table_form">
+    <tr>
+        <th width="100"><font color="red">*</font>&nbsp;{fc_lang('分类')}： </th>
+        <td>
+            <label>{$select}</label>
+        </td>
+    </tr>
+    {if !$data.id}
+    <tr>
+        <th>{fc_lang('模式')}： </th>
+        <td>
+            <input type="radio" name="_all" value="0" onclick="$('.dr_more').hide();$('.dr_one').show();" checked />&nbsp;<label>{fc_lang('单个')}</label>
+            &nbsp;&nbsp;&nbsp;
+            <input type="radio" name="_all" value="1" onclick="$('.dr_more').show();$('.dr_one').hide();" />&nbsp;<label>{fc_lang('批量')}</label>
+        </td>
+    </tr>
+    <tr class="dr_more" style="display:none">
+        <th><font color="red">*</font>&nbsp;{fc_lang('名称')}： </th>
+        <td><textarea class="form-control" style="width:200px;height:150px" name="data[names]" id="dr_names" /></textarea>
+            <br><font id="dr_names_tips" color="#999999">{fc_lang('多个菜单以回车符号分隔')}</font>
+        </td>
+    </tr>
+    {/if}
+    <tr class="dr_one">
+        <th><font color="red">*</font>&nbsp;{fc_lang('名称')}： </th>
+        <td>
+            <input class="form-control" type="text" name="data[name]" id="dr_name" onblur="d_topinyin('cname','name', 0);" value="{$data['name']}" style="width:180px;" />
+            <font color="#999999" id="dr_name_tips"></font>
+        </td>
+    </tr>
+    <tr class="dr_one">
+        <th><font color="red">*</font>&nbsp;{fc_lang('别名')}： </th>
+        <td>
+            <input class="form-control" type="text" name="data[cname]" id="dr_cname" value="{$data['cname']}" style="width:180px;" />
+            <font color="#999999" id="dr_cname_tips"></font>
+        </td>
+    </tr>
+    <tr>
+        <th>&nbsp;{fc_lang('排序')}： </th>
+        <td>
+            <input class="form-control" type="text" name="data[displayorder]" id="dr_displayorder" value="{intval($data['displayorder'])}" style="width:180px;" />
+        </td>
+    </tr>
+</table>
+</form>
+</div>

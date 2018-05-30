@@ -1,0 +1,107 @@
+{template nheader.html}
+<script language="javascript">
+{if $error}
+$(function() {
+	dr_tips('<font color=red>{$error}</font>', 3);
+});
+{/if}
+function dr_load_url() {
+	var catid = $("#dr_catid").val();
+	if (catid==0) {
+		dr_tips("<font color=red>{fc_lang('请选择一个的栏目')}</font>", 3);
+		return;
+	}
+}
+function dr_select_all() {
+	$("#dr_catid").find("option").attr("selected", "selected");
+}
+</script>
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+	<div class="page-bar">
+		<ul class="page-breadcrumb mylink">
+			{$menu.link}
+
+		</ul>
+		<ul class="page-breadcrumb myname">
+			{$menu.name}
+		</ul>
+		<div class="page-toolbar">
+			<div class="btn-group pull-right">
+				<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+					<i class="fa fa-angle-down"></i>
+				</button>
+				<ul class="dropdown-menu pull-right" role="menu">
+					{loop $menu.quick $t}
+					<li>
+						<a href="{$t.url}">{$t.icon} {$t.name}</a>
+					</li>
+					{/loop}
+					<li class="divider"> </li>
+					<li>
+						<a href="javascript:window.location.reload();">
+							<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<h3 class="page-title">
+		<small>{fc_lang('批量设置URL规则可以加载某一个栏目的URL规则，再同步更新至其他栏目')}</small>
+	</h3>
+
+	<div class="portlet light bordered myfbody">
+		<div class="portlet-body">
+			<div class="row">
+				<div class="portlet-body form">
+					<div class="form-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('栏目选择')}：</label>
+							<div class="col-md-9">
+								<label>{$select}</label>
+
+								<label><button type="button" onclick="dr_select_all()" name="button" class="btn blue btn-sm"> <i class="fa fa-arrow-left"></i>  {fc_lang('全选')} </button> </label>
+								<span class="help-block"> {fc_lang('以下规则为空时表示上面选择的栏目关闭自定义URL功能')} </span>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-body">
+						<div class="form-group">
+							<label class="col-md-2 control-label">{fc_lang('URL规则')}：</label>
+							<div class="col-md-9">
+								<label>
+								<select class="form-control" name="urlrule">
+									<option value="0"> -- </option>
+									{list action=cache name=urlrule return=u}
+									{if $u.type==3}<option value="{$u.id}"> {$u.name} </option>{/if}
+									{/list}
+								</select>
+								</label>
+								<label> &nbsp;&nbsp;<a href="{dr_url('urlrule/index')}" style="color:blue !important">{fc_lang('[URL规则管理]')}</a> </label>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="myfooter">
+		<div class="row">
+			<div class="portlet-body form">
+				<div class="form-body">
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12 text-center">
+								<button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{template nfooter.html}

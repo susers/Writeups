@@ -1,0 +1,102 @@
+{template nheader.html}
+<div class="page-bar">
+	<ul class="page-breadcrumb mylink">
+		{$menu.link}
+
+	</ul>
+	<ul class="page-breadcrumb myname">
+		{$menu.name}
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+				<i class="fa fa-angle-down"></i>
+			</button>
+			<ul class="dropdown-menu pull-right" role="menu">
+				{loop $menu.quick $t}
+				<li>
+					<a href="{$t.url}">{$t.icon} {$t.name}</a>
+				</li>
+				{/loop}
+				<li class="divider"> </li>
+				<li>
+					<a href="javascript:window.location.reload();">
+						<i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<h3 class="page-title">
+	<small>{fc_lang('运用自定义字段功能会大大增强内容管理功能')}</small>
+</h3>
+
+<style>
+.iii td {
+	text-decoration:line-through
+}
+</style>
+<form action="" method="post" name="myform" id="myform">
+	<input name="action" id="action" type="hidden" value="order" />
+	<div class="portlet mylistbody">
+		<div class="portlet-body">
+			<div class="table-scrollable">
+
+				<table class="mytable table table-striped table-bordered table-hover table-checkable dataTable">
+
+		<thead>
+		<tr>
+			<th width="20"></th>
+			<th width="55">{fc_lang('排序')}</th>
+			<th>Id</th>
+			<th>{fc_lang('别名')}</th>
+			<th>{fc_lang('名称')}</th>
+			<th>{fc_lang('类别')}</th>
+			<th style="text-align: center">{fc_lang('系统字段')}</th>
+            <th style="text-align: center">{fc_lang('主表')}</th>
+            <th style="text-align: center">{fc_lang('XSS过滤')}</th>
+			<th style="text-align: center">{fc_lang('前端')}</th>
+			<th style="text-align: center">{fc_lang('可用')}</th>
+			<th class="dr_option">{fc_lang('操作')}</th>
+		</tr>
+		</thead>
+		<tbody>
+		{loop $list $t}
+		<tr style="color:{$group[$t.fieldname]};" {if $t.fieldtype!='Group' && $t.fieldtype!='Merge' && $group[$t.fieldname]} class="iii"{/if}>
+			<td><input name="ids[]" type="checkbox" class="dr_select toggle md-check" value="{$t.id}" /></td>
+			<td><input class="input-text displayorder" type="text" name="data[{$t.id}][displayorder]" value="{$t.displayorder}" /></td>
+            <td {if $t.fieldtype=='Group' || $t.fieldtype=='Merge'} style="font-weight:bold"{/if}>{$t.id}</td>
+            <td {if $t.fieldtype=='Group' || $t.fieldtype=='Merge'} style="font-weight:bold"{/if}>{$t.name}</td>
+			<td {if $t.fieldtype=='Group' || $t.fieldtype=='Merge'} style="font-weight:bold"{/if}>{$t.fieldname}</td>
+			<td {if $t.fieldtype=='Group' || $t.fieldtype=='Merge'} style="font-weight:bold"{/if}>{$t.fieldtype}</td>
+            <td style="text-align: center;font-size: 15px;">{if $t.issystem}<i class="icon-ok-sign"></i>{else}<i class="icon-remove-sign"></i>{/if}</td>
+            <td style="text-align: center;font-size: 15px;">{if $t.ismain}<i class="icon-ok-sign"></i>{else}<i class="icon-remove-sign"></i>{/if}</td>
+            <td style="text-align: center"><a href="{dr_url('field/option', array('rname' => $rname, 'rid' => $rid, 'op' => 'xss', 'id' => $t.id))}"><img src="{THEME_PATH}admin/images/{if $t['setting']['validate']['xss']}0{else}1{/if}.gif"></a></td>
+            <td style="text-align: center"><a href="{dr_url('field/option', array('rname' => $rname, 'rid' => $rid, 'op' => 'member', 'id' => $t.id))}"><img src="{THEME_PATH}admin/images/{$t.ismember}.gif"></a></td>
+			<td style="text-align: center"><a href="javascript:;" onClick="return dr_dialog_set('{php echo $t.disabled ? fc_lang('<font color=blue><b>你确定要启用它？启用后将正常使用</b></font>') : fc_lang('<font color=red><b>你确定要禁用它？禁用后将无法使用</b></font>');}','{dr_url('field/option', array('rname' => $rname, 'rid' => $rid, 'op' => 'disabled', 'id' => $t.id))}');"><img src="{THEME_PATH}admin/images/{php echo $t.disabled ? 0 : 1}.gif"></a></td>
+            <td class="dr_option">
+			<a class="aedit" href="{dr_url('field/edit', array('rname' => $rname, 'rid' => $rid, 'id' => $t.id))}"> <i class="fa fa-edit"></i> {fc_lang('修改')}</a>
+            {if $t.issystem}
+				<a class="adel" href="javascript:;" onClick="return dr_dialog_del('{fc_lang('这是系统字段，删除可能会影响后台的显示，您确定要这样操作吗？')}','{dr_url('field/del', array('rname' => $rname,'rid' => $rid, 'id' => $t.id))}');"> <i class="fa fa-trash"></i> {fc_lang('删除')}</a>
+            {else}
+            	<a class="adel" href="javascript:;" onClick="return dr_dialog_del('{fc_lang('您确定要这样操作吗？')}','{dr_url('field/del', array('rname' => $rname,'rid' => $rid, 'id' => $t.id))}');"> <i class="fa fa-trash"></i> {fc_lang('删除')}</a>
+            {/if}
+			</td>
+		</tr>
+		{/loop}
+		<tr class="mtable_bottom">
+			<th width="20" ><input name="dr_select" class="toggle md-check" id="dr_select" type="checkbox" onClick="dr_selected()" /></th>
+			<td colspan="11" align="left">
+            <label><button type="button" class="btn red btn-sm" name="button" onClick="$('#action').val('del');return dr_confirm_set_all('{fc_lang('删除字段后无法恢复（系统字段请勿随意删除），您确定要这样操作吗？')}')"> <i class="fa fa-trash"></i> {fc_lang('删除')} </button></label>
+			<label><button type="button" class="btn green btn-sm" name="button" onclick="$('#action').val('order');return dr_confirm_set_all('{fc_lang('您确定要这样操作吗？')}')"> <i class="fa fa-edit"></i> {fc_lang('排序')}  </button></label>
+			<label>{fc_lang('排序按从小到大排列，最大支持99')}</label>
+            {if count($group)>0}<label>{fc_lang('同一种随机颜色的字段表示在同一个分组')}</label>{/if}
+			</td>
+		</tr>
+		</tbody>
+		</table>
+		</div>
+	</div>
+</div>
+</form>
+{template nfooter.html}

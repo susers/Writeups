@@ -1,0 +1,200 @@
+{template "header.html"}
+<link href="{HOME_THEME_PATH}css/home.css" rel="stylesheet" />
+<script src="{HOME_THEME_PATH}js/home.js"></script>
+<!-- 主体 -->
+<div class="blog-body">
+
+	<!-- 这个一般才是真正的主体内容 -->
+	<div class="blog-container">
+
+		<div class="blog-main">
+			<!-- 网站公告提示 -->
+			<div class="home-tips shadow">
+				<i style="float:left;line-height:17px;" class="fa fa-volume-up"></i>
+				<div class="home-tips-container">
+					{php $gg = @explode(PHP_EOL, dr_block(1));}
+					{loop $gg $t}
+					{php list($value, $color)=explode('|', $t);}
+					<span style="color: {$color}">{$value}</span>
+					{/loop}
+				</div>
+			</div>
+			<!--左边-->
+			<div class="blog-main-left">
+
+				<div id="carousel-example-generic" style="margin-bottom: 10px" class="carousel slide" data-ride="carousel">
+					<!-- Indicators -->
+
+					<ol class="carousel-indicators">
+						<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+						<li data-target="#carousel-example-generic" data-slide-to="1" class=""></li>
+						<li data-target="#carousel-example-generic" data-slide-to="2" class=""></li>
+					</ol>
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                            <img src="statics/assets/banner/finecms-1.jpg" />
+                        </div>
+                        <div class="item ">
+                            <img src="statics/assets/banner/finecms-2.jpg" />
+                        </div>
+                        <div class="item ">
+                            <img src="statics/assets/banner/finecms-3.jpg" />
+                        </div>
+					</div>
+
+				</div>
+
+
+
+				{list action=category pid=0 tid=1 num=4 return=c}
+				<div class="blog-module shadow">
+					<div class="blog-module-title"><a href="{$c.url}">{$c.name}</a></div>
+					<div class="index-div-ul">
+						<ul class="fa-ul blog-module-ul index-ul">
+							{list action=module catid=$c.id order=displayorder,updatetime num=16}
+							<li><a href="{$t.url}">{dr_strcut($t.title, 40)}</a></li>
+							{/list}
+						</ul>
+
+					</div>
+				</div>
+				{/list}
+
+
+			</div>
+			<!--右边小栏目-->
+			<div class="blog-main-right">
+				<div class="blogerinfo shadow">
+					{if $member}
+
+					<div class="blogerinfo-figure">
+						<a href="{MEMBER_URL}">
+							<img src="{$member.avatar_url}" />
+						</a>
+					</div>
+					<p class="blogerinfo-nickname">{$member.username}</p>
+					<p class="blogerinfo-location">{$member.groupname}</p>
+					<hr />
+					<div class="blogerinfo-contact">
+						<a   href="{MEMBER_URL}">会员中心</a>
+						<a  href="{dr_member_url('login/out')}">退出登录</a>
+					</div>
+					{else}
+					<div class="blogerinfo-figure">
+						<form class="form-horizontal" id="myform" role="form" style="margin-top: 10px">
+							<div class="form-body">
+								<div class="form-group">
+									<div class="col-md-12">
+										<input type="text" name="data[username]" placeholder="账号" class="form-control">
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<input type="password" name="data[password]" placeholder="密码" class="form-control">
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<button onclick="dr_submit()" type="button" class="btn green">登录账号</button>
+										<a href="{dr_member_url('register/index')}" class="btn red">注册账号</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<script type="text/javascript">
+                        function dr_submit() {
+                            var post = $("#myform").serialize();
+                            $.ajax({type: "POST",dataType:"json", url: "{dr_member_url('login/index')}", data: post,
+                                success: function(data) {
+                                    if (data.status) {
+                                        dr_tips('登录成功，即将为您跳转....', 3, 1);
+                                        setTimeout('window.location.href="'+data.backurl+'"', 2000);
+                                        var sync_url = data.syncurl;
+                                        // 发送同步登录信息
+                                        for(var i in sync_url){
+                                            $.ajax({
+                                                type: "GET",
+                                                async: false,
+                                                url:sync_url[i],
+                                                dataType: "jsonp",
+                                                success: function(json){ },
+                                                error: function(){ }
+                                            });
+                                        }
+                                    } else {
+                                        dr_tips(data.code);
+                                    }
+                                },
+                                error: function(HttpRequest, ajaxOptions, thrownError) {
+                                    alert(HttpRequest.responseText);
+                                }
+                            });
+                        }
+					</script>
+					{/if}
+
+				</div>
+				<div></div><!--占位-->
+
+
+
+				<div class="blog-module shadow">
+					<div class="blog-module-title">站内搜索</div>
+					<div class="blogroll" style="padding: 10px 0">
+						<form method="get" action="/index.php" class="form-horizontal" role="form" >
+							<input type="hidden" name="c" value="search">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<select name="mid" class="form-control input-xsmall" style="margin-right: 10px">
+										{list action=cache name=module}
+										<option value="{$t.dirname}">{$t.name}</option>
+										{/list}
+									</select>
+								</span>
+								<input name="keyword" type="text" class="form-control">
+								<span class="input-group-btn">
+									<button class="btn blue" type="submit">搜索</button>
+								</span>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="blog-module shadow">
+					<div class="blog-module-title">热文排行</div>
+					<ul class="fa-ul blog-module-ul">
+						{list action=module module=news order=hits num=16}
+						<li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+						{/list}
+					</ul>
+				</div>
+
+				<div class="blog-module shadow">
+					<div class="blog-module-title">tag标签</div>
+					<ul class="blogroll">
+						{list action=tags order=rand num=30}
+						<li><a href="{$t.url}">{$t.name}</a></li>
+						{/list}
+					</ul>
+				</div>
+
+				<div class="blog-module shadow">
+					<div class="blog-module-title">友情链接</div>
+					<ul class="blogroll">
+						{php $link = @explode(PHP_EOL, dr_block(3));}
+						{loop $link $t}
+						{php list($url, $name)=explode('|', $t);}
+						<li><a target="_blank" href="{$url}">{$name}</a></li>
+						{/loop}
+					</ul>
+				</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+</div>
+{template "footer.html"}

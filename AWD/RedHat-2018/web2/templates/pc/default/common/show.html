@@ -1,0 +1,87 @@
+{template "header.html"}
+<link href="{HOME_THEME_PATH}css/detail.css" rel="stylesheet" />
+<div class="blog-body">
+    <div class="blog-container">
+        <blockquote class="layui-elem-quote sitemap layui-breadcrumb shadow">
+            <a href="/" title="网站首页">网站首页</a>
+            {dr_catpos($catid, '', true, '<a href="[url]">[name]</a>')}
+            <a><cite>列表</cite></a>
+        </blockquote>
+
+
+        <div class="blog-main">
+            <div class="blog-main-left">
+
+                <div class="article-detail shadow">
+                    <div class="article-detail-title">
+                        {$title}
+                    </div>
+                    <div class="article-detail-info">
+                        <span>编辑时间：{$updatetime}</span>
+                        <span>作者：{$author}</span>
+                        <span>浏览量：{dr_show_hits($id)}次</span>
+                    </div>
+                    <div class="article-detail-content">
+                       {$content}
+                    </div>
+                    <div class="blog-single-foot">
+                        <div class="blog-post-tags">
+                            {loop $keyword_list $name $url}
+                                <a href="{$url}" target="_blank">{$name}</a>
+                            {/loop}
+                        </div>
+                        <p class="f14" style="margin-top: 10px">
+                            <strong>上一篇：</strong>{if $prev_page}<a href="{$prev_page.url}">{$prev_page.title}</a>{else}没有了{/if}<br>
+                            <strong>下一篇：</strong>{if $next_page}<a href="{$next_page.url}">{$next_page.title}</a>{else}没有了{/if}
+                        </p>
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="blog-main-right">
+                <div class="article-category shadow">
+                    <div class="article-category-title">分类导航</div>
+
+                    <!--循环同级栏目或者子栏目-->
+                    {loop $related $c}
+                    <a href="{$c.url}">{$c.name}</a>
+                    {/loop}
+                    <div class="clear"></div>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">相关文章</div>
+                    <ul class="fa-ul blog-module-ul">
+                        <!--此标签用于调用相关文章，tag=关键词1,关键词2，多个关键词,分隔，num=显示条数，field=显示字段-->
+                        {list action=related id=$id catid=$catid field=title,url,updatetime tag=$tag num=10}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">本类热门</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=hits num=10}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+
+                        {/list}
+                    </ul>
+                </div>
+                <div class="blog-module shadow">
+                    <div class="blog-module-title">随便看看</div>
+                    <ul class="fa-ul blog-module-ul">
+                        {list action=module catid=$catid order=rand num=10}
+                        <li><i class="fa-li fa fa-hand-o-right"></i><a href="{$t.url}">{dr_strcut($t.title, 35)}</a></li>
+                        {/list}
+                    </ul>
+                </div>
+
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+{template "footer.html"}

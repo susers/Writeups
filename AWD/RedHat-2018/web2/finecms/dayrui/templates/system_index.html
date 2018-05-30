@@ -1,0 +1,160 @@
+{template nheader.html}
+<script type="text/javascript">
+function dr_to_key() {
+	$.post("{dr_url('system/syskey')}", function(data){
+        $("#sys_key").val(data);
+    });
+    $.post("{dr_url('system/referer')}", function(data){
+        $("#sys_referer").val(data);
+    });
+}
+</script>
+<div class="page-bar">
+    <ul class="page-breadcrumb mylink">
+        {$menu.link}
+    </ul>
+    <ul class="page-breadcrumb myname">
+        {$menu.name}
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn green btn-sm btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-hover="dropdown"> {fc_lang('操作菜单')}
+                <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                {loop $menu.quick $t}
+                <li>
+                    <a href="{$t.url}">{$t.icon} {$t.name}</a>
+                </li>
+                {/loop}
+                <li class="divider"> </li>
+                <li>
+                    <a href="javascript:window.location.reload();">
+                        <i class="icon-refresh"></i> {fc_lang('刷新页面')}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<h3 class="page-title">
+    <small></small>
+</h3>
+
+<form class="form-horizontal" action="" method="post" id="myform" name="myform">
+<input name="page" id="mypage" type="hidden" value="{$page}" />
+    <div class="portlet light bordered myfbody">
+        <div class="portlet-body">
+            <div class="tab-content">
+
+                <div class="tab-pane {if $page==0}active{/if}" id="tab_0">
+                    <div class="form-body">
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('调试器')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SYS_DEBUG]" value="TRUE" {if $data['SYS_DEBUG']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+                                <span class="help-block">{fc_lang('用于后台查看程序和SQL执行详情')}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('HTTPS模式')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SYS_HTTPS]" value="TRUE" {if $data['SYS_HTTPS']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+                                <span class="help-block">{fc_lang('开启前需要保证服务器已经支持https协议，并且能够正常访问本网站')}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('系统缓存')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SYS_AUTO_CACHE]" value="TRUE" {if $data['SYS_AUTO_CACHE']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+                                <span class="help-block">{fc_lang('关闭缓存将会大大降低系统运行效率')}</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('栏目模型唯一')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SYS_CAT_MODULE]" value="TRUE" {if $data['SYS_CAT_MODULE']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+                                <span class="help-block">{fc_lang('开启之后，创建栏目选择的模型必须和上下级栏目保持一致')}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('后台操作日志')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SYS_LOG]" value="TRUE" {if $data['SYS_LOG']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+                                <span class="help-block">{fc_lang('多用户操作后台建议打开日志功能')}</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('后台登录验证码')}：</label>
+                            <div class="col-md-9">
+                                <input type="checkbox" name="data[SITE_ADMIN_CODE]" value="TRUE" {if $data['SITE_ADMIN_CODE']}checked{/if} data-on-text="{fc_lang('开启')}" data-off-text="{fc_lang('关闭')}" data-on-color="success" data-off-color="danger" class="make-switch" data-size="small">
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('后台数据分页条数')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" type="text" name="data[SITE_ADMIN_PAGESIZE]" value="{$data['SITE_ADMIN_PAGESIZE']}" ></label>
+                                <span class="help-block">{fc_lang('例如文章每页显示的数量控制')}</span>
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">{fc_lang('系统邮箱')}：</label>
+                                <div class="col-md-9">
+                                    <label><input class="form-control" type="text" name="data[SYS_EMAIL]" value="{$data['SYS_EMAIL']}" ></label>
+                                    <span class="help-block">{fc_lang('用于接收系统发送的通知信息的可用邮箱')}</span>
+                                </div>
+                            </div>
+
+
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">{fc_lang('安全密钥')}：</label>
+                            <div class="col-md-9">
+                                <label><input class="form-control" type="text" name="data[SYS_KEY]" id="sys_key" value="{if $data['SYS_KEY']}***{/if}"  ></label>
+                                <label><button class="btn btn-sm blue" type="button" name="button" onclick="dr_to_key()"> {fc_lang('重新生成')} </button></label>
+                                <span class="help-block">{fc_lang('密钥建议定期更换')}</span>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <div class="myfooter">
+            <div class="row">
+                <div class="portlet-body form">
+                    <div class="form-body">
+                        <div class="form-actions">
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn green"> <i class="fa fa-save"></i> {fc_lang('保存')}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+<!--
+function memcache_test() {
+	$("#memcache").val('Loading');
+	$.get("{dr_url('system/memcache')}&"+Math.random(),function(data){
+		alert(data);
+		$("#memcache").val('{fc_lang('测试')}');
+	})
+}
+//-->
+</script>
+{template nfooter.html}

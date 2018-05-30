@@ -1,0 +1,59 @@
+<script type="text/javascript">
+$(function() {
+	document.onkeydown = function(e){  //防止回车提交表单
+		var ev = document.all ? window.event : e;
+		if (ev.keyCode==13) {
+			$("#mark").val("1"); // 标识不能提交表单
+		}
+	}
+});
+function dr_form_check() {
+	if ($("#mark").val() == 0) { 
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<form action="" method="post" id="myform" name="myform" onsubmit="return dr_form_check()">
+<input name="mark" id="mark" type="hidden" value="0">
+<table width="530" border="0" cellspacing="0" cellpadding="0" class="table-list">
+  <tr>
+    <td colspan="2"><b>{SITE_EXPERIENCE}</b></td>
+    <td colspan="2"><b>{SITE_SCORE}</b></td>
+  </tr>
+  <tr>
+    <td width="140" align="right">{fc_lang('发布增减%s', SITE_EXPERIENCE)}：</td>
+    <td width=""><input type="text" name="data[experience]" value="{intval($data['experience'])}" size="5" class="input-text" /></td>
+    <td width="140" align="right">{fc_lang('发布增减%s', SITE_SCORE)}：</td>
+    <td width=""><input type="text" name="data[score]" value="{intval($data['score'])}" size="5" class="input-text" /></td>
+  </tr>
+  {if $extend}
+  <tr>
+    <td align="right">{fc_lang('子内容增减%s', SITE_EXPERIENCE)}：</td>
+    <td width=""><input type="text" name="data[extend_experience]" value="{intval($data['extend_experience'])}" size="5" class="input-text" /></td>
+    <td align="right">{fc_lang('子内容增减%s', SITE_SCORE)}：</td>
+    <td width=""><input type="text" name="data[extend_score]" value="{intval($data['extend_score'])}" size="5" class="input-text" /></td>
+  </tr>
+  {/if}
+
+  <tr>
+    <td colspan="2"><b>{fc_lang('其他规则')}</b></td>
+    <td colspan="2"><b>{fc_lang('审核流程')}</b></td>
+  </tr>
+  <tr>
+    <td align="right">{fc_lang('每日投稿上限')}：</td>
+    <td><input type="text" name="data[postnum]" value="{intval($data['postnum'])}" size="5" class="input-text" /></td>
+    <td colspan="2">{$verify}</td>
+  </tr>
+  <tr>
+    <td align="right">{fc_lang('投稿总量上限')}：</td>
+    <td ><input type="text" name="data[postcount]" value="{intval($data['postcount'])}" size="5" class="input-text" /></td>
+    <td colspan="2"><input type="checkbox" {if $data.edit_verify}checked=""{/if} value="1" name="data[edit_verify]">&nbsp;{fc_lang('发布审核通过后，修改时不再审核')}</td>
+  </tr>
+  <tr>
+    <td style="border:none; text-align:center; color:#F00" colspan="4"><b>{fc_lang(''.SITE_EXPERIENCE.'不要设置为负数，'.SITE_EXPERIENCE.'只能无限增加')}</b></td>
+  </tr>
+</table>
+
+</form>

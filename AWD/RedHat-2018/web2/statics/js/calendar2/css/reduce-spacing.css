@@ -1,0 +1,31 @@
+.DynarchCalendar, .DynarchCalendar table {
+  font-size: 10px;
+}
+.DynarchCalendar-dayNames { padding: 0; }
+.DynarchCalendar-body { padding: 0; }
+.DynarchCalendar-animBody-back { top: 0; }
+.DynarchCalendar-animBody-fwd { top: 0; }
+.DynarchCalendar-animBody-now { top: 0; }
+.DynarchCalendar-first-col { padding-left: 0; }
+.DynarchCalendar-last-col { padding-right: 0; }
+.DynarchCalendar-weekNumber {
+  margin-right: 0;
+  padding-right: 4px !important;
+}
+.DynarchCalendar-dayNames div, .DynarchCalendar-day, .DynarchCalendar-weekNumber {
+  padding: 1px 2px;
+}
+.DynarchCalendar-menu-year { font-size: 12px; }
+
+.DynarchCalendar-hover-date {
+  padding: 0px 1px;
+}
+.DynarchCalendar-day-selected {
+  padding: 0px 1px;
+}
+.DynarchCalendar-menu table td div {
+  padding: 2px 4px;
+}
+.DynarchCalendar-menu table td div.DynarchCalendar-hover-navBtn {
+  padding: 1px 3px;
+}
