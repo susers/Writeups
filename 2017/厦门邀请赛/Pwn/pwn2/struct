@@ -1,0 +1,8 @@
+struct HEAP
+{
+	int inuse;
+	int size;
+	char *cont;
+}
+
+struct HEAP blocks[64];
