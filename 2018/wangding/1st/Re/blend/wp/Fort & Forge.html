@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)https://fortenf.org/e/ctfs/re/2017/09/18/csaw17-realism.html -->
+<html lang="en-us"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="https://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    Fort &amp; Forge
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./Fort &amp; Forge_files/poole.css">
+  <link rel="stylesheet" href="./Fort &amp; Forge_files/syntax.css">
+  <link rel="stylesheet" href="./Fort &amp; Forge_files/hyde.css">
+  <link rel="stylesheet" href="./Fort &amp; Forge_files/css">
+  <link rel="stylesheet" href="./Fort &amp; Forge_files/font-awesome.min.css">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="https://fortenf.org/atom.xml">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://fortenf.org/e/assets/fnf/1.png">
+  <script async="" src="./Fort &amp; Forge_files/analytics.js.下载"></script><script>
+    if (Math.random() < 0.5) {
+      document.querySelector("link[href='/e/assets/fnf/1.png']").href = "/e/assets/fnf/2.png";
+    }
+  </script>
+
+  
+  <!-- Google Analytics -->
+  <script>
+if(!(window.doNotTrack === "1" || navigator.doNotTrack === "1" || navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1")) {
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-90723295-1', 'auto');
+  ga('send', 'pageview');
+}
+</script>
+  
+
+  
+
+  
+  <!-- MathJax -->
+  <script type="text/javascript" async="" src="./Fort &amp; Forge_files/MathJax.js.下载">
+</script>
+
+  
+<script src="./Fort &amp; Forge_files/embed.js.下载" data-timestamp="1535111959413"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style><style type="text/css">.mjx-chtml {display: inline-block; line-height: 0; text-indent: 0; text-align: left; text-transform: none; font-style: normal; font-weight: normal; font-size: 100%; font-size-adjust: none; letter-spacing: normal; word-wrap: normal; word-spacing: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; margin: 0; padding: 1px 0}
+.MJXc-display {display: block; text-align: center; margin: 1em 0; padding: 0}
+.mjx-chtml[tabindex]:focus, body :focus .mjx-chtml[tabindex] {display: inline-table}
+.mjx-full-width {text-align: center; display: table-cell!important; width: 10000em}
+.mjx-math {display: inline-block; border-collapse: separate; border-spacing: 0}
+.mjx-math * {display: inline-block; -webkit-box-sizing: content-box!important; -moz-box-sizing: content-box!important; box-sizing: content-box!important; text-align: left}
+.mjx-numerator {display: block; text-align: center}
+.mjx-denominator {display: block; text-align: center}
+.MJXc-stacked {height: 0; position: relative}
+.MJXc-stacked > * {position: absolute}
+.MJXc-bevelled > * {display: inline-block}
+.mjx-stack {display: inline-block}
+.mjx-op {display: block}
+.mjx-under {display: table-cell}
+.mjx-over {display: block}
+.mjx-over > * {padding-left: 0px!important; padding-right: 0px!important}
+.mjx-under > * {padding-left: 0px!important; padding-right: 0px!important}
+.mjx-stack > .mjx-sup {display: block}
+.mjx-stack > .mjx-sub {display: block}
+.mjx-prestack > .mjx-presup {display: block}
+.mjx-prestack > .mjx-presub {display: block}
+.mjx-delim-h > .mjx-char {display: inline-block}
+.mjx-surd {vertical-align: top}
+.mjx-mphantom * {visibility: hidden}
+.mjx-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 2px 3px; font-style: normal; font-size: 90%}
+.mjx-annotation-xml {line-height: normal}
+.mjx-menclose > svg {fill: none; stroke: currentColor}
+.mjx-mtr {display: table-row}
+.mjx-mlabeledtr {display: table-row}
+.mjx-mtd {display: table-cell; text-align: center}
+.mjx-label {display: table-row}
+.mjx-box {display: inline-block}
+.mjx-block {display: block}
+.mjx-span {display: inline}
+.mjx-char {display: block; white-space: pre}
+.mjx-itable {display: inline-table; width: auto}
+.mjx-row {display: table-row}
+.mjx-cell {display: table-cell}
+.mjx-table {display: table; width: 100%}
+.mjx-line {display: block; height: 0}
+.mjx-strut {width: 0; padding-top: 1em}
+.mjx-vsize {width: 0}
+.MJXc-space1 {margin-left: .167em}
+.MJXc-space2 {margin-left: .222em}
+.MJXc-space3 {margin-left: .278em}
+.mjx-chartest {display: block; visibility: hidden; position: absolute; top: 0; line-height: normal; font-size: 500%}
+.mjx-chartest .mjx-char {display: inline}
+.mjx-chartest .mjx-box {padding-top: 1000px}
+.MJXc-processing {visibility: hidden; position: fixed; width: 0; height: 0; overflow: hidden}
+.MJXc-processed {display: none}
+.mjx-test {display: block; font-style: normal; font-weight: normal; font-size: 100%; font-size-adjust: none; text-indent: 0; text-transform: none; letter-spacing: normal; word-spacing: normal; overflow: hidden; height: 1px}
+.mjx-ex-box-test {position: absolute; width: 1px; height: 60ex}
+.mjx-line-box-test {display: table!important}
+.mjx-line-box-test span {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+#MathJax_CHTML_Tooltip {background-color: InfoBackground; color: InfoText; border: 1px solid black; box-shadow: 2px 2px 5px #AAAAAA; -webkit-box-shadow: 2px 2px 5px #AAAAAA; -moz-box-shadow: 2px 2px 5px #AAAAAA; -khtml-box-shadow: 2px 2px 5px #AAAAAA; padding: 3px 4px; z-index: 401; position: absolute; left: 0; top: 0; width: auto; height: auto; display: none}
+.mjx-chtml .mjx-noError {line-height: 1.2; vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+.MJXc-TeX-unknown-R {font-family: STIXGeneral,'Cambria Math','Arial Unicode MS',serif; font-style: normal; font-weight: normal}
+.MJXc-TeX-unknown-I {font-family: STIXGeneral,'Cambria Math','Arial Unicode MS',serif; font-style: italic; font-weight: normal}
+.MJXc-TeX-unknown-B {font-family: STIXGeneral,'Cambria Math','Arial Unicode MS',serif; font-style: normal; font-weight: bold}
+.MJXc-TeX-unknown-BI {font-family: STIXGeneral,'Cambria Math','Arial Unicode MS',serif; font-style: italic; font-weight: bold}
+.MJXc-TeX-ams-R {font-family: MJXc-TeX-ams-R,MJXc-TeX-ams-Rw}
+.MJXc-TeX-cal-B {font-family: MJXc-TeX-cal-B,MJXc-TeX-cal-Bx,MJXc-TeX-cal-Bw}
+.MJXc-TeX-frak-R {font-family: MJXc-TeX-frak-R,MJXc-TeX-frak-Rw}
+.MJXc-TeX-frak-B {font-family: MJXc-TeX-frak-B,MJXc-TeX-frak-Bx,MJXc-TeX-frak-Bw}
+.MJXc-TeX-math-BI {font-family: MJXc-TeX-math-BI,MJXc-TeX-math-BIx,MJXc-TeX-math-BIw}
+.MJXc-TeX-sans-R {font-family: MJXc-TeX-sans-R,MJXc-TeX-sans-Rw}
+.MJXc-TeX-sans-B {font-family: MJXc-TeX-sans-B,MJXc-TeX-sans-Bx,MJXc-TeX-sans-Bw}
+.MJXc-TeX-sans-I {font-family: MJXc-TeX-sans-I,MJXc-TeX-sans-Ix,MJXc-TeX-sans-Iw}
+.MJXc-TeX-script-R {font-family: MJXc-TeX-script-R,MJXc-TeX-script-Rw}
+.MJXc-TeX-type-R {font-family: MJXc-TeX-type-R,MJXc-TeX-type-Rw}
+.MJXc-TeX-cal-R {font-family: MJXc-TeX-cal-R,MJXc-TeX-cal-Rw}
+.MJXc-TeX-main-B {font-family: MJXc-TeX-main-B,MJXc-TeX-main-Bx,MJXc-TeX-main-Bw}
+.MJXc-TeX-main-I {font-family: MJXc-TeX-main-I,MJXc-TeX-main-Ix,MJXc-TeX-main-Iw}
+.MJXc-TeX-main-R {font-family: MJXc-TeX-main-R,MJXc-TeX-main-Rw}
+.MJXc-TeX-math-I {font-family: MJXc-TeX-math-I,MJXc-TeX-math-Ix,MJXc-TeX-math-Iw}
+.MJXc-TeX-size1-R {font-family: MJXc-TeX-size1-R,MJXc-TeX-size1-Rw}
+.MJXc-TeX-size2-R {font-family: MJXc-TeX-size2-R,MJXc-TeX-size2-Rw}
+.MJXc-TeX-size3-R {font-family: MJXc-TeX-size3-R,MJXc-TeX-size3-Rw}
+.MJXc-TeX-size4-R {font-family: MJXc-TeX-size4-R,MJXc-TeX-size4-Rw}
+@font-face {font-family: MJXc-TeX-ams-R; src: local('MathJax_AMS'), local('MathJax_AMS-Regular')}
+@font-face {font-family: MJXc-TeX-ams-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_AMS-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_AMS-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-cal-B; src: local('MathJax_Caligraphic Bold'), local('MathJax_Caligraphic-Bold')}
+@font-face {font-family: MJXc-TeX-cal-Bx; src: local('MathJax_Caligraphic'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-cal-Bw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Bold.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-frak-R; src: local('MathJax_Fraktur'), local('MathJax_Fraktur-Regular')}
+@font-face {font-family: MJXc-TeX-frak-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-frak-B; src: local('MathJax_Fraktur Bold'), local('MathJax_Fraktur-Bold')}
+@font-face {font-family: MJXc-TeX-frak-Bx; src: local('MathJax_Fraktur'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-frak-Bw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Bold.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-math-BI; src: local('MathJax_Math BoldItalic'), local('MathJax_Math-BoldItalic')}
+@font-face {font-family: MJXc-TeX-math-BIx; src: local('MathJax_Math'); font-weight: bold; font-style: italic}
+@font-face {font-family: MJXc-TeX-math-BIw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Math-BoldItalic.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Math-BoldItalic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-R; src: local('MathJax_SansSerif'), local('MathJax_SansSerif-Regular')}
+@font-face {font-family: MJXc-TeX-sans-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-B; src: local('MathJax_SansSerif Bold'), local('MathJax_SansSerif-Bold')}
+@font-face {font-family: MJXc-TeX-sans-Bx; src: local('MathJax_SansSerif'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-sans-Bw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Bold.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-I; src: local('MathJax_SansSerif Italic'), local('MathJax_SansSerif-Italic')}
+@font-face {font-family: MJXc-TeX-sans-Ix; src: local('MathJax_SansSerif'); font-style: italic}
+@font-face {font-family: MJXc-TeX-sans-Iw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Italic.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-script-R; src: local('MathJax_Script'), local('MathJax_Script-Regular')}
+@font-face {font-family: MJXc-TeX-script-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Script-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Script-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-type-R; src: local('MathJax_Typewriter'), local('MathJax_Typewriter-Regular')}
+@font-face {font-family: MJXc-TeX-type-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Typewriter-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Typewriter-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-cal-R; src: local('MathJax_Caligraphic'), local('MathJax_Caligraphic-Regular')}
+@font-face {font-family: MJXc-TeX-cal-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-B; src: local('MathJax_Main Bold'), local('MathJax_Main-Bold')}
+@font-face {font-family: MJXc-TeX-main-Bx; src: local('MathJax_Main'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-main-Bw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Main-Bold.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-I; src: local('MathJax_Main Italic'), local('MathJax_Main-Italic')}
+@font-face {font-family: MJXc-TeX-main-Ix; src: local('MathJax_Main'); font-style: italic}
+@font-face {font-family: MJXc-TeX-main-Iw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Main-Italic.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-R; src: local('MathJax_Main'), local('MathJax_Main-Regular')}
+@font-face {font-family: MJXc-TeX-main-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-math-I; src: local('MathJax_Math Italic'), local('MathJax_Math-Italic')}
+@font-face {font-family: MJXc-TeX-math-Ix; src: local('MathJax_Math'); font-style: italic}
+@font-face {font-family: MJXc-TeX-math-Iw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Math-Italic.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size1-R; src: local('MathJax_Size1'), local('MathJax_Size1-Regular')}
+@font-face {font-family: MJXc-TeX-size1-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Size1-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size2-R; src: local('MathJax_Size2'), local('MathJax_Size2-Regular')}
+@font-face {font-family: MJXc-TeX-size2-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Size2-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size3-R; src: local('MathJax_Size3'), local('MathJax_Size3-Regular')}
+@font-face {font-family: MJXc-TeX-size3-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Size3-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size4-R; src: local('MathJax_Size4'), local('MathJax_Size4-Regular')}
+@font-face {font-family: MJXc-TeX-size4-Rw; src /*1*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/eot/MathJax_Size4-Regular.eot'); src /*2*/: url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff') format('woff'), url('https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf') format('opentype')}
+</style><link rel="preload" as="style" href="https://c.disquscdn.com/next/embed/styles/lounge.fda8427fde61b6f55d19bcd47d8c54b0.css"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/common.bundle.e9b4803ecd9f11a1b0b249822211345c.js"><link rel="preload" as="script" href="https://c.disquscdn.com/next/embed/lounge.bundle.ae82df16a227721dc29f0f77a26b6960.js"><link rel="preload" as="script" href="https://disqus.com/next/config.js"><script src="./Fort &amp; Forge_files/alfalfa.4a5fcca1fe50a757044dfd331b660625.js.下载" async="" charset="UTF-8"></script></head>
+
+  <body><div id="MathJax_Message" style="display: none;"></div>
+      <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>
+        <a href="https://fortenf.org/e/">
+          Fort &amp; Forge
+        </a>
+      </h1>
+      <p class="lead"></p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a class="sidebar-nav-item" href="https://fortenf.org/e/">Home</a>
+
+      <a class="sidebar-nav-item" href="https://fortenf.org/e/archive">Archive</a>
+      <ul>
+        <li><a class="sidebar-nav-item" href="https://fortenf.org/e/puzzlehunts">Puzzlehunts</a></li>
+        <li><a class="sidebar-nav-item" href="https://fortenf.org/e/ctf_writeups">CTFs</a></li>
+      </ul>
+
+      
+
+      
+      
+        
+          
+            <a class="sidebar-nav-item" href="https://fortenf.org/e/about">About</a>
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+
+      <div>
+        <a href="https://twitter.com/fortenforge" class="fa fa-lg fa-twitter ico" target="_blank"></a>&nbsp;
+        <a href="https://github.com/fortenforge" class="fa fa-lg fa-github ico" target="_blank"></a>&nbsp;
+        <a href="https://www.linkedin.com/in/fortenforge" class="fa fa-lg fa-linkedin-square ico" target="_blank"></a>
+      </div>
+
+    </nav>
+
+  </div>
+</div>
+
+      <div class="content container">
+        <div class="post">
+  <h1 class="post-title">CSAW CTF 2017: Realism (400 pts)</h1>
+  <span class="post-date">Sep 18, 2017</span>
+  <p>This problem was much like any other CTF reversing challenge, but instead of a Linux or Windows executable, the <a href="https://github.com/TechSecCTF/writeups/raw/master/CSAWQuals2017/realism/main.bin">binary</a> was a <a href="https://en.wikipedia.org/wiki/Master_boot_record">Master Boot Record</a> (MBR) that needed to be run under the <a href="https://www.qemu.org/">QEMU</a> full-system emulator.</p>
+
+<p>We’re given the command to boot the MBR, <code class="highlighter-rouge">qemu-system-i386 -drive format=raw,file=realism</code>, and we’re presented with this:</p>
+
+<p><img src="./Fort &amp; Forge_files/W9BxK6O.png" alt="hello">
+Simple, right? The entire MBR is only 512 bytes in size, so it’s not much to reverse.</p>
+
+<!--more-->
+
+<h1 id="static-analysis">Static Analysis</h1>
+<p>First, we load the MBR into <a href="https://www.hex-rays.com/products/ida/">IDA</a>, and after some tinkering, realize it gives a nice disassembly in 16-bit mode.</p>
+
+<p>From any OS class, we should know that the MBR is loaded at physical address <code class="highlighter-rouge">0x7c00</code>, but it’s not hard to tell from all the references to <code class="highlighter-rouge">loc_7C__</code>. We can re-load the binary in IDA at offset <code class="highlighter-rouge">0x7c00</code>, giving us nice, clickable references. Here’s the <a href="https://github.com/TechSecCTF/writeups/blob/master/CSAWQuals2017/realism/realism.ida">full disassembly</a>, with some strings commented.</p>
+
+<p>The important part of the MBR, the flag-checking bit, begins at <code class="highlighter-rouge">0x7C6F</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seg000:7C66                 cmp     ds:byte_7DC8, 13h
+seg000:7C6B                 jle     loc_7D0D
+seg000:7C6F                 cmp     dword ptr ds:1234h, 'galf'
+seg000:7C78                 jnz     loc_7D4D
+seg000:7C7C                 movaps  xmm0, xmmword ptr ds:1238h
+seg000:7C81                 movaps  xmm5, xmmword ptr ds:loc_7C00
+seg000:7C86                 pshufd  xmm0, xmm0, 1Eh
+seg000:7C8B                 mov     si, 8
+seg000:7C8E
+seg000:7C8E loc_7C8E:                               ; CODE XREF: seg000:7CC1j
+seg000:7C8E                 movaps  xmm2, xmm0
+seg000:7C91                 andps   xmm2, xmmword ptr [si+7D90h]
+seg000:7C96                 psadbw  xmm5, xmm2
+seg000:7C9A                 movaps  xmmword ptr ds:1268h, xmm5
+seg000:7C9F                 mov     di, ds:1268h
+seg000:7CA3                 shl     edi, 10h
+seg000:7CA7                 mov     di, ds:1270h
+seg000:7CAB                 mov     dx, si
+seg000:7CAD                 dec     dx
+seg000:7CAE                 add     dx, dx
+seg000:7CB0                 add     dx, dx
+seg000:7CB2                 cmp     edi, [edx+7DA8h]
+seg000:7CBA                 jnz     loc_7D4D
+seg000:7CBE                 dec     si
+seg000:7CBF                 test    si, si
+seg000:7CC1                 jnz     short loc_7C8E
+</code></pre></div></div>
+
+<p>First, it compares a DWORD at physical address <code class="highlighter-rouge">0x1234</code> (where the input is read into), with <code class="highlighter-rouge">"flag"</code>, and if they’re equal, carries out a series of floating-point operations on <a href="https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions">XMM registers</a>.</p>
+
+<p>Basically, the rest of this assembly snippet will loop through the input bytes, perform XMM operations on each one, and compare the result against a <a href="https://github.com/TechSecCTF/writeups/blob/70fedf363d08acc7c5b9bf3d3d5c1ef53dce0636/CSAWQuals2017/realism/realism.ida#L201">sequence of bytes</a> at
+the end of the boot record. The key to this problem is understanding the XMM operations.</p>
+
+<p>The XMM registers are 128-bits long and are normally used for fast floating point operations. In this challenge they’re being (ab)used for obfuscating the flag.</p>
+
+<h1 id="dynamic-analysis">Dynamic Analysis</h1>
+<p>You can attach a gdb instance to QEMU by adding a <code class="highlighter-rouge">-s</code> option, and then connecting with</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gdb -ex 'target remote localhost:1234' \
+    -ex 'set architecture i8086' \
+    -ex 'break *0x7c6f' \
+    -ex 'continue'
+</code></pre></div></div>
+
+<p>If we input a string that starts with <code class="highlighter-rouge">"flag"</code>, passing the first <code class="highlighter-rouge">cmp</code>, we can see the initial value in <code class="highlighter-rouge">xmm0</code> when it starts the checking loop at <code class="highlighter-rouge">loc_7c8e</code>.</p>
+
+<p>We can actually print these XMM registers in GDB.<code class="highlighter-rouge">xmm0</code> is initially the 16 bytes of our input that follow <code class="highlighter-rouge">flag</code> — we can test it with <code class="highlighter-rouge">abcdefghijklmnop</code>.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(gdb) p $xmm0
+$3 = {..., uint128 = 0x706f6e6d6c6b6a696867666564636261}
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">xmm5</code> is loaded with the bytes at the beginning of the MBR:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(gdb) p $xmm5
+$2 = {..., uint128 = 0x220f02c883fbe083c0200f10cd0013b8}
+</code></pre></div></div>
+
+<p>The<code class="highlighter-rouge">pshufd</code> <a href="http://x86.renejeschke.de/html/file_module_x86_id_254.html">instruction</a> shuffles our input in a manner determined by the argument <code class="highlighter-rouge">0x1E</code>, resulting in</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(gdb) p $xmm0
+$4 = {..., uint128 = 0x6463626168676665706f6e6d6c6b6a69}
+</code></pre></div></div>
+<p>Next, a loop that checks each byte of this shuffled input. Let’s break down what it does:</p>
+
+<ol>
+  <li>Applies a <a href="https://github.com/TechSecCTF/writeups/blob/70fedf363d08acc7c5b9bf3d3d5c1ef53dce0636/CSAWQuals2017/realism/realism.ida#L177">mask</a> to the input (<code class="highlighter-rouge">0x7c91</code>)</li>
+  <li>Computes a “<a href="http://www.felixcloutier.com/x86/PSADBW.html">sum of absolute differences”</a> between <code class="highlighter-rouge">xmm5</code> (initialized to some constant data) and <code class="highlighter-rouge">xmm2</code> (which stores our masked input), updating <code class="highlighter-rouge">xmm5</code>  (<code class="highlighter-rouge">0x7c96</code>)</li>
+  <li>Moves the upper and lower portions of the result into EDI (<code class="highlighter-rouge">0x7c9a-0x7ca7</code>)</li>
+  <li>Compares EDI with some value in the MBR (<code class="highlighter-rouge">0x7cb2</code>)</li>
+  <li>Decrements the counter and loops back if there are more bytes to check</li>
+</ol>
+
+<p>This loop runs for 8 iterations before exiting and displaying the “CORRECT” message. So, once we’ve fully reversed this snippet, the goal is to find the flag that passes these checks.</p>
+
+<h1 id="smt-solving">SMT Solving</h1>
+<p>Let’s treat each byte of the input we pass in as a separate variable, <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span id="MathJax-Element-1-Frame" class="mjx-chtml MathJax_CHTML" tabindex="0" style="font-size: 113%; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;/math&gt;" role="presentation"><span id="MJXc-Node-1" class="mjx-math" aria-hidden="true"><span id="MJXc-Node-2" class="mjx-mrow"><span id="MJXc-Node-3" class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.223em; padding-bottom: 0.268em;">a</span></span></span></span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi></math></span></span><script type="math/tex" id="MathJax-Element-1">a</script> through <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span id="MathJax-Element-2-Frame" class="mjx-chtml MathJax_CHTML" tabindex="0" style="font-size: 113%; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/math&gt;" role="presentation"><span id="MJXc-Node-4" class="mjx-math" aria-hidden="true"><span id="MJXc-Node-5" class="mjx-mrow"><span id="MJXc-Node-6" class="mjx-mi"><span class="mjx-char MJXc-TeX-math-I" style="padding-top: 0.223em; padding-bottom: 0.489em;">p</span></span></span></span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>p</mi></math></span></span><script type="math/tex" id="MathJax-Element-2">p</script>. Because of the nature of the <code class="highlighter-rouge">psadbw</code> instruction from step 2, each iteration of the loop gives us two equations involving our variables. This results in <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span id="MathJax-Element-3-Frame" class="mjx-chtml MathJax_CHTML" tabindex="0" style="font-size: 113%; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mn&gt;8&lt;/mn&gt;&lt;mo&gt;&amp;#x22C5;&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;16&lt;/mn&gt;&lt;/math&gt;" role="presentation"><span id="MJXc-Node-7" class="mjx-math" aria-hidden="true"><span id="MJXc-Node-8" class="mjx-mrow"><span id="MJXc-Node-9" class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.4em; padding-bottom: 0.356em;">8</span></span><span id="MJXc-Node-10" class="mjx-mo MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.002em; padding-bottom: 0.312em;">⋅</span></span><span id="MJXc-Node-11" class="mjx-mn MJXc-space2"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.4em; padding-bottom: 0.356em;">2</span></span><span id="MJXc-Node-12" class="mjx-mo MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.091em; padding-bottom: 0.312em;">=</span></span><span id="MJXc-Node-13" class="mjx-mn MJXc-space3"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.4em; padding-bottom: 0.356em;">16</span></span></span></span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>8</mn><mo>⋅</mo><mn>2</mn><mo>=</mo><mn>16</mn></math></span></span><script type="math/tex" id="MathJax-Element-3">8 \cdot 2 = 16</script> equations among <span class="MathJax_Preview" style="color: inherit; display: none;"></span><span id="MathJax-Element-4-Frame" class="mjx-chtml MathJax_CHTML" tabindex="0" style="font-size: 113%; position: relative;" data-mathml="&lt;math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;&gt;&lt;mn&gt;16&lt;/mn&gt;&lt;/math&gt;" role="presentation"><span id="MJXc-Node-14" class="mjx-math" aria-hidden="true"><span id="MJXc-Node-15" class="mjx-mrow"><span id="MJXc-Node-16" class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R" style="padding-top: 0.4em; padding-bottom: 0.356em;">16</span></span></span></span><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>16</mn></math></span></span><script type="math/tex" id="MathJax-Element-4">16</script> variables.</p>
+
+<p>Since the equations involve absolute values, they’re non-linear, but that should be no problem for any <a href="https://en.wikipedia.org/wiki/Satisfiability_modulo_theories">SMT solver</a> worth its salt. We’ll use <a href="https://github.com/Z3Prover/z3">Z3</a>, a powerful theorem-prover developed by Microsoft. Our strategy will be to write some python code to generate our equations, and then pass these equations to Z3 to find a solution.</p>
+
+<p>Our python code will have to simulate the operations performed by the XMM instructions. We’ll ignore the shuffle instruction for now, since that is only performed once before the loop. This is the core function of <a href="https://github.com/TechSecCTF/writeups/blob/master/CSAWQuals2017/realism/print_constraints.py">the script</a> we wrote:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">print_constraints</span><span class="p">():</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+    <span class="n">prev_esi</span> <span class="o">=</span> <span class="n">esi_consts</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">xmm5</span> <span class="o">=</span> <span class="n">esi_to_xmm5</span><span class="p">(</span><span class="n">prev_esi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+      <span class="n">xmm5</span> <span class="o">=</span> <span class="n">xmm5_start</span>
+
+    <span class="n">esi</span> <span class="o">=</span> <span class="n">esi_consts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">esi</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mh">0x10</span><span class="p">)</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">esi</span> <span class="o">-</span> <span class="n">s1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mh">0x10</span><span class="p">)</span>
+
+    <span class="c"># sum of absolute differences between xmm5 and our flag</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">''</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">7</span><span class="o">-</span><span class="n">i</span><span class="p">:</span>
+        <span class="c"># This is the masking step</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">'abs(0-'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">xmm5</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span> <span class="o">+</span> <span class="s">') + '</span>
+        <span class="k">continue</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s">'abs('</span> <span class="o">+</span> <span class="n">variables</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="s">'-'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">xmm5</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span> <span class="o">+</span> <span class="s">') + '</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s">'0 == {}, '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="n">s</span> <span class="o">=</span> <span class="s">''</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">16</span><span class="p">):</span>
+      <span class="k">if</span> <span class="n">j</span><span class="o">-</span><span class="mi">8</span> <span class="o">==</span> <span class="mi">7</span><span class="o">-</span><span class="n">i</span><span class="p">:</span>
+        <span class="c"># This is the masking step</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">'abs(0-'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">xmm5</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span> <span class="o">+</span> <span class="s">') + '</span>
+        <span class="k">continue</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s">'abs('</span> <span class="o">+</span> <span class="n">variables</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="s">'-'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">xmm5</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span> <span class="o">+</span> <span class="s">') + '</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s">'0 == {}, '</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>When run, it outputs our 16 equations:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>abs(a-34) + abs(b-15) + abs(c-2) + abs(d-200) + abs(e-131) + abs(f-251) + abs(g-224) + abs(0-131) + 0 == 655,
+abs(i-192) + abs(j-32) + abs(k-15) + abs(l-16) + abs(m-205) + abs(n-0) + abs(o-19) + abs(0-184) + 0 == 735,
+abs(a-0) + abs(b-0) + abs(c-0) + abs(d-0) + abs(e-0) + abs(f-0) + abs(0-2) + abs(h-143) + 0 == 605,
+abs(i-0) + abs(j-0) + abs(k-0) + abs(l-0) + abs(m-0) + abs(n-0) + abs(0-2) + abs(p-223) + 0 == 656,
+abs(a-0) + abs(b-0) + abs(c-0) + abs(d-0) + abs(e-0) + abs(0-0) + abs(g-2) + abs(h-93) + 0 == 545,
+abs(i-0) + abs(j-0) + abs(k-0) + abs(l-0) + abs(m-0) + abs(0-0) + abs(o-2) + abs(p-144) + 0 == 521,
+abs(a-0) + abs(b-0) + abs(c-0) + abs(d-0) + abs(0-0) + abs(f-0) + abs(g-2) + abs(h-33) + 0 == 632,
+abs(i-0) + abs(j-0) + abs(k-0) + abs(l-0) + abs(0-0) + abs(n-0) + abs(o-2) + abs(p-9) + 0 == 635,
+abs(a-0) + abs(b-0) + abs(c-0) + abs(0-0) + abs(e-0) + abs(f-0) + abs(g-2) + abs(h-120) + 0 == 563,
+abs(i-0) + abs(j-0) + abs(k-0) + abs(0-0) + abs(m-0) + abs(n-0) + abs(o-2) + abs(p-123) + 0 == 505,
+abs(a-0) + abs(b-0) + abs(0-0) + abs(d-0) + abs(e-0) + abs(f-0) + abs(g-2) + abs(h-51) + 0 == 657,
+abs(i-0) + abs(j-0) + abs(0-0) + abs(l-0) + abs(m-0) + abs(n-0) + abs(o-1) + abs(p-249) + 0 == 606,
+abs(a-0) + abs(0-0) + abs(c-0) + abs(d-0) + abs(e-0) + abs(f-0) + abs(g-2) + abs(h-145) + 0 == 597,
+abs(i-0) + abs(0-0) + abs(k-0) + abs(l-0) + abs(m-0) + abs(n-0) + abs(o-2) + abs(p-94) + 0 == 553,
+abs(0-0) + abs(b-0) + abs(c-0) + abs(d-0) + abs(e-0) + abs(f-0) + abs(g-2) + abs(h-85) + 0 == 624,
+abs(0-0) + abs(j-0) + abs(k-0) + abs(l-0) + abs(m-0) + abs(n-0) + abs(o-2) + abs(p-41) + 0 == 529,
+</code></pre></div></div>
+
+<p>We can now take these equations and add each of them to Z3 as a constraint. To do this, we’ll first define a solver <code class="highlighter-rouge">s</code>, declare 16 integer variables, and constrain each of them to be printable ASCII values. We also need to define <a href="https://stackoverflow.com/questions/22547988/how-to-calculate-absolute-value-in-z3-or-z3py">our own absolute value function</a> that Z3 can use.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">'z3/build/'</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">z3</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">return</span> <span class="n">If</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Solver</span><span class="p">()</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'a'</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'b'</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'c'</span><span class="p">)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'d'</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'e'</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'f'</span><span class="p">)</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'g'</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'h'</span><span class="p">)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'i'</span><span class="p">)</span>
+<span class="n">j</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'j'</span><span class="p">)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'k'</span><span class="p">)</span>
+<span class="n">l</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'l'</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'m'</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'n'</span><span class="p">)</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'o'</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="s">'p'</span><span class="p">)</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">b</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">d</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">e</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">g</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">h</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">l</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">m</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">o</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span> <span class="o">&gt;=</span> <span class="mi">32</span><span class="p">)</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">a</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">c</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">e</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">g</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">h</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">j</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">k</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">l</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">o</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">127</span> <span class="o">&gt;</span> <span class="n">p</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Then, we’ll add our 16 equations:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">34</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">15</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">200</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">131</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">251</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">224</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">131</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">655</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">192</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">32</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">15</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">205</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">19</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">184</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">735</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">143</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">605</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">223</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">656</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">93</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">545</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">144</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">521</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">33</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">632</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">9</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">635</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">120</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">563</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">123</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">505</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">51</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">657</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">249</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">606</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">145</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">597</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">94</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">553</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">c</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">e</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="mi">85</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">624</span><span class="p">)</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">m</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">o</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="mi">41</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">==</span> <span class="mi">529</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>And finally, we’ll ask Z3 to extract a solution, and reshuffle our variables to obtain the flag:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">check</span><span class="p">())</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+
+<span class="n">chars</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">a</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">b</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">c</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">e</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">f</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">g</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">h</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">l</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">m</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">o</span><span class="p">],</span>
+          <span class="n">mod</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+        <span class="p">]</span>
+
+
+<span class="k">print</span> <span class="n">chars</span>
+<span class="n">flag</span> <span class="o">=</span> <span class="s">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">w</span><span class="p">)))</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">chars</span><span class="p">])</span>
+<span class="n">flag</span> <span class="o">=</span> <span class="n">flag</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'flag'</span> <span class="o">+</span> <span class="n">flag</span><span class="p">[</span><span class="mi">12</span><span class="p">:]</span> <span class="o">+</span> <span class="n">flag</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]</span> <span class="o">+</span> <span class="n">flag</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="n">flag</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">8</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[realism]&gt; python solve_constraints.py
+sat
+[51, 114, 52, 123, 95, 122, 108, 97, 125, 48, 121, 95, 51, 100, 48, 109]
+flag{4r3alz_m0d3_y0}
+</code></pre></div></div>
+
+<p>Entering the flag in QEMU confirms that it’s correct:</p>
+
+<p><img src="./Fort &amp; Forge_files/v0O5BVe.png" alt=""></p>
+
+</div>
+
+
+  <div id="disqus_thread"><iframe id="dsq-app263" name="dsq-app263" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./Fort &amp; Forge_files/saved_resource.html" style="width: 1px !important; min-width: 100% !important; border: none !important; overflow: hidden !important; height: 383px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+  <script>
+    var disqus_config = function () {
+      this.page.url = 'http://fortenf.org/e//e/ctfs/re/2017/09/18/csaw17-realism.html';
+      this.page.identifier = 'http://fortenf.org/e//e/ctfs/re/2017/09/18/csaw17-realism.html';
+    };
+
+    (function() {
+      var d = document, s = d.createElement('script');
+
+      s.src = 'https://fortenforge-github-io.disqus.com/embed.js';
+
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="<a class="vglnk" href="https://disqus.com/?ref_noscript" rel="nofollow"><span>https</span><span>://</span><span>disqus</span><span>.</span><span>com</span><span>/?</span><span>ref</span><span>_</span><span>noscript</span></a>" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+      </div>
+  
+
+
+<iframe style="display: none;" src="./Fort &amp; Forge_files/saved_resource(1).html"></iframe></body></html>
