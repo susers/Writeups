@@ -1,0 +1,372 @@
+<?php
+
+/**
+ * @file
+ * Test the keyword substitution functionality.
+ */
+
+class CtoolsContextIDTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Context IDs',
+      'description' => 'Verify that Context IDs work properly.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+    ctools_include('context');
+  }
+
+  private function getTestContexts() {
+    $test_objects = array(
+      array(),
+      array(
+        'name' => 'foo_bar',
+      ),
+      array(
+        'id' => 25,
+      ),
+      array(
+        'id' => 5,
+        'name' => NULL,
+      ),
+      array(
+        'id' => 'a',
+        'name' => 'foo_bar',
+      ),
+      array(
+        'id' => 'z',
+        'name' => 'baz',
+      ),
+      array(
+        'id' => 15,
+        'name' => 'baz',
+      ),
+      array(
+        'id' => 'z',
+        'name' => 'foo',
+      ),
+      array(
+        'id' => 1,
+        'name' => 'foo',
+      ),
+      array(
+        'id' => 47,
+        'name' => 'bar',
+      ),
+      array(
+        'id' => 99,
+        'name' => 'bar',
+      ),
+    );
+    return $test_objects;
+  }
+
+  /**
+   * Test ctools_context_id where the context only has an id.
+   */
+  public function testContextId() {
+    $context = array();
+    $expected = 'context__1';
+    $actual = ctools_context_id($context);
+    $this->assertEqual($actual, $expected, 'Empty context has id ' . $expected);
+
+    $context = array('id' => 4);
+    $expected = 'context__4';
+    $actual = ctools_context_id($context);
+    $this->assertEqual($actual, $expected, 'Context 4 has id ' . $expected);
+
+    $context = array('id' => 'a');
+    $expected = 'context__a';
+    $actual = ctools_context_id($context);
+    $this->assertEqual($actual, $expected, 'Context "a" has id ' . $expected);
+  }
+
+  /**
+   * Test ctools_context_id where the context has an id and a name.
+   */
+  public function testContextIdName() {
+    $context = array('id' => '512', 'name' => 'foo');
+    $expected = 'context_foo_512';
+    $this->assertEqual(ctools_context_id($context), $expected, 'Context "512"/"foo" has id ' . $expected);
+
+    $context = array('id' => '512', 'name' => 'foo_bar');
+    $expected = 'context_foo_bar_512';
+    $this->assertEqual(ctools_context_id($context), $expected, 'Context "512"/"foo_bar" has id ' . $expected);
+  }
+
+  /**
+   * Test ctools_context_id where the context has an id & name, and a type is specified.
+   */
+  public function testContextIdNameType() {
+    $type = 'sort';
+    $context = array('id' => '512', 'name' => 'foo');
+    $expected = 'sort_foo_512';
+    $this->assertEqual(ctools_context_id($context, $type), $expected, 'Context "512" has id ' . $expected);
+
+    $type = NULL;
+    $context = array('id' => '512', 'name' => 'foo');
+    $expected = '_foo_512';
+    $this->assertEqual(ctools_context_id($context, $type), $expected, 'Context "512" has id ' . $expected);
+  }
+
+  /**
+   * Test ctools_context_next_id in various scenarios.
+   */
+  public function testNextContextId() {
+    $test_objects = $this->getTestContexts();
+
+    // If no object list or name is given?
+    $value = ctools_context_next_id(NULL, NULL);
+    $expected = 1;
+    $this->assertEqual($value, $expected, 'NULL objects have next id ' . $expected);
+
+    // If no object list is given?
+    $value = ctools_context_next_id(NULL, 'bar');
+    $expected = 1;
+    $this->assertEqual($value, $expected, 'NULL objects have next id ' . $expected);
+
+    // If no object list is given (another way)?
+    $value = ctools_context_next_id(array(), 'bar');
+    $expected = 1;
+    $this->assertEqual($value, $expected, 'Empty objects have next id ' . $expected);
+
+    // The name is empty... which is just another name.
+    $value = ctools_context_next_id($test_objects, '');
+    $expected = 1;
+    $this->assertEqual($value, $expected, 'Unnamed objects have next id ' . $expected . ' (got ' . $value . ')');
+
+    // The value of the id key is not a number.
+    $value = ctools_context_next_id($test_objects, 'foo_bar');
+    $expected = 1;
+    $this->assertEqual($value, $expected, 'Objects with non-integer ids are ignored ' . $expected);
+
+    // One object's id is not a number (ignore) but another is valid.
+    $value = ctools_context_next_id($test_objects, 'baz');
+    $expected = 16;
+    $this->assertEqual($value, $expected, 'Baz\'s objects have next id ' . $expected);
+
+    // An expected case: there is one match and the id is numeric.
+    $value = ctools_context_next_id($test_objects, 'foo');
+    $expected = 2;
+    $this->assertEqual($value, $expected, 'Foo\'s objects have next id ' . $expected);
+
+    // Another expected case: there are multiple numeric IDs.
+    $value = ctools_context_next_id($test_objects, 'bar');
+    $expected = 100;
+    $this->assertEqual($value, $expected, 'Bar\'s objects have next id ' . $expected);
+  }
+
+}
+
+
+/**
+ * Test the keyword substitution functionality.
+ */
+class CtoolsContextKeywordsSubstitutionTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Keywords substitution',
+      'description' => 'Verify that keywords are properly replaced with data.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+
+    ctools_include('context');
+  }
+
+  /**
+   * Test the keyword substitution.
+   */
+  public function testKeywordsSubstitution() {
+    // Create node context for substitution.
+    $node = $this->drupalCreateNode();
+    $context = ctools_context_create('node', $node);
+    $contexts = array('argument_1' => $context);
+
+    // Run tests on some edge cases.
+    $checks = array(
+      array(
+        '%node:changed:raw:',
+        array('%title' => ''),
+        "{$node->changed}:",
+        t('Multi-level token has been replaced. Colon left untouched.'),
+      ),
+      array(
+        '%node:title',
+        array('%title' => ''),
+        "{$node->title}",
+        t('Keyword and converter have been replaced.'),
+      ),
+      array(
+        '%%node:title',
+        array('%title' => ''),
+        "%node:title",
+        t('Keyword after escaped percent sign left untouched.'),
+      ),
+      array(
+        '%node:title%node:nid',
+        array('%title' => ''),
+        "{$node->title}{$node->nid}",
+        t('Multiple substitutions have been replaced.'),
+      ),
+      array(
+        '%node:title:',
+        array('%title' => ''),
+        "{$node->title}:",
+        t('Colon after keyword and converter left untouched.'),
+      ),
+      array(
+        '%node:title%%',
+        array('%title' => ''),
+        "{$node->title}%",
+        t('Escaped percent sign after keyword and converter left untouched.'),
+      ),
+      array(
+        '%%%node:title',
+        array('%title' => ''),
+        "%{$node->title}",
+        t('Keyword after escaped and unescaped percent sign has been replaced.'),
+      ),
+      array(
+        '%%foo:bar',
+        array('%title' => ''),
+        "%foo:bar",
+        t('Non-existant context ignored.'),
+      ),
+      array(
+        'There was about 20%-30% difference in price.',
+        array('%title' => ''),
+        'There was about 20%-30% difference in price.',
+        t('Non-keyword percent sign left untouched.'),
+      ),
+      array(
+        'href="my%20file%2dname.pdf"',
+        array('%title' => ''),
+        'href="my%20file%2dname.pdf"',
+        t('HTTP URL escape left untouched.'),
+      ),
+      array(
+        'href="my%a0file%fdname.pdf"',
+        array('%title' => ''),
+        'href="my%a0file%fdname.pdf"',
+        t('HTTP URL escape (high-chars) left untouched.'),
+      ),
+      array(
+        '<a href="http://www.example.com/here%20is%20a%20pdf.pdf">Click here!</a>',
+        array('%title' => ''),
+        '<a href="http://www.example.com/here%20is%20a%20pdf.pdf">Click here!</a>',
+        t('HTTP URL escape percent sign left untouched in HTML.'),
+      ),
+      array(
+        'SELECT * FROM {table} WHERE field = "%s"',
+        array('%title' => ''),
+        'SELECT * FROM {table} WHERE field = "%s"',
+        t('SQL percent sign left untouched.'),
+      ),
+      array(
+        '%title',
+        array('%title' => 'foobar'),
+        'foobar',
+        t('String value in $keywords array is returned.'),
+      ),
+      array(
+        '%title',
+        array('%title' => ''),
+        '',
+        t('Empty string value in $keywords array returns empty string.'),
+      ),
+      array(
+        '%title',
+        array('%title' => NULL),
+        '',
+        t('NULL value in $keywords array returns empty string.'),
+      ),
+      array(
+        '%title',
+        array('%title' => FALSE),
+        '',
+        t('FALSE value in $keywords array returns empty string.'),
+      ),
+      array(
+        '%title',
+        array('%title' => 11),
+        '11',
+        t('Integer value in $keywords array returns string representation of the integer.'),
+      ),
+      array(
+        '%title',
+        array('%title' => 'substring %title'),
+        'substring %title',
+        t('Input value as substring in $keywords array left untouched.'),
+      ),
+    );
+    foreach ($checks as $check) {
+      list($string, $keywords, $expected_result, $message) = $check;
+      $actual_result = ctools_context_keyword_substitute($string, $keywords, $contexts);
+      $this->assertEqual($actual_result, $expected_result, $message);
+    }
+  }
+
+}
+
+/**
+ * Test the context classes.
+ */
+class CtoolsContextUnitTestCase extends DrupalUnitTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Context unit tests',
+      'description' => 'Verifies that context classes behave correctly',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+    require_once __DIR__ . '/../includes/context.inc';
+  }
+
+  /**
+   * Tests that contexts have the correct required property value.
+   */
+  public function testOptionalRequiredContext() {
+    $required_context = new ctools_context_required('test1');
+    $this->assertTrue($required_context->required);
+
+    $optional_context = new ctools_context_optional('test2');
+    $this->assertFalse($optional_context->required);
+  }
+
+}

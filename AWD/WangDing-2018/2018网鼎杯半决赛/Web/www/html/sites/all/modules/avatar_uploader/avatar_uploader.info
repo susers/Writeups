@@ -1,0 +1,13 @@
+name = Avatar Uploader
+description = Upload avatar via ajax/iframe
+package = Others
+files[] = avatar_uploader.module
+files[] = avatar_uploader.pages.inc
+core = 7.x
+php = 5.2
+; Information added by Drupal.org packaging script on 2015-07-30
+version = "7.x-1.0-beta8"
+core = "7.x"
+project = "avatar_uploader"
+datestamp = "1438265025"
+

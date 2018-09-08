@@ -1,0 +1,617 @@
+<?php
+
+
+/**
+ * Unit tests for RESTServer class.
+ */
+class ServicesRESTServerTests extends DrupalUnitTestCase {
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('RESTServer unit tests'),
+      'description' => t('Test separate methods of class.'),
+      'group' => t('Services'),
+    );
+  }
+
+  public function setUp() {
+    parent::setUp();
+
+    module_load_include('inc', 'services', 'includes/services.runtime');
+    module_load_include('inc', 'rest_server', 'includes/RESTServer');
+    module_load_include('inc', 'rest_server', 'includes/ServicesContentTypeNegotiator');
+    module_load_include('inc', 'rest_server', 'includes/ServicesContext');
+    module_load_include('inc', 'rest_server', 'includes/ServicesParser');
+    module_load_include('inc', 'rest_server', 'includes/ServicesFormatter');
+    module_load_include('inc', 'rest_server', 'includes/ServicesRESTServerFactory');
+    module_load_include('inc', 'rest_server', 'tests/rest_server_mock_classes');
+  }
+
+  /**
+   * Test method getResourceName().
+   */
+  public function testGetResourceName() {
+    $factory_args = $this->getDefaultFactoryArguments();
+
+    $rest_server_factory = new MockServicesRESTServerFactory($factory_args);
+    $rest_server = $rest_server_factory->getRESTServer();
+
+    $resource_name = $rest_server->protectedGetResourceName();
+    $this->assertEqual($resource_name, 'node', 'Retrieve call resource name determined properly.');
+
+
+    $factory_args['context_data']['get']['q'] = 'rest/user';
+    $rest_server_factory = new MockServicesRESTServerFactory($factory_args);
+    $rest_server = $rest_server_factory->getRESTServer();
+
+    $resource_name = $rest_server->protectedGetResourceName();
+    $this->assertEqual($resource_name, 'user', 'Index call resource name determined properly.');
+  }
+
+  /**
+   * Test method getResponseFormatter().
+   */
+  public function testGetResponseFormatter() {
+    $factory_args = $this->getDefaultFactoryArguments();
+
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['xml'], 'XML formatter determined properly from URL');
+
+    // Pass formatter in url that is not recognizable.
+    $factory_args['context_data']['get']['q'] = 'rest/node/1.php';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, FALSE, 'Unknown formatter "php" path extension.');
+
+    // Default formatter is json.
+    $factory_args['context_data']['get']['q'] = 'rest/node/1';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['json'], 'Default is json');
+
+    // Pass Accept headers.
+    $factory_args['context_data']['server']['HTTP_ACCEPT'] = 'application/xml';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['xml'], 'XML formatter determined properly from Accept header "application/xml"');
+
+    $factory_args['context_data']['server']['HTTP_ACCEPT'] = 'text/xml';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['xml'], 'XML formatter determined properly from Accept header "text/xml"');
+
+    $factory_args['context_data']['server']['HTTP_ACCEPT'] = 'text/html;level=2;q=0.7,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['xml'], 'XML formatter determined properly from Accept header "text/html;level=2;q=0.7,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"');
+
+    $factory_args['context_data']['server']['HTTP_ACCEPT'] = 'text/html;level=2;q=0.7,application/json,application/xml;q=0.9,*/*;q=0.8';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, $factory_args['formatters']['json'], 'JSON formatter determined properly from Accept header "text/html;level=2;q=0.7,application/json,application/xml;q=0.9,*/*;q=0.8"');
+
+    $factory_args['context_data']['server']['HTTP_ACCEPT'] = 'text/yaml';
+    $formatter = $this->getResponseFormatter($factory_args);
+    $this->assertEqual($formatter, FALSE, 'Unknown formatter Accept "text/yaml" header.');
+  }
+
+  /**
+   * Test for method resolveController().
+   */
+  function testResolveController() {
+    $resource = $this->getTestResource();
+    $resource_name = 'node';
+
+    $factory_args = $this->getDefaultFactoryArguments();
+
+    // Create operation.
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['operations']['create'], 'Create operation controller found.');
+
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1.xml';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'POST request to "node/1.xml" not recognized.');
+
+    // Retrieve operation.
+    $factory_args['context_data']['request_method'] = 'GET';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1.xml';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['operations']['retrieve'], 'Retrieve operation controller found.');
+
+    // Update operation.
+    $factory_args['context_data']['request_method'] = 'PUT';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1.xml';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['operations']['update'], 'Update operation controller found.');
+
+    $factory_args['context_data']['request_method'] = 'PUT';
+    $factory_args['context_data']['get']['q'] = 'rest/node';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'PUT request to "node" not recognized.');
+
+    // Delete operation.
+    $factory_args['context_data']['request_method'] = 'DELETE';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1.xml';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['operations']['delete'], 'Delete operation controller found.');
+
+    $factory_args['context_data']['request_method'] = 'DELETE';
+    $factory_args['context_data']['get']['q'] = 'rest/node';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'DELETE request to "node" not recognized.');
+
+    // Index operation.
+    $factory_args['context_data']['request_method'] = 'GET';
+    $factory_args['context_data']['get']['q'] = 'rest/node';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['operations']['index'], 'Index operation controller found.');
+
+    // Actions.
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/connect';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['actions']['connect'], 'Action "connect" controller found.');
+
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/connect/1';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'POST request to "node/connect/1" not recognized.');
+
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/not_connect';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'POST request to "node/not_connect" not recognized.');
+
+    // Targeted Actions.
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1/attach_file';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['targeted_actions']['attach_file'], 'Targeted action "attach_file" controller found.');
+
+    $factory_args['context_data']['request_method'] = 'POST';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1/attach_file_fake';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'POST request to "rest/node/1/attach_file_fake" not recognized.');
+
+    // Relationships.
+    $factory_args['context_data']['request_method'] = 'GET';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1/files';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, $resource['relationships']['files'], 'Relationship "files" controller found.');
+
+    $factory_args['context_data']['request_method'] = 'GET';
+    $factory_args['context_data']['get']['q'] = 'rest/node/1/files_fake';
+    $rest_server = $this->getRESTSever($factory_args);
+    $controller = $rest_server->protectedResolveController($resource, $resource_name);
+    $this->assertEqual($controller, FALSE, 'GET request to "rest/node/1/files_fake" not recognized.');
+  }
+
+  /**
+   * Test for parseRequestBody() method.
+   */
+  public function testParseRequestBody() {
+    $factory_args = $this->getDefaultFactoryArguments();
+    $factory_args['parsers'] = array(
+      'application/x-www-form-urlencoded' => 'ServicesParserURLEncoded',
+      'application/json' => 'ServicesParserJSON',
+      'application/vnd.php.serialized' => 'ServicesParserPHP',
+      'multipart/form-data' => 'ServicesParserMultipart',
+      'application/xml' => 'ServicesParserXML',
+      'text/xml' => 'ServicesParserXML',
+    );
+    $factory_args['context_data']['request_method'] = 'POST';
+
+    $test_data = array('username' => 1, 'password' => 2);
+
+    $factory_args['context_data']['request_body'] = drupal_http_build_query($test_data, '', '&');
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
+    $rest_server = $this->getRESTSever($factory_args);
+    $decoded_data = $rest_server->protectedParseRequestBody();
+    $this->assertEqual($decoded_data, $test_data, 'URL Enconed parser decoded request data properly.');
+
+    $factory_args['context_data']['request_body'] = json_encode($test_data);
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'application/json';
+    $rest_server = $this->getRESTSever($factory_args);
+    $decoded_data = $rest_server->protectedParseRequestBody();
+    $this->assertEqual($decoded_data, $test_data, 'JSON parser decoded request data properly.');
+
+    $factory_args['context_data']['request_body'] = serialize($test_data);
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'application/vnd.php.serialized';
+    $rest_server = $this->getRESTSever($factory_args);
+    $decoded_data = $rest_server->protectedParseRequestBody();
+    $this->assertEqual($decoded_data, $test_data, 'PHP Serialize parser decoded request data properly.');
+
+    $factory_args['context_data']['post'] = $test_data;
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'multipart/form-data';
+    $rest_server = $this->getRESTSever($factory_args);
+    $decoded_data = $rest_server->protectedParseRequestBody();
+    $this->assertEqual($decoded_data, $test_data, 'Multipart parser decoded request data properly.');
+
+    $factory_args['context_data']['request_body'] =
+      '<xml>
+        <username>1</username>
+        <password>2</password>
+      </xml>';
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'application/xml';
+    $rest_server = $this->getRESTSever($factory_args);
+    $decoded_data = $rest_server->protectedParseRequestBody();
+    $this->assertEqual($decoded_data, $test_data, 'XML parser decoded request data properly.');
+
+    $factory_args['context_data']['server']['CONTENT_TYPE'] = 'application/xml-not-recognized';
+    $rest_server = $this->getRESTSever($factory_args);
+    try {
+      $decoded_data = $rest_server->protectedParseRequestBody();
+      $this->assert(FALSE, 'Unknown Content Type no exception.');
+    }
+    catch (Exception $e) {
+      $this->assert(TRUE, 'Unknown Content Type thown exception');
+    }
+  }
+
+  /**
+   * Test for getControllerArgumentsFromSources() method.
+   */
+  public function testGetControllerArgumentsFromSources() {
+    $test_resources = $this->getTestResource();
+    $factory_args = $this->getDefaultFactoryArguments();
+    $rest_server = $this->getRESTSever($factory_args);
+
+    $retrieve_controller = $test_resources['operations']['retrieve'];
+
+    $sources = array(
+      'path' => array('1'),
+      'param' => array(),
+      'data' => array(),
+      'headers' => array(),
+    );
+
+    // Arguments from path.
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($retrieve_controller, $sources);
+    $this->assertEqual($arguments, array(0 => 1), 'Path argument retrieved.');
+
+//    $sources['path'][0] = $this->randomName();
+//    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($retrieve_controller, $sources);
+//    $this->assertEqual($arguments, array(0 => 0), 'Path argument retrieved and converted to integer.');
+
+    // Arguments from 'data'
+    $create_controller = $test_resources['operations']['create'];
+
+    $sources['data'] = array(1, 2);
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+    $this->assertEqual($arguments, array($sources['data']), 'Data argument that is array retrieved.');
+
+    $sources['data'] = $this->randomName();
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+    $this->assertEqual($arguments, array(array($sources['data'])), 'Data argument that is string retrieved and converted to array.');
+
+    unset($create_controller['args'][0]['type']);
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+    $this->assertEqual($arguments, array($sources['data']), 'Data argument that is string retrieved and converted to array.');
+
+    // Arguments from 'get'
+    $create_controller['args'][0]['source'] = array('get' => 'node');
+    $sources['data'] = array();
+    $sources['get'] = array('node' => $this->randomString());
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+    $this->assertEqual($arguments, array($sources['get']['node']), 'Get argument retrieved.');
+
+    // Arguments combination.
+    $sources['data'] = array('comment' => $this->randomString());
+    $create_controller['args'][] = array(
+      'name' => 'comment',
+      'optional' => FALSE,
+      'source' => array('data' => 'comment'),
+      'type' => 'string',
+    );
+    $arguments = $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+    $this->assertEqual($arguments, array($sources['get']['node'], $sources['data']['comment']), 'Get and Data arguments retrieved.');
+
+    // Required argument.
+    $sources['get'] = array();
+    try {
+      $rest_server->protectedGetControllerArgumentsFromSources($create_controller, $sources);
+      $this->assert(FALSE, 'Missing required argument no error thrown.');
+    }
+    catch (Exception $e) {
+      $this->assert(TRUE, 'Missing required argument error thrown.');
+    }
+  }
+
+  /**
+   * Test for render() method.
+   */
+  public function testRender() {
+    $factory_args = $this->getDefaultFactoryArguments();
+    $rest_server = $this->getRESTSever($factory_args);
+
+    $formatters = array(
+      'xml' => array(
+        'mime types' => array('application/xml', 'text/xml'),
+        'formatter class' => 'ServicesXMLFormatter',
+      ),
+      'json' => array(
+        'mime types' => array('application/json'),
+        'formatter class' => 'ServicesJSONFormatter',
+      ),
+      'php' => array(
+        'mime types' => array('application/vnd.php.serialized'),
+        'formatter class' => 'ServicesPHPFormatter',
+      ),
+    );
+    $result = array('a' => 'b', 1, FALSE);
+
+
+    $xml_formatter = $formatters['xml'];
+    $formatted_output = $rest_server->protectedRender($xml_formatter, $result);
+    $expected_formatted_output =
+      '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+      '<result><a>b</a><item>1</item><item></item></result>' . "\n";
+    $this->assertEqual($formatted_output, $expected_formatted_output, 'XML formatter encoded correctly.');
+
+    $json_formatter = $formatters['json'];
+    $formatted_output = $rest_server->protectedRender($json_formatter, $result);
+    $this->assertEqual($formatted_output, '{"a":"b","0":1,"1":false}', 'JSON formatter encoded correctly.');
+
+    $php_formatter = $formatters['php'];
+    $formatted_output = $rest_server->protectedRender($php_formatter, $result);
+    $this->assertEqual($formatted_output, 'a:3:{s:1:"a";s:1:"b";i:0;i:1;i:1;b:0;}', 'PHP formatter encoded correctly.');
+  }
+
+  protected function getRESTSever($factory_args) {
+    $rest_server_factory = new MockServicesRESTServerFactory($factory_args);
+    return $rest_server_factory->getRESTServer();
+  }
+
+  protected function getResponseFormatter($factory_args) {
+    try {
+      $rest_server = $this->getRESTSever($factory_args);
+      return $rest_server->protectedGetResponseFormatter();
+    }
+    catch (Exception $e) {
+      return FALSE;
+    }
+  }
+
+  protected function getDefaultFactoryArguments() {
+    $context_data = array(
+      'get' => array('q' => 'rest/node/1.xml'),
+      'server' => array(),
+      'post' => array(),
+      'request_body' => '',
+    );
+
+    $formatters = array(
+      'xml' => array(
+        'mime types' => array('application/xml', 'text/xml'),
+        'formatter class' => 'ServicesXMLFormatter',
+      ),
+      'json' => array(
+        'mime types' => array('application/json'),
+        'formatter class' => 'ServicesJSONFormatter',
+      ),
+    );
+
+    $factory_args = array(
+      'endpoint_path' => 'rest',
+      'context_data' => $context_data,
+      'formatters' => $formatters,
+    );
+
+    return $factory_args;
+  }
+
+  protected function getTestResource() {
+    return array(
+      'operations' => array(
+        'retrieve' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_retrieve',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node to get',
+            ),
+          ),
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('view'),
+          'access arguments append' => TRUE,
+        ),
+        'create' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_create',
+          'args' => array(
+            array(
+              'name' => 'node',
+              'optional' => FALSE,
+              'source' => 'data',
+              'description' => 'The node data to create',
+              'type' => 'array',
+            ),
+          ),
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('create'),
+          'access arguments append' => TRUE,
+        ),
+        'update' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_update',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node to get',
+            ),
+            array(
+              'name' => 'node',
+              'optional' => FALSE,
+              'source' => 'data',
+              'description' => 'The node data to update',
+              'type' => 'array',
+            ),
+          ),
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+        ),
+        'delete' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_delete',
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+            ),
+          ),
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('delete'),
+          'access arguments append' => TRUE,
+        ),
+        'index' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_index',
+          'args' => array(
+            array(
+              'name' => 'page',
+              'optional' => TRUE,
+              'type' => 'int',
+              'description' => 'The zero-based index of the page to get, defaults to 0.',
+              'default value' => 0,
+              'source' => array('param' => 'page'),
+            ),
+            array(
+              'name' => 'fields',
+              'optional' => TRUE,
+              'type' => 'string',
+              'description' => 'The fields to get.',
+              'default value' => '*',
+              'source' => array('param' => 'fields'),
+            ),
+            array(
+              'name' => 'parameters',
+              'optional' => TRUE,
+              'type' => 'array',
+              'description' => 'Parameters array',
+              'default value' => array(),
+              'source' => array('param' => 'parameters'),
+            ),
+            array(
+              'name' => 'pagesize',
+              'optional' => TRUE,
+              'type' => 'int',
+              'description' => 'Number of records to get per page.',
+              'default value' => variable_get('services_node_index_page_size', 20),
+              'source' => array('param' => 'pagesize'),
+            ),
+          ),
+          'access arguments' => array('access content'),
+        ),
+      ),
+      'targeted_actions' => array(
+        'attach_file' => array(
+          'help' => 'Upload and attach file(s) to a node. POST multipart/form-data to node/123/attach_file',
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'callback' => '_node_resource_attach_file',
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('update'),
+          'access arguments append' => TRUE,
+          'args' => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node to attach a file to',
+            ),
+            array(
+              'name' => 'field_name',
+              'optional' => FALSE,
+              'source' => array('data' => 'field_name'),
+              'description' => 'The file parameters',
+              'type' => 'string',
+            ),
+            array(
+              'name' => 'attach',
+              'optional' => TRUE,
+              'source' => array('data' => 'attach'),
+              'description' => 'Attach the file(s) to the node. If FALSE, this clears ALL files attached, and attaches the files',
+              'type' => 'int',
+              'default value' => TRUE,
+            ),
+            array(
+              'name' => 'field_values',
+              'optional' => TRUE,
+              'source' => array('data' => 'field_values'),
+              'description' => 'The extra field values',
+              'type' => 'array',
+              'default value' => array(),
+            ),
+          ),
+        ),
+      ),
+      'relationships' => array(
+        'files' => array(
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/node_resource'),
+          'help'   => t('This method returns files associated with a node.'),
+          'access callback' => '_node_resource_access',
+          'access arguments' => array('view'),
+          'access arguments append' => TRUE,
+          'callback' => '_node_resource_load_node_files',
+          'args'     => array(
+            array(
+              'name' => 'nid',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'The nid of the node whose files we are getting',
+            ),
+            array(
+              'name' => 'file_contents',
+              'type' => 'int',
+              'description'  => t('To return file contents or not.'),
+              'source' => array('path' => 2),
+              'optional' => TRUE,
+              'default value' => TRUE,
+            ),
+            array(
+              'name'         => 'image_styles',
+              'type'         => 'int',
+              'description'  => t('To return image styles or not.'),
+              'source'       => array('path' => 3),
+              'optional'     => TRUE,
+              'default value' => FALSE,
+            ),
+          ),
+        ),
+      ),
+      'actions' => array(
+        'connect' => array(
+          'access callback' => 'services_access_menu',
+          'help' => t('Returns the details of currently logged in user.'),
+          'file' => array('type' => 'inc', 'module' => 'services', 'name' => 'resources/system_resource'),
+          'callback' => '_system_resource_connect',
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,40 @@
+<?php
+
+
+/**
+ * Run test cases to check whether Spyc library can be downloaded.
+ *
+ */
+class ServicesSpycLibraryTests extends DrupalUnitTestCase {
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Spyc Library',
+      'description' => 'Test if we can download Spyc library.',
+      'group' => 'Services',
+    );
+  }
+
+  /**
+   * Testing whether link in make file is valid.
+   */
+  public function testMakeFileLinkValid() {
+    $makefile_path = drupal_get_path('module', 'services') . '/services.make';
+    $makefile_content = file_get_contents($makefile_path);
+    // libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php"
+    $matches = array();
+    preg_match('/libraries\[spyc\]\[download\]\[url\] = (.*)/', $makefile_content, $matches);
+    $spyc_library_url = $matches[1];
+    $spyc_library_content = file_get_contents($spyc_library_url);
+
+    $search_keywords = array('<?php', 'Spyc', 'YAML');
+    $spyc_library_valid = TRUE;
+    foreach ($search_keywords as $keyword) {
+      $spyc_library_valid = $spyc_library_valid && strpos($spyc_library_content, $keyword) !== FALSE;
+    }
+    $this->assertTrue($spyc_library_valid, 'Spyc library can be downloaded from make file.');
+  }
+}

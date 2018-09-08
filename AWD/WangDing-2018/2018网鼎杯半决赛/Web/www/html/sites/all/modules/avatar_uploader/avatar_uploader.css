@@ -1,0 +1,119 @@
+.avatar_uploader {
+	padding: 15px 20px;
+	border: 1px solid #999;
+  background-color: #fff;
+  width: 645px;
+}
+
+.uploader-avatar-box {
+	padding: 15px;
+	background-color: #efefef;
+	margin: 0 auto;
+}
+
+.btn-large {
+	display: inline-block;
+	background-color: #ff6d01;
+	color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	background-image: -moz-linear-gradient(19% 75% 90deg, #ff5d01, #ff8924);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ff8924), to(#ff5d01));
+	font-family: 'Microsoft YaHei','SimHei';
+	font-size: 16px;
+	padding: 6px 18px;
+	border: 0;
+	float: left;
+}
+
+.upload-description {
+	line-height: 36px;
+	margin-left: 10px;
+	font-size: 14px;
+	color: #999;
+}
+
+.pic-wrap {
+	float: left;
+	padding-right: 21px;
+	border-right: 1px solid #ccc;
+}
+
+#picbox {
+   overflow: hidden;
+   background-color: #888;
+   box-shadow: 3px 3px 3px #ccc;
+   border: 5px solid #fff;
+ 
+   height: 400px;
+   width: 400px;
+   display: table-cell;
+   vertical-align:middle;
+   /*设置水平居中*/
+   text-align:center;
+   /* 针对IE的Hack */
+   *display: block;
+   *font-size:175px;/*约为高度的0.873，200*0.873 约为175*/
+   *font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/
+}
+
+#picbox .jcrop-holder {
+  vertical-align: middle;
+  margin:0 auto;
+}
+
+#previewBox {
+	overflow: hidden;
+	background-color: #fcfcfc;
+	box-shadow: 3px 3px 3px #ccc;
+	border: 5px solid #fff;
+	float: right;
+}
+
+#crop_btns {
+	overflow: hidden;
+	padding-bottom: 5px;
+	width: 200px;
+	margin: 0 auto;
+  display: none;
+}
+
+#crop_submit,
+#crop_cancel {
+	display: inline-block;
+	background-color: #4b80b6;
+	color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+	background-image: -moz-linear-gradient(19% 75% 90deg, #4b80b6, #376ca2);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4b80b6), to(#376ca2));
+	font-family: 'Microsoft YaHei','SimHei';
+	font-size: 16px;
+	padding: 6px 18px;
+	border: 0;
+	cursor: pointer;
+	margin: 0 5px;
+}
+
+#picpanel {
+	overflow: hidden;
+	margin-bottom: 15px;
+	padding-bottom: 5px;
+	padding-right: 4px;
+  display: none;
+}
+
+.close_btn {
+	background: url("images/close-bg.png") no-repeat 0 0;
+	width: 17px;
+	height: 17px;
+	display: block;
+	position: absolute;
+	right: 3px;
+	top: 3px;
+	cursor: pointer;
+}
+
+.close_btn:hover {
+	background-position: 0 -33px;
+}

@@ -1,0 +1,97 @@
+<?php
+
+
+
+/**
+ * @file
+ * Contains tests when a resource is disabled.
+ */
+
+/**
+ * Try to make a request to a disabled resource.
+ */
+class ServicesResourceDisabledTest extends ServicesWebTestCase {
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Services Disabled Resource Test',
+      'description' => 'Assert that a resource is disabled when a request is made to it.',
+      'group' => 'Services',
+    );
+  }
+
+  /**
+   * Implementation of setUp().
+   */
+  public function setUp() {
+    parent::setUp(
+      'ctools',
+      'services',
+      'rest_server'
+    );
+    // Set up endpoint.
+    $this->endpoint =  $this->saveNewEndpoint();
+    // Set up privileged user and login.
+    $this->privileged_user = $this->drupalCreateUser(array('get a system variable', 'set a system variable'));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  /**
+   * Save a new endpoint without any resources enabled. This is a method from
+   * ServicesWebTestCase that has been modified.
+   */
+  public function saveNewEndpoint() {
+    $edit = $this->populateEndpointFAPI() ;
+    $endpoint = new stdClass;
+    $endpoint->disabled = FALSE; /* Edit this to true to make a default endpoint disabled initially */
+    $endpoint->api_version = 3;
+    $endpoint->name = $edit['name'];
+    $endpoint->server = $edit['server'];
+    $endpoint->path = $edit['path'];
+    $endpoint->authentication = array(
+      'services' => 'services',
+    );
+    $endpoint->server_settings = array(
+      'formatters' => array(
+        'json' => TRUE,
+        'bencode' => TRUE,
+        'rss' => TRUE,
+        'plist' => TRUE,
+        'xmlplist' => TRUE,
+        'php' => TRUE,
+        'yaml' => TRUE,
+        'jsonp' => FALSE,
+        'xml' => FALSE,
+      ),
+      'parsers' => array(
+        'application/x-yaml' => TRUE,
+        'application/json' => TRUE,
+        'application/vnd.php.serialized' => TRUE,
+        'application/plist' => TRUE,
+        'application/plist+xml' => TRUE,
+        'application/x-www-form-urlencoded' => TRUE,
+        'multipart/form-data' => TRUE,
+      ),
+    );
+    $endpoint->debug = 1;
+    $endpoint->export_type = FALSE;
+    services_endpoint_save($endpoint);
+    $endpoint = services_endpoint_load($endpoint->name);
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
+    return $endpoint;
+  }
+
+  /**
+   * Assert resource is disabled.
+   */
+  function testResourceDisabled() {
+    $path = $this->endpoint->path;
+    // Call as authenticated user.
+    $response = $this->servicesPost($path . '/system/connect');
+    $this->assertEqual($response['code'], 404, format_string('Services returned not found response code for disabled resource: %code.', array('%code' => $response['code'])));
+    $this->drupalLogout();
+  }
+}

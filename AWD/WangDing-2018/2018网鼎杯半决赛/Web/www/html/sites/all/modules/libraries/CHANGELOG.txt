@@ -1,0 +1,116 @@
+
+Libraries 7.x-2.3, 2016-05-12
+-----------------------------
+#1884246 by BR0kEN, tstoeckler et al: Allow downloading libraries via Drush.
+by tstoeckler: Allow detecting all libraries by calling libraries_detect().
+by tstoeckler: Prevent LibrariesWebTestBase from being displayed in the UI.
+#819610 by tstoeckler: Add tests for the Libraries UI.
+#1884246 by BR0kEN, tstoeckler: Show the provider in drush libraries-list
+#819610 by Pol, tstoeckler: Show the provider in the UI.
+#2634732 by Rob Holmes, tstoeckler: Sort libraries by title in the UI.
+#2585395 by robinsonsarah01: Allow object methods as version callbacks.
+#819610 by tstoeckler, Pol: Provide a status report for library information.
+#2352251 by netw3rker: Fix incorrect hook name in libraries.api.php.
+#2352237 by netw3rker, tstoeckler: Allow clearing the libraries cache from Drush.
+#2193969 by tstoeckler: Avoid warnings for stale library caches.
+#2287529 by drupalshrek, tstoeckler: Update installation link in README.txt.
+
+Libraries 7.x-2.2, 2014-02-09
+-----------------------------
+#2046919 by tstoeckler: Clarify 'version' docs.
+#1946110 by munroe_richard: Allow uppercase letters as library machine names.
+#1953260 by tstoeckler: Improve documentation of libraries_get_version().
+#1855918 by tstoeckler: Make integration file loading backwards-compatible.
+#1876124 by tstoeckler: Fix integration files for themes.
+#1876124 by tstoeckler: Add tests for theme-provided library information.
+#1876124 by tstoeckler: Prepare for adding a test theme.
+#1876124 by tstoeckler | whastings, fubhy: Fix hook_libraries_info() for themes.
+#2015721 by tstoeckler, CaptainHook: Protect against files overriding local variables.
+#2046919 by tstoeckler: Improve documentation around 'version callback'.
+#1844272 by tstoeckler, jweowu: Fix typos in libraries.api.php.
+#1938638 by tstoeckler: Prevent weird PHP notice on update.
+#1329388 by RobLoach, tstoeckler: Clear static caches in libraries_flush_caches().
+#1855918 by rbayliss: Load integration files after library files.
+#1938638 by Pol: Fix typo in libraries.api.php.
+
+Libraries 7.x-2.1, 2013-03-09
+-----------------------------
+#1937446 by Pol, tstoeckler: Add a 'pre-dependencies-load' callback group.
+#1775668 by tstoeckler: Fix bogus assertion message in assertLibraryFiles().
+#1773640 by tstoeckler: Use drupal_get_path() to find the profile directory.
+#1565426 by tstoeckler: Invoke hook_libraries_info() in enabled themes.
+
+Libraries 7.x-2.0, 2012-07-29
+-----------------------------
+#1606018 by chemical: Tests fail if the module is downloaded from Drupal.org.
+#1386250 by tstoeckler: Clarify module and library installation in README.txt.
+#1578618 by iamEAP: Fixed Fatal cache flush failure on major version upgrades.
+#1449346 by tstoeckler, sun: Clean-up libraries.test
+
+Libraries 7.x-2.0-alpha2, 2011-12-15
+------------------------------------
+#1299076 by tstoeckler: Improve testing of JS, CSS, and PHP files.
+#1347214 by rfay: Improve update function 7200.
+#1323530 by tstoeckler: Document libraries_get_version() pattern matching.
+#1325524 by sun, Rob Loach, tstoeckler: Statically cache libraries_detect().
+#1321372 by Rob Loach: Provide a 'post-load' callback group.
+#1205854 by tstoeckler, sun: Test library caching.
+
+Libraries 7.x-2.0-alpha1, 2011-10-01
+------------------------------------
+#1268342 by tstoeckler: Clean up drush libraries-list command.
+#962214 by tstoeckler, sun: Add support for library dependencies.
+#1224838 by sun, mjpa: Fix library path not being prepended to JS/CSS files.
+#1023258 by tstoeckler: Make 'files' consistently keyed by filename.
+#958162 by sun, tstoeckler: Add pre-detect callback group.
+#958162 by sun, tstoeckler: Make tests debuggable and provide libraries_info_defaults().
+#961476 by tstoeckler: Changed libraries_get_path() to return FALSE by default.
+#958162 by tstoeckler, sun, good_man: Allow to apply callbacks to libraries.
+#1125904 by tstoeckler, boombatower: Fix drush libraries-list.
+#1050076 by tstoeckler: Re-utilize libraries_detect() and remove libraries_detect_library().
+#466090 by tstoeckler: Add update function.
+#466090 by tstoeckler: Allow cache to be flushed.
+#466090 by tstoeckler, sun: Cache library information.
+#1064008 by tstoeckler, bfroehle: Fix outdated API examples in libraries.api.php.
+#1028744 by tstoeckler: Code clean-up.
+#1023322 by tstoeckler, sun: Fixed libraries shouldn't be loaded multiple times.
+#1024080 by hswong3i, tstoeckler: Fixed installation profile retrieval.
+#995988 by good_man: Wrong default install profile.
+#975498 by Gábor Hojtsy: Update JS/CSS-loading to new drupal_add_js/css() API.
+#958162 by tsteoeckler, sun: Consistent variable naming.
+#924130 by aaronbauman: Fixed libraries_get_path() should use drupal_static().
+#958162 by tstoeckler, sun: Code clean-up, tests revamp, more robust loading.
+#919632 by tstoeckler, sun: Allow library information to be stored in info files.
+by sun: Fixed testbot breaks upon directory name/info file name mismatch.
+#864376 by tstoeckler, sun: Code-cleanup, allow hard-coded 'version'.
+#939174 by sun, tstoeckler: Rename example.info to libraries_example.info.
+by sun: Fixed testbot breaks upon .info file without .module file.
+#542940 by tstoeckler, sun: Add libraries-list command.
+#919632 by tstoeckler: Add example library info file for testing purposes.
+#719896 by tstoeckler, sun: Documentation clean-up and tests improvement.
+#542940 by sun: Added initial Drush integration file.
+#719896 by tstoeckler, sun: Improved library detection and library loading.
+#855050 by Gábor Hojtsy: Avoid call-time pass by reference in libraries_detect().
+#719896 by tstoeckler, sun: Added starting point for hook_libraries_info().
+
+
+Libraries 7.x-1.x, xxxx-xx-xx
+-----------------------------
+
+Libraries 7.x-1.0, 2010-01-27
+-----------------------------
+#743522 by sun: Ported to D7.
+
+
+Libraries 6.x-1.x, xxxx-xx-xx
+-----------------------------
+
+Libraries 6.x-1.0, 2010-01-27
+-----------------------------
+#1028744 by tstoeckler: Code clean-up.
+#496732 by tstoeckler, robphillips: Allow placing libraries in root directory.
+
+Libraries 6.x-1.0-alpha1, 2009-12-30
+------------------------------------
+#480440 by markus_petrux: Fixed base_path() not applied to default library path.
+#320562 by sun: Added basic functions.

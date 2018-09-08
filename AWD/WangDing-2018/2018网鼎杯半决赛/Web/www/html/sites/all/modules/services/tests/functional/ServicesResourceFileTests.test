@@ -1,0 +1,263 @@
+<?php
+
+/**
+ * @file
+ * Test for file resource.
+ *
+ */
+
+/**
+ * Test class.
+ */
+class ServicesResourceFileTests extends ServicesWebTestCase {
+  // Class variables
+  protected $privileged_user = NULL ;
+  // Endpoint details.
+  protected $endpoint = NULL;
+  // Test file.
+  protected $testfile;
+
+  /**
+   * Implements setUp().
+   */
+  public function setUp() {
+    parent::setUp(
+      'ctools',
+      'services',
+      'rest_server'
+    );
+    // Set up endpoint.
+    $this->endpoint =  $this->saveNewEndpoint();
+    // Create and log in our privileged user.
+    $this->privileged_user = $this->drupalCreateUser(array(
+      'get any binary files',
+      'save file information',
+      'administer services',
+      'administer site configuration',
+      'bypass node access',
+    ));
+    $this->drupalLogin($this->privileged_user);
+    // Get a test file.
+    $this->testfiles = $this->drupalGetTestFiles('image');
+    $this->testfile = current($this->testfiles);
+  }
+
+  /**
+   * Implements getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Resource File',
+      'description' => 'Test the resource File methods.',
+      'group' => 'Services',
+    );
+  }
+
+
+  public function testIndexFiles() {
+    // Create a set of files to test with
+    $files = array();
+    foreach($this->testfiles as $file) {
+      file_save($file);
+      $files[$file->fid] = $file;
+    }
+    // Get the content.
+    $page_count = ceil(count($files) / 20);
+    $retrieved_files = array();
+    for ($page = 0; $page < $page_count; $page++) {
+      $responseArray = $this->servicesGet($this->endpoint->path . '/file', array('page' => $page, 'fields' => 'fid,filename'));
+      $this->assertTrue(count($responseArray['body']) <= 20, 'Correct number of items returned');
+
+      // Store the returned file IDs.
+      foreach ($responseArray['body'] as $file) {
+        if (isset($retrieved_files[$file->fid])) {
+          $this->fail(format_string('Duplicate files @fid returned.', array('@fid' => $file->fid)));
+        }
+        $retrieved_files[$file->fid] = TRUE;
+
+        $this->assertTrue($files[$file->fid]->filename == $file->filename,
+          'Successfully received File info', 'FileResource: Index');
+      }
+    }
+    // We should have got all the files.
+    $expected_fids = array_keys($files);
+    sort($expected_fids);
+    $retrieved_fids = array_keys($retrieved_files);
+    sort($retrieved_fids);
+
+    $this->assertEqual($expected_fids, $retrieved_fids, 'Retrieved all files');
+
+    // The n+1 page should be empty.
+    $responseArray = $this->servicesGet($this->endpoint->path . '/file', array('page' => $page_count + 1));
+    $this->assertEqual(count($responseArray['body']), 0, 'The n+1 page is empty');
+  }
+
+  /**
+   * Test create method.
+   */
+  public function testResourceFileCreate() {
+    // Create file argument with data.
+    $filepath = file_default_scheme() . '://' . rand() . '/' . rand() . '/' . $this->testfile->filename;
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', $file);
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create');
+
+    // Load file and assert that it exists.
+    $file_load = file_load($result['body']['fid']);
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create');
+    $this->assertEqual($file_load->uri, $filepath,
+      'The path of newly created file placed into directory with random name.', 'FileResource: Create');
+  }
+  /**
+   * Test create_raw method.
+   */
+  public function testResourceFileCreateRaw() {
+    // Create file with call.
+    $result = $this->servicesPostFile($this->endpoint->path . '/file/create_raw', $this->testfile->uri);
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create');
+
+    // Load file and assert that it exists.
+    $file_load = file_load($result['body'][0]['fid']);
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create');
+  }
+  /**
+   * Test create method (Legacy).
+   *
+   * TODO: To be removed in future version.
+   * @see http://drupal.org/node/1083242
+   */
+  public function testResourceFileCreateLegacy() {
+    // Create file argument with data.
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', array('file' => $file));
+    $this->assertEqual($result['code'], 200, 'File created.', 'FileResource: Create (Legacy)');
+
+    // Load file and assert that it exists.
+    $file_load = file_load($result['body']['fid']);
+    $this->assertTrue(is_file($file_load->uri), 'New file saved to disk.', 'FileResource: Create (Legacy)');
+  }
+
+  /**
+   * Test retrieve method.
+   */
+  public function testResourceFileRetrieve() {
+    $testfile = $this->testfile;
+
+    $testfile->fid = NULL;
+    $testfile->uid = $this->privileged_user->uid;
+    file_save($testfile);
+
+    // Retrieve file.
+    $result = $this->servicesGet($this->endpoint->path . '/file/' . $testfile->fid);
+    $file = $result['body'];
+
+    // Assert that fid, filesize and uri are the same.
+    $this->assertTrue($file->fid == $testfile->fid
+                   && $file->filesize == $testfile->filesize
+                   && $file->uri == $testfile->uri,
+      'File retrieved.', 'FileResource: Retrieve');
+  }
+
+  /**
+   * Test delete method.
+   */
+  public function testResourceFileDelete() {
+    $testfile = $this->testfile;
+
+    $testfile->fid = NULL;
+    $testfile->uid = $this->privileged_user->uid;
+    file_save($testfile);
+
+    // Delete file via call.
+    $result = $this->servicesDelete($this->endpoint->path . '/file/' . $testfile->fid);
+
+    // Try to load file.
+    $file_load = file_load($testfile->fid);
+    $this->assertTrue(empty($file_load), 'File deleted.', 'FileResource: Delete');
+  }
+
+  /**
+   * Attach file to the node.
+   */
+  public function testCreateNodeWithFile() {
+    $filepath = file_default_scheme() . '://' . rand() . '/' . rand() . '/' . $this->testfile->filename;
+
+    // Create file that managed by services.
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', $file);
+
+    $fid = $result['body']['fid'];
+    $file_load = file_load($fid);
+
+    // Try to delete the file and ensure that it is not possible.
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result !== TRUE, 'It is not possible to delete file managed by services using file_delete().');
+
+
+    // Create file that is not managed by services.
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+      'status' => 0,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', $file);
+
+    $fid = $result['body']['fid'];
+    $file_load = file_load($fid);
+
+    // Create a node with this file attached.
+    $node = array(
+      'title' => $this->randomString(),
+      'body' => array(LANGUAGE_NONE => array(array('value' => $this->randomString()))),
+      'type' => 'article',
+      'name' => $this->privileged_user->name,
+      'language' => LANGUAGE_NONE,
+      'field_image' => array(LANGUAGE_NONE => array(array('fid' => $fid, 'display' => '1'))),
+    );
+    $response_array = $this->servicesPost($this->endpoint->path . '/node', $node);
+    $nid = $response_array['body']['nid'];
+
+    $node_load = node_load($nid, NULL, TRUE);
+
+    $this->assertEqual($fid, $node_load->field_image[LANGUAGE_NONE][0]['fid'], 'File added to the node successfully.');
+
+    // Now file should be managed by node. Lets try to delete it and ensure
+    // that it is not possible.
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result !== TRUE, 'It is not possible to delete file managed by node using file_delete().');
+
+    // Delete the node and assert that file can be deleted.
+    node_delete($nid);
+
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result === TRUE, 'File can be deleted after node has been removed.');
+  }
+}

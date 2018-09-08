@@ -1,0 +1,239 @@
+<?php
+
+/**
+ * @file Test classes for code in the CTools module file.
+ */
+
+/**
+ * Test menu links depending on user permissions.
+ */
+class CtoolsModuleTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Ctools module functions tests',
+      'description' => 'Check functions in the ctools.module not otherwise tested.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Test that the break phrase function behaves as expected.
+   */
+  public function testBreakPhrase() {
+    $tests = array(
+      NULL => array('value' => array()),
+      '' => array('value' => array()),
+      '1' => array('operator' => 'and', 'value' => array(1)),
+      '99' => array('operator' => 'and', 'value' => array(99)),
+      '+1' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      ' 1' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '1 ' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '-1' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '-99' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '1,2' => array('operator' => 'and', 'value' => array(1, 2)),
+      '1 2' => array('operator' => 'or', 'value' => array(1, 2)),
+      '1+2' => array('operator' => 'or', 'value' => array(1, 2)),
+      '1,2,3' => array('operator' => 'and', 'value' => array(1, 2, 3)),
+      '1 2 3' => array('operator' => 'or', 'value' => array(1, 2, 3)),
+      '1+2+3' => array('operator' => 'or', 'value' => array(1, 2, 3)),
+      '1 , 2 , 3' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '1 + 2 + 3' => array('invalid_input' => TRUE, 'value' => array(-1)),
+      '1,2,3,4,5,6,7,8,9' => array(
+        'operator' => 'and',
+        'value' => array(1, 2, 3, 4, 5, 6, 7, 8, 9),
+      ),
+      '1 2,3,4 5 6 7 8 9' => array('invalid_input' => TRUE, 'value' => array(-1)),
+    );
+
+    foreach ($tests as $string => $expected) {
+      $result = ctools_break_phrase($string);
+      $expected = (object) $expected;
+      $this->assertEqual($result, $expected, 'Break Phrase test patterns: ' . $string);
+    }
+  }
+
+  /**
+   * Test that the (deprecated) getuserroles returns expected array.
+   */
+  public function testGetUserRoles() {
+    $result = ctools_get_roles();
+    $this->assertTrue(is_array($result), 'get_roles returns an array');
+
+    // A key-value array of integers.
+    foreach ($result as $k => $v) {
+      $this->assertTrue(is_numeric($k), 'Role key is numeric; ' . $k);
+      $this->assertTrue(is_string($v), 'Role id is string; ' . $v);
+    }
+  }
+
+  /**
+   * Test the ctools_attach_js function returns the expected paths.
+   */
+  public function testAttachJs() {
+    $taxonomy_path = drupal_get_path('module', 'taxonomy');
+    $ctools_path = drupal_get_path('module', 'ctools');
+
+    // Func should probably do a different thing but this is current behaviour.
+    $path = ctools_attach_js('');
+    $this->assertEqual($path, $ctools_path . '/js/.js', 'Attach an empty string');
+
+    $path = ctools_attach_js('foo');
+    $this->assertEqual($path, $ctools_path . '/js/foo.js', 'Attach simple string');
+
+    $path = ctools_attach_js('foo', 'ctools', '');
+    $this->assertEqual($path, $ctools_path . '//foo.js', 'Attach string with empty subdir');
+
+    $path = ctools_attach_js('foo', 'ctools', 'javascript');
+    $this->assertEqual($path, $ctools_path . '/javascript/foo.js', 'Attach string with alternate subdir');
+
+    $path = ctools_attach_js('foo', 'taxonomy', 'javascript');
+    $this->assertEqual($path, $taxonomy_path . '/javascript/foo.js', 'Attach string from different module');
+  }
+
+  /**
+   * Test the ctools_attach_css function returns the expected paths.
+   */
+  public function testAttachCss() {
+    $taxonomy_path = drupal_get_path('module', 'taxonomy');
+    $ctools_path = drupal_get_path('module', 'ctools');
+
+    // Func should probably do a different thing but this is current behaviour.
+    $path = ctools_attach_css('');
+    $this->assertEqual($path, $ctools_path . '/css/.css', 'Attach empty string');
+
+    $path = ctools_attach_css('foo');
+    $this->assertEqual($path, $ctools_path . '/css/foo.css', 'Attach simple string');
+
+    $path = ctools_attach_css('foo', 'ctools', '');
+    $this->assertEqual($path, $ctools_path . '//foo.css', 'Attach string with empty subdir');
+
+    $path = ctools_attach_css('foo', 'ctools', 'theme');
+    $this->assertEqual($path, $ctools_path . '/theme/foo.css', 'Attach string with alternate subdir');
+
+    $path = ctools_attach_css('foo', 'taxonomy', 'theme');
+    $this->assertEqual($path, $taxonomy_path . '/theme/foo.css', 'Attach string from different module');
+  }
+
+  /**
+   * Test the ctools version compare function.
+   */
+  public function testApiVersionCompare() {
+    // We're beyond version 1.
+    $ok = ctools_api_version('1.0');
+    $this->assertTrue($ok, 'Check API version 1.0 is ok');
+
+    // We're beyond version 1.0.1 too.
+    $ok = ctools_api_version('1.0.1');
+    $this->assertTrue($ok, 'Check API version 1.0.1 is ok');
+
+    // Not (yet) on api version 10.
+    $ok = ctools_api_version('10.0');
+    $this->assertFalse($ok, 'Check API version 10.0 is not ok');
+
+    // We are (currently) between version 1.1 and version 4.0.
+    $ok = ctools_api_version('1.1', '4.0');
+    $this->assertTrue($ok, 'Check API is between 1 and 4');
+  }
+
+  /**
+   * Test that the ctools_classs_add works.
+   */
+  public function testClassesAdd() {
+    ctools_class_reset();
+
+    ctools_class_add('testclass');
+
+    $classes = ctools_get_classes();
+    $this->assertEqual(is_array($classes), 1, 'Classes should be an array');
+    $this->assertEqual(count($classes), 1, 'Classes array has one element');
+    $this->assertEqual(count($classes['html']), 1, 'Classes array has element: html');
+    $this->assertTrue(isset($classes['html']['add']), 'Classes array has element: html/add');
+    $this->assertEqual($classes['html']['add'], array('testclass'), 'Classes array has expected value');
+
+    ctools_class_add('class2 class3');
+
+    $classes = ctools_get_classes();
+    $this->assertEqual(is_array($classes), 1, 'Classes should be an array');
+    $this->assertEqual(count($classes['html']), 1, 'Classes array has element: html');
+    // TODO: An undesirable result: array('testclass', 'class2', 'class3') is better.
+    $this->assertEqual($classes['html']['add'], array(
+      'testclass',
+      'class2 class3',
+    ), 'Classes array has expected value');
+  }
+
+  /**
+   * Test that the ctools_classs_remove works.
+   */
+  public function testClassesRemove() {
+    ctools_class_reset();
+
+    ctools_class_remove('testclass');
+
+    $classes = ctools_get_classes();
+    $this->assertEqual(is_array($classes), 1, 'Classes should be an array');
+    $this->assertEqual(count($classes), 1, 'Classes array has one element');
+    $this->assertEqual(count($classes['html']), 1, 'Classes array has element: html');
+    $this->assertTrue(isset($classes['html']['remove']), 'Classes array has element: html/remove');
+    $this->assertEqual($classes['html']['remove'], array('testclass'), 'Classes array has expected value');
+
+    ctools_class_remove('class2 class3');
+
+    $classes = ctools_get_classes();
+    $this->assertEqual(count($classes), 1, 'Classes array has one element');
+    $this->assertEqual(count($classes['html']), 1, 'Classes array has element: html');
+    // This is an undesirable result, is array('testclass', 'class2', 'class3') better.
+    $this->assertEqual($classes['html']['remove'], array(
+      'testclass',
+      'class2 class3',
+    ), 'Classes array has expected value');
+  }
+
+  /**
+   * Test that the ctools_classs_add and ctools_classs_remove interact well.
+   */
+  public function testClassesAddRemove() {
+    ctools_class_reset();
+
+    ctools_class_add('testclass');
+    ctools_class_remove('testclass');
+
+    $classes = ctools_get_classes();
+    $this->assertTrue(isset($classes['html']['add']), 'Classes array has an add set');
+    $this->assertEqual($classes['html']['add'], array('testclass'), 'testclass is in the add set');
+    $this->assertTrue(isset($classes['html']['remove']), 'Classes array has a remove set');
+    // TODO: Is it really good to let this happen?
+    $this->assertEqual($classes['html']['remove'], array('testclass'), 'testclass is in the remove set');
+  }
+
+  /**
+   * Test that the ctools_classs_add and ctools_classs_remove interact well .. 2.
+   */
+  public function testClassesAddRemove2() {
+    ctools_class_reset();
+
+    ctools_class_add('class2 class3');
+    ctools_class_remove('class3');
+
+    $classes = ctools_get_classes();
+    $this->assertTrue(isset($classes['html']['add']), 'Classes array has an add set');
+    $this->assertEqual($classes['html']['add'], array('class2 class3'), 'Added class2 class3 is in add set');
+    $this->assertTrue(isset($classes['html']['remove']), 'Classes array has a remove set');
+    // TODO: Is it really good to let this happen?
+    $this->assertEqual($classes['html']['remove'], array('class3'), 'class3 in remove set');
+  }
+
+}

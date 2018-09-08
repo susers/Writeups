@@ -1,0 +1,126 @@
+<?php
+
+/**
+ * @file
+ * Test to confirm Aliases functionality.
+ */
+
+/**
+ * Test case class for Alias tests.
+ */
+class ServicesAliasTests extends ServicesWebTestCase {
+  // Endpoint details.
+  protected $endpoint = NULL;
+
+  /**
+   * Implementation of setUp().
+   */
+  public function setUp() {
+    parent::setUp(
+      'ctools',
+      'services',
+      'rest_server'
+    );
+    $edit = $this->populateEndpointFAPI() ;
+    $endpoint = new stdClass;
+    $endpoint->disabled = FALSE;
+    $endpoint->api_version = 3;
+    $endpoint->name = $edit['name'];
+    $endpoint->server = $edit['server'];
+    $endpoint->path = $edit['path'];
+    $endpoint->authentication = array(
+      'services' => 'services',
+    );
+    $endpoint->server_settings = array(
+      'formatters' => array(
+        'json' => TRUE,
+        'bencode' => TRUE,
+        'rss' => TRUE,
+        'plist' => TRUE,
+        'xmlplist' => TRUE,
+        'php' => TRUE,
+        'yaml' => TRUE,
+        'jsonp' => FALSE,
+        'xml' => FALSE,
+      ),
+      'parsers' => array(
+        'application/x-yaml' => TRUE,
+        'application/json' => TRUE,
+        'application/vnd.php.serialized' => TRUE,
+        'application/plist' => TRUE,
+        'application/plist+xml' => TRUE,
+        'application/x-www-form-urlencoded' => TRUE,
+        'multipart/form-data' => TRUE,
+      ),
+    );
+    $endpoint->resources = array(
+      'user' => array(
+        'alias' => 'user-alias',
+        'actions' => array(
+          'login' => array(
+            'enabled' => 1,
+          ),
+        ),
+      ),
+      'node' => array(
+        'alias' => 'node_alias',
+        'operations' => array(
+          'retrieve' => array(
+            'enabled' => 1,
+          ),
+        ),
+      ),
+    );
+    $endpoint->debug = 1;
+    $endpoint->export_type = FALSE;
+    services_endpoint_save($endpoint);
+    $endpoint = services_endpoint_load($endpoint->name);
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
+    $this->endpoint = $endpoint;
+  }
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Alias',
+      'description' => 'Test the Aliases functionality.',
+      'group' => 'Services',
+    );
+  }
+
+  /**
+   * Testing parser functionality.
+   */
+  public function testAlias() {
+    $account = $this->drupalCreateUser();
+
+    // Logout first.
+    $this->drupalLogout();
+
+    // Try to login using alias.
+    $response = $this->servicesPost($this->endpoint->path . '/user-alias/login', array('username' => $account->name, 'password' => $account->pass_raw));
+
+    $response_data = $response['body'];
+
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'Alias: User login');
+  }
+  /**
+   * Testing parser functionality.
+   */
+  public function testUnderscoreAlias() {
+    // Create and log in our privileged user.
+    $this->privilegedUser = $this->drupalCreateUser(array(
+      'administer services',
+    ));
+    $this->drupalLogin($this->privilegedUser);
+    $node = $this->drupalCreateNode();
+    $responseArray = $this->servicesGet($this->endpoint->path . '/node_alias/' . $node->nid);
+    $this->assertTrue($node->title == $responseArray['body']->title,
+      'Successfully received Node info', 'Alias: node Retrieve');
+  }
+}

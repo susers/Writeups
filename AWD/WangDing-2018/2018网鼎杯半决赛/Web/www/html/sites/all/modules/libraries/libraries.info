@@ -1,0 +1,16 @@
+name = Libraries
+description = Allows version-dependent and shared usage of external libraries.
+core = 7.x
+; We use hook_system_theme_info() which was added in Drupal 7.11
+dependencies[] = system (>=7.11)
+files[] = tests/LibrariesAdminWebTest.test
+files[] = tests/LibrariesLoadWebTest.test
+files[] = tests/LibrariesUnitTest.test
+files[] = tests/LibrariesWebTestBase.test
+
+; Information added by Drupal.org packaging script on 2016-05-12
+version = "7.x-2.3"
+core = "7.x"
+project = "libraries"
+datestamp = "1463077450"
+

@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * Implements hook_services_resources().
+ */
+function services_test_resource_services_resources() {
+  return array(
+    'services_test' => array(
+      'retrieve' => array(
+        'callback' => '_services_test_resource_retrieve',
+        'args' => array(
+          array(
+            'name' => 'arg1',
+            'optional' => FALSE,
+            'source' => array('path' => 0),
+            'type' => 'int',
+            'description' => 'Test argument 1.',
+          ),
+        ),
+        'access callback' => '_services_test_resource_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+      ),
+      'actions' => array(
+        'action_retrieve' => array(
+          'access callback' => '_services_test_resource_access',
+          'access arguments' => array('view'),
+          'access arguments append' => TRUE,
+          'callback' => '_services_test_resource_action_retrieve',
+          'args' => array(
+            array(
+              'name' => 'arg1',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'Test argument 1.',
+            ),
+          ),
+        ),
+      ),
+      'targeted_actions' => array(
+        'test' => array(
+          'access callback' => '_services_test_resource_access',
+          'access arguments' => array('view'),
+          'access arguments append' => TRUE,
+          'callback' => '_services_test_resource_targeted_action_test',
+          'args' => array(
+            array(
+              'name' => 'arg1',
+              'optional' => FALSE,
+              'source' => array('path' => 0),
+              'type' => 'int',
+              'description' => 'Test argument 1.',
+            ),
+          ),
+        ),
+      ),
+    ),
+    'services_arguments_test' => array(
+      'retrieve' => array(
+        'callback' => '_services_arguments_test_resource_retrieve',
+        'args' => array(
+          array(
+            'name' => 'arg1',
+            'optional' => FALSE,
+            'source' => array('path' => 0),
+            'type' => 'string',
+            'description' => 'Test argument 1.',
+          ),
+          array(
+            'name' => 'string',
+            'optional' => FALSE,
+            'source' => array('path' => 1),
+            'type' => 'int',
+            'description' => 'Test argument 2.',
+          ),
+          array(
+            'name' => 'string',
+            'optional' => TRUE,
+            'source' => array('path' => 2),
+            'type' => 'int',
+            'default value' => '0',
+            'description' => 'Test argument 3.',
+          ),
+        ),
+        'access callback' => '_services_test_resource_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+      ),
+    ),
+  );
+}
+
+/**
+ * CRUD retrieve callback.
+ */
+function _services_test_resource_retrieve($arg1) {
+  return 'CRUD Retrieve ' . $arg1;
+}
+
+//Change type to string.
+//Add an additional argument
+function _services_test_resource_retrieve_update_1_1() {
+  $new_set = array(
+    'help' => 'retrieve an item for yourself',
+    'args' => array(
+      array(
+        'name' => 'arg1',
+        'optional' => FALSE,
+        'source' => array('path' => 0),
+        'type' => 'string',
+        'description' => 'Test argument 1.',
+      ),
+      array(
+        'name' => 'arg2',
+        'optional' => FALSE,
+        'source' => array('param' => 'arg2'),
+        'type' => 'string',
+        'description' => 'Test argument 2.',
+      ),
+    ),
+  );
+  return $new_set;
+}
+//Make arg 2 optional.
+//Update callback so the argument can be returned/used in some fashion.
+function _services_test_resource_retrieve_update_1_2() {
+  $new_set = array(
+    'callback' => '_services_test_resource_retrieve_callback_1_2',
+    'help' => 'retrieve an item for yourself',
+    'args' => array(
+      array(
+        'name' => 'arg1',
+        'optional' => FALSE,
+        'source' => array('path' => 0),
+        'type' => 'string',
+        'description' => 'Test argument 1.',
+      ),
+      array(
+        'name' => 'arg2',
+        'optional' => TRUE,
+        'source' => array('param' => 'arg2'),
+        'type' => 'string',
+        'description' => 'Test argument 2.',
+        'default value' => 0,
+      ),
+    ),
+  );
+  return $new_set;
+}
+//Update to retrieve callback
+function _services_test_resource_retrieve_callback_1_2($arg1, $arg2) {
+  return $arg1 .':'. $arg2;
+}
+/**
+ * Action retrieve callback.
+ */
+function _services_test_resource_action_retrieve($arg1) {
+  return 'Action retrieve' . $arg1;
+}
+
+
+/**
+ * Targeted Action test callback.
+ */
+function _services_test_resource_targeted_action_test($arg1) {
+  return 'Targeted Action test' . $arg1;
+}
+/**
+ * Access callback.
+ */
+function _services_test_resource_access($op) {
+  return TRUE;
+}
+
+/**
+ * Retrieve method of services_arguments_test resource.
+ */
+function _services_arguments_test_resource_retrieve($arg1, $arg2, $arg3) {
+  return format_string('Services arguments test @arg1 @arg2 @arg3', array('@arg1' => $arg1, '@arg2' => $arg2, '@arg3' => $arg3));
+}

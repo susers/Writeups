@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * @file
+ * Tests for UI of Services.
+ */
+
+class ServicesUITest extends DrupalWebTestCase {
+  protected $privilegedUser;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'UI tests',
+      'description' => 'Test of Services UI.',
+      'group' => 'Services',
+    );
+  }
+
+  function setUp() {
+    parent::setUp(array('ctools', 'services', 'rest_server'));
+    $this->privilegedUser = $this->drupalCreateUser(array('administer services', 'administer site configuration'));
+    $this->drupalLogin($this->privilegedUser);
+  }
+
+  function testEndpointMachineName() {
+    // Try to create endpoint with bad machine name.
+    $edit = array(
+      'name' => 're st',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, 'Save');
+    $this->assertText('The endpoint name can only consist of lowercase letters, underscores, and numbers.',
+      'It is not possible to create endpoint with bad machine name.');
+
+    // Create endpoint properly.
+    $edit = array(
+      'name' => 'rest',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, 'Save');
+    $this->assertText('rest', 'Endpoint create successfully.');
+
+    // Try to create endpoint with same machine name.
+    $edit = array(
+      'name' => 'rest',
+      'server' => 'rest_server',
+      'path' => 'rest1',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, 'Save');
+    $this->assertText('The machine-readable name is already in use. It must be unique.',
+      'It is not possible to create endpoint with existing machine name.');
+
+    // Try to create endpoint with same path.
+    $edit = array(
+      'name' => 'rest1',
+      'server' => 'rest_server',
+      'path' => 'rest',
+    );
+    $this->drupalPost('admin/structure/services/add', $edit, 'Save');
+    $this->assertText('Endpoint path must be unique.', 'It is not possible to create endpoint with existing path.');
+  }
+
+  /**
+   * Test that adding a menu endpoint creates an menu path for that item.
+   */
+  public function testEndpointMenu() {
+    // Create the endpoint.
+    $endpoint_settings = array(
+      'name'   => 'machine_name',
+      'path'   => $this->randomName(10),
+      'server' => 'rest_server',
+    );
+
+    $this->drupalPost('admin/structure/services/add', $endpoint_settings, 'Save');
+    $this->assertResponse('200', 'Create Endpoint.');
+
+    // Enable node resource index method.
+    $resource_settings = array(
+      'resources[node][operations][index][enabled]' => '1',
+    );
+    $this->drupalPost('admin/structure/services/list/' . $endpoint_settings['name'] . '/resources',
+      $resource_settings, 'Save');
+    $this->assertResponse('200', 'Node resource index method enabled successfully.');
+
+    // Check path.
+    $this->drupalGet($endpoint_settings['path'] . '/node');
+    $this->assertResponse('200', 'Accessed endpoint menu path node index method.');
+
+    // After accessing node resource we got logged out. So we login again.
+    $this->drupalLogin($this->privilegedUser);
+
+    // Check edit.
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
+      . '/edit');
+    $this->assertResponse('200', 'Access endpoint edit path.') ;
+
+    // Check export.
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
+      . '/export');
+    $this->assertResponse('200', 'Access endpoint export path.') ;
+
+    // Check delete.
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
+      . '/delete');
+    $this->assertResponse('200', 'Access endpoint delete path.') ;
+  }
+}

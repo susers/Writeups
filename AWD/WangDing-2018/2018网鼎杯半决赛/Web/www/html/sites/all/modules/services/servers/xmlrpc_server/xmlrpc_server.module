@@ -1,0 +1,87 @@
+<?php
+/**
+ * @file
+ *  Enable XML-RPC for services module.
+ *
+ * Resource definitions get converted to RPC-style procedure names, but
+ * otherwise this is really just a wrapper around the core xmlrpc server.
+ * These procedures are renamed as <resource>.<method>. So the node
+ * resource's retrieve method has an XMLRPC procedure name of node.retrieve,
+ * the user resource's login action has an XMLRPC procedure name of
+ * user.login, etc.
+ */
+
+/**
+ * Implementation of hook_server_info().
+ */
+function xmlrpc_server_server_info() {
+  return array(
+    'name' => 'XMLRPC',
+  );
+}
+
+/**
+ * Implementation of hook_server().
+ */
+function xmlrpc_server_server() {
+  require_once './includes/xmlrpc.inc';
+  require_once './includes/xmlrpcs.inc';
+
+  return xmlrpc_server(array_merge(xmlrpc_server_xmlrpc(), module_invoke_all('xmlrpc')));
+}
+
+/**
+ * Return an array of all defined services methods and callbacks.
+ *
+ * @see xmlrpc_server()
+ */
+function xmlrpc_server_xmlrpc() {
+  $callbacks = array();
+  module_load_include('inc', 'services', 'includes/services.runtime');
+  module_load_include('inc', 'services', 'includes/services.resource_build');
+  $endpoint_name = services_get_server_info('endpoint', '');
+  $endpoint = services_endpoint_load($endpoint_name);
+  $resources = services_get_resources($endpoint_name);
+  _services_apply_endpoint($resources, $endpoint, TRUE);
+  if (!empty($resources)) {
+    // Translate all resources
+    foreach ($resources as $name => $def) {
+      foreach (services_resources_as_procedures($def, $name) as $method) {
+        $callbacks[$method['method']] = 'xmlrpc_server_call_wrapper';
+      }
+    }
+  }
+
+  return $callbacks;
+}
+
+/**
+ * Pass XMLRPC server requests to the appropriate services method.
+ *
+ * This function can take varying parameters as are appropriate to
+ * the service in question.
+ */
+function xmlrpc_server_call_wrapper() {
+  $xmlrpc_server = xmlrpc_server_get();
+  $method_name = $xmlrpc_server->message->methodname;
+  $args = func_get_args();
+  $endpoint = services_get_server_info('endpoint', '');
+  $controller = services_controller_get($method_name, $endpoint);
+  try {
+    // Add in default arguments if arguments still dont exist.
+    if (isset($controller['args'])  && is_array($controller['args'])) {
+      foreach ($controller['args'] as $index => $arg) {
+        if ($arg['optional'] && isset($arg['default value']) && !isset($args[$index])) {
+          $args[$index] = $arg['default value'];
+        }
+        elseif ($arg['optional'] == FALSE && !isset($args[$index])) {
+          return services_error(t('Missing required argument @arg', array('@arg' => $arg['name'])), 401);
+        }
+      }
+    }
+    return services_controller_execute($controller, $args);
+  }
+  catch (Exception $e) {
+    return xmlrpc_error($e->getCode(), $e->getMessage());
+  }
+}

@@ -1,0 +1,109 @@
+<?php
+// $Id: ServicesResourceSystemTests.test,v 1.1.2.1 2011/01/19 00:34:49 ocyrus Exp $
+
+/**
+ * @file
+ * Call the endpoint tests when no authentication is being used.
+ *
+ */
+
+/**
+ * Run test cases for the endpoint with no authentication turned on.
+ *
+ */
+class ServicesVersionTests extends ServicesWebTestCase {
+  // Class variables
+  protected $privileged_user = NULL ;
+  // Endpoint details.
+  protected $endpoint = NULL;
+
+  /**
+   * Implementation of setUp().
+   */
+  public function setUp() {
+    parent::setUp('services_test_resource');
+    // Set up privileged user and login.
+    $this->privileged_user = $this->drupalCreateUser(array('administer services',));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+    return array(
+      'name'        => 'Version System',
+      'description' => 'Test the Version system',
+      'group'       => 'Services',
+    );
+  }
+
+  /**
+   * Test connect method.
+   */
+  function testVersion() {
+    // Set up endpoint.
+    $this->endpoint = $this->saveNewVersionEndpoint('1.0');
+    $path = $this->endpoint->path;
+    $updates = services_get_updates();
+    if (is_array($updates)) {
+      foreach ($updates as $key => $update) {
+        foreach ($update as $resource_key => $updates) {
+          $versions = services_get_update_versions($key, $resource_key);
+          if(count($versions)) {
+            $this->pass('Detected multiple versions for a resource', 'Services Version System');
+          } else {
+            $this->fail('Failed to detect any versions for our test resource.', 'Services Version System');
+          }
+
+        }
+      }
+    } else {
+      $this->fail('Failed to get services updates', 'Services Version System');
+    }
+
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
+    //In version 1.0 of services_test resource theres only 1 argument
+    $this->assertTrue('CRUD Retrieve AjSHa' == $responseArray['body'], 'Successfully received sent param on version 1.0 api');
+    $this->endpoint = $this->saveNewVersionEndpoint('1.0');
+    //Test the ability to say I want 1.1 api by passing in the header.
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,
+      array('services_services_test_retrieve_version: 1.1'));
+    $this->assertTrue($responseArray['code'] == '401', 'Successfully was rejected hopefully more missing parameters',
+      'Services Version System');
+    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'),
+      'Yay, looks like were missing a required argument', 'Services Version System');
+
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', NULL,
+      array('services_services_test_retrieve_version: 1.2'));
+    $this->assertTrue($responseArray['code'] == '200', 'Argument two should be optional now. Looks like it was.',
+      'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:0', 'Our response looks good, and its a default argument',
+      'Services Version System');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', array('arg2' => 'test'),
+      array('services_services_test_retrieve_version: 1.2'));
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:test',
+      'Our response looks good, and its our passed arguments', 'Services Version System');
+
+    $this->endpoint = $this->saveNewVersionEndpoint('1.1');
+    //Test the ability to say I want 1.1 api by passing in the header.
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
+    $this->assertTrue($responseArray['code'] == '401',
+      'Successfully was rejected hopefully more missing parameters', 'Services Version System');
+    $this->assertTrue(strpos($responseArray['status'], 'Missing required argument arg2'),
+      'Yay, looks like were missing a required argument', 'Services Version System');
+    $this->endpoint = $this->saveNewVersionEndpoint('1.2');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa');
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:0', 'Our response looks good, and its a default argument',
+      'Services Version System');
+    $responseArray = $this->servicesGet($this->endpoint->path . '/services_test/AjSHa', array('arg2' => 'test'));
+    $this->assertTrue($responseArray['code'] == '200',
+      'Argument two should be optional now. Looks like it was.', 'Services Version System');
+    $this->assertTrue($responseArray['body'] == 'AjSHa:test',
+      'Our response looks good, and its our passed arguments', 'Services Version System');
+  }
+}

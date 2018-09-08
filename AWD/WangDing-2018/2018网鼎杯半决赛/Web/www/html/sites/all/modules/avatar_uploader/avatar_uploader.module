@@ -1,0 +1,169 @@
+<?php
+
+//avatar uploader tmp directory name
+define('UPLOADER_TMP_DIR', 'avatar_uploader');
+
+//uploader panel default id
+define('UPLOADER_PANEL_ID', 'avatar_001');
+
+/**
+ * Implements hook_menu
+ */
+function avatar_uploader_menu() {
+  $items['au/upload'] = array (
+    'title'            => t('Upload avatar'),
+    'page callback'    => '_avatar_uploader_handler',
+    'access callback'  => TRUE,
+    'type'             => MENU_CALLBACK,
+    'file'             => 'avatar_uploader.pages.inc'
+  );
+  $items['au/view'] = array (
+    'title'            => t('Upload avatar'),
+    'page callback'    => '_avatar_uploader_view',
+    'access callback'  => TRUE,
+    'type'             => MENU_CALLBACK,
+    'file'             => 'avatar_uploader.pages.inc'
+  );
+  
+  $items['au/panel'] = array (
+    'title'            => t('Upload avatar'),
+    'page callback'    => '_avatar_uploader_panel',
+    'access callback'  => TRUE,
+    'type'             => MENU_CALLBACK,
+    'file'             => 'avatar_uploader.pages.inc'
+  );
+  
+  $items['au/crop'] = array (
+    'title'            => t('Upload avatar'),
+    'page callback'    => '_avatar_uploader_do_crop',
+    'access callback'  => TRUE,
+    'type'             => MENU_CALLBACK,
+    'file'             => 'avatar_uploader.pages.inc'
+  );
+  return $items;
+}
+ 
+/**
+ * Implements hook_theme
+ */
+function avatar_uploader_theme() {
+  return array(
+    'avatar_uploader_panel' => array(
+      'variables' => array('options' => array()),
+      'template' => 'avatar-uploader-panel',
+    ),
+  );
+}
+
+/**
+ * Implements hook_init
+ */
+function avatar_uploader_init() {
+  $path = drupal_get_path("module", "avatar_uploader");
+  drupal_add_js("$path/avatar_uploader.js");
+  drupal_add_css("$path/avatar_uploader.css");
+  
+  global $user;
+  
+  $params = array('avatar_panel_id' => UPLOADER_PANEL_ID);
+  if ($user->uid) {
+    if (((arg(0) == 'user' && arg(1) == NULL) || (arg(0) == 'user' && arg(1) == $user->uid))) {
+       $params['avatar_uid'] = $user->uid;
+    }
+    if (arg(0) == 'user' && arg(1) != NULL && is_numeric(arg(1))) {
+      if (user_access('administer users')) {
+        $params['avatar_uid'] = arg(1);
+      }
+    }
+  }
+  drupal_add_js($params, 'setting');
+  //Didn't load all js file into here due to performance
+  //So I place upload/crop js into template file, which is ugly but effect, if you have better way, let me know.  
+}
+
+/**
+ * Implements hook_permission
+ */
+function avatar_uploader_permission() {
+  return array(
+    'upload user avatar' => array(
+      'title' => t('Upload avatar file'),
+    ),
+    'edit own avatar' => array(
+      'title' => t('Edit user own avatar'),
+    ),
+  );
+}
+
+/**
+ * API fucntion, provide a panel for upload image
+ * @param array $options
+ * @return type 
+ */
+function avatar_uploader_get_panel($options = array()) {
+  $base = rtrim(base_path(), '/') . '/';
+  $options += array(
+    'id'          => isset($_REQUEST['target']) ? $_REQUEST['target'] : UPLOADER_PANEL_ID,
+    'max_size'    => '1024',
+    'js_uploader' => $base . avatar_uploader_lib_path('Simple-Ajax-Uploader/SimpleAjaxUploader.min.js'),
+    'js_jcrop'    => $base . avatar_uploader_lib_path('jcrop/js/jquery.Jcrop.min.js'),
+    'css_jcrop'   => $base . avatar_uploader_lib_path('jcrop/css/jquery.Jcrop.min.css'),
+    'url_upload'  => $base . 'au/upload',
+    'url_progress'=> $base . avatar_uploader_lib_path('Simple-Ajax-Uploader/extras/uploadProgress.php'),
+  );
+  return theme('avatar_uploader_panel', array('options' => $options));
+}
+
+//Callback function for imageuploader 
+function avatar_uploader_save_profile_picture($file, $uid) {
+  $account = user_load($uid);
+    
+  if (!empty($account->picture->fid)) {
+    file_usage_delete($account->picture, 'user', 'user', $account->uid);
+    file_delete($account->picture);
+  }
+  
+  //user_save($account);
+  $info = image_get_info($file);
+  
+  $picture_file = new stdClass();
+  $picture_file->uid = $account->uid;
+  $picture_file->status = 0;
+  $picture_file->filename = basename($file);
+  $picture_file->uri      = $file;
+  $picture_file->filemime = file_get_mimetype($file);
+  $picture_file->filesize = $info['file_size'];
+  
+  
+  $picture_directory =  file_default_scheme() . '://' . variable_get('user_picture_path', 'pictures');
+  // Prepare the pictures directory.
+  file_prepare_directory($picture_directory, FILE_CREATE_DIRECTORY);
+  $destination = file_stream_wrapper_uri_normalize($picture_directory . '/picture-' . $account->uid . '-' . REQUEST_TIME . '.' . $info['extension']);
+
+  // Move the temporary file into the final location.
+  if ($picture_file = file_move($picture_file, $destination, FILE_EXISTS_RENAME)) {
+    $picture->status  = FILE_STATUS_PERMANENT;
+    file_usage_add($picture_file, 'user', 'user', $account->uid);
+  }
+        
+  db_update('users')
+    ->fields(array(
+    'picture' => $picture_file->fid,
+    ))
+    ->condition('uid', $account->uid)
+    ->execute();
+  
+  if (module_exists('image') && file_valid_uri($picture_file->uri) && $style = variable_get('user_picture_style', '')) {
+    $dest = image_style_url($style, $picture_file->uri);   
+  }
+  else {
+    $dest = file_create_url($picture_file->uri);
+  }
+      
+  return $dest;
+}
+
+function avatar_uploader_lib_path($name) {
+  $path = drupal_get_path("module", "avatar_uploader");
+  return "$path/lib/$name";
+}

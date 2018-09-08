@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * Test ctools_cache_find_plugin and the structure of the default cache plugins.
+ */
+class CtoolsUnitObjectCachePlugins extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Object cache storage (unit tests)',
+      'description' => 'Verify that objects are written, readable and lockable.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Check that the supplied array looks like a ctools cache plugin.
+   *
+   * @param mixed $p
+   *   The value to check.
+   * @param string $msg
+   *   Prefix of the assertion message.
+   */
+  public function assertValidCachePlugin($p, $msg) {
+    $this->assertTrue(is_array($p), $msg . ': plugin is an array');
+
+    $this->assertEqual($p['plugin type'], 'cache', $msg . ': type is cache');
+
+    $this->assertTrue(array_key_exists('title', $p), $msg . ': title element exists');
+    $this->assertTrue(!empty($p['title']) && is_string($p['title']), $msg . ': title is a string');
+
+    $this->assertTrue(array_key_exists('cache get', $p), $msg . ': has a get function');
+    $this->assertTrue(!empty($p['cache get']) && is_callable($p['cache get']), $msg . ': get is executable');
+
+    $this->assertTrue(array_key_exists('cache set', $p), $msg . ': has a set function');
+    $this->assertTrue(!empty($p['cache set']) && is_callable($p['cache set']), $msg . ': set is executable');
+
+    // @todo Clear is required by the spec (cache.inc:40..48): but export_ui
+    // cache doesn't implement it. Enable the assertions when that problem is
+    // solved.
+    // $this->assertTrue(array_key_exists('cache clear', $p), $msg . ': has a clear function');
+    // $this->assertTrue(is_callable($p['cache clear']), $msg . ': clear is executable');
+    // @todo Break is optional acc'd to spec but does anything implement it?
+    $this->assertTrue(!array_key_exists('cache break', $p) || is_callable($p['cache break']), $msg . ': break is executable');
+
+    // @todo Finalize is optional so don't fail if not there??
+    $this->assertTrue(!array_key_exists('cache finalize', $p) || is_callable($p['cache finalize']), $msg . ': finalize is executable');
+  }
+
+  /**
+   * Check the return value of the ctools_cache_find_plugin function.
+   *
+   * @param mixed $p
+   *   The value to check.
+   * @param string $msg
+   *   Prefix of the assertion message.
+   */
+  public function assertPluginNotFound($p, $msg) {
+    $this->assertTrue(is_array($p), $msg . ': is an array');
+    $plugin = array_shift($p);
+    $this->assertNull($plugin, $msg . ': no plugin info');
+    $data = array_shift($p);
+    $this->assertTrue(empty($data) || is_string($data), $msg . ': data string-like');
+    $this->assertTrue(empty($p), $msg . ': just two elements');
+  }
+
+  /**
+   * Check the return value of the ctools_cache_find_plugin function.
+   *
+   * @param mixed $p
+   *   The value to check.
+   * @param string $msg
+   *   Prefix of the assertion message.
+   */
+  public function assertPluginFound($p, $msg) {
+    $this->assertTrue(is_array($p), $msg . ': is an array');
+    $plugin = array_shift($p);
+    $this->assertTrue(is_array($plugin), $msg . ': has plugin data');
+    $data = array_shift($p);
+    $this->assertTrue(empty($data) || is_string($data), $msg . ': data is string-like');
+    $this->assertTrue(empty($p), $msg . ': just two elements');
+  }
+
+  /**
+   * Test to see that we can find the standard simple plugin.
+   */
+  public function testFindSimpleCachePlugin() {
+    ctools_include('cache');
+
+    // The simple plugin.
+    $plugin = ctools_cache_find_plugin('simple');
+    $this->assertPluginFound($plugin, 'The Simple Cache plugin is present');
+    $this->assertValidCachePlugin($plugin[0], 'The Simple Cache plugin');
+
+    // The simple plugin, with ::.
+    $plugin = ctools_cache_find_plugin('simple::data');
+    $this->assertPluginFound($plugin, 'The Simple Cache plugin is present, with data');
+  }
+
+  /**
+   * Test to see that we can find the standard export_ui plugin.
+   */
+  public function testFindExportUICachePlugin() {
+    ctools_include('cache');
+
+    // The export plugin.
+    $plugin = ctools_cache_find_plugin('export_ui');
+    $this->assertPluginFound($plugin, 'The Export UI Cache plugin is present');
+    $this->assertValidCachePlugin($plugin[0], 'The Export Cache plugin');
+
+    // The export plugin, with ::.
+    $plugin = ctools_cache_find_plugin('export_ui::data');
+    $this->assertTrue(is_array($plugin), 'The Export UI Cache plugin is present, with data');
+  }
+
+  /**
+   * Test to see that we don't find plugins that aren't there.
+   */
+  public function testFindFoobarbazCachePlugin() {
+    ctools_include('cache');
+
+    // An imaginary foobarbaz plugin.
+    $plugin = ctools_cache_find_plugin('foobarbaz');
+    $this->assertPluginNotFound($plugin, 'The Foobarbaz Cache plugin is absent');
+    $plugin = ctools_cache_find_plugin('foobarbaz::data');
+    $this->assertPluginNotFound($plugin, 'The Foobarbaz Cache plugin is absent, with data');
+  }
+
+}

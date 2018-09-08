@@ -1,0 +1,153 @@
+<?php
+
+class ServicesArgumentsTestCase extends ServicesWebTestCase {
+  // Endpoint details.
+  protected $endpoint = NULL;
+  // Session ID.
+  protected $sessid = NULL;
+  // Session name.
+  protected $session_name = NULL;
+
+  /**
+   * Implements getInfo().
+   */
+  public static function getInfo() {
+   return array(
+     'name'        => 'Arguments handling',
+     'description' => 'Test of arguments handling.',
+     'group'       => 'Services',
+   );
+  }
+
+  public function setUp() {
+    parent::setUp('ctools', 'services', 'services_test_resource');
+    // Set up endpoint.
+    $this->endpoint =  $this->saveNewEndpoint();
+  }
+
+  /**
+   * Test two path arguments of
+   */
+  function testPathArguments() {
+    $arg1 = $this->randomName();
+    $arg2 = $this->randomName();
+    $arg3 = $this->randomName();
+    $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1 . '/' . $arg2 . '/' . $arg3);
+    $this->assertEqual($result['body'],
+      format_string('Services arguments test @arg1 @arg2 @arg3', array('@arg1' => $arg1, '@arg2' => $arg2, '@arg3' => $arg3)),
+      'Path arguments work properly.', 'Arguments');
+    $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1 . '/' . $arg2);
+    $this->assertEqual($result['body'],
+      format_string('Services arguments test @arg1 @arg2 0', array('@arg1' => $arg1, '@arg2' => $arg2)),
+      'Path arguments with default value work properly.', 'Arguments');
+    $result = $this->servicesGet($this->endpoint->path . '/services_arguments_test/' . $arg1);
+    $this->assertEqual($result['status'], 'HTTP/1.1 404 Not found : Could not find the controller.', 'Error triggered when required argument is missing.', 'Arguments');
+  }
+
+  public function saveNewEndpoint() {
+    $edit = $this->populateEndpointFAPI() ;
+    $endpoint = new stdClass;
+    $endpoint->disabled = FALSE; /* Edit this to true to make a default endpoint disabled initially */
+    $endpoint->api_version = 3;
+    $endpoint->name = $edit['name'];
+    $endpoint->title = $edit['title'];
+    $endpoint->server = $edit['server'];
+    $endpoint->path = $edit['path'];
+    $endpoint->authentication = array(
+      'services' => 'services',
+    );
+    $endpoint->server_settings = array(
+      'formatters' => array(
+        'json' => TRUE,
+        'bencode' => TRUE,
+        'rss' => TRUE,
+        'plist' => TRUE,
+        'xmlplist' => TRUE,
+        'php' => TRUE,
+        'yaml' => TRUE,
+        'jsonp' => FALSE,
+        'xml' => FALSE,
+      ),
+      'parsers' => array(
+        'application/x-yaml' => TRUE,
+        'application/json' => TRUE,
+        'application/vnd.php.serialized' => TRUE,
+        'application/plist' => TRUE,
+        'application/plist+xml' => TRUE,
+        'application/x-www-form-urlencoded' => TRUE,
+      ),
+    );
+    $endpoint->resources = array(
+      'system' => array(
+        'alias' => '',
+        'actions' => array(
+          'connect' => array(
+            'enabled' => 1,
+          ),
+          'get_variable' => array(
+            'enabled' => 1,
+          ),
+          'set_variable' => array(
+            'enabled' => 1,
+          ),
+        ),
+      ),
+      'user' => array(
+        'alias' => '',
+        'operations' => array(
+          'create' => array(
+            'enabled' => 1,
+          ),
+          'retrieve' => array(
+            'enabled' => 1,
+          ),
+          'update' => array(
+            'enabled' => 1,
+          ),
+          'delete' => array(
+            'enabled' => 1,
+          ),
+          'index' => array(
+            'enabled' => 1,
+          ),
+        ),
+        'actions' => array(
+          'login' => array(
+            'enabled' => 1,
+          ),
+          'logout' => array(
+            'enabled' => 1,
+          ),
+        ),
+      ),
+      'services_arguments_test' => array(
+        'alias' => '',
+        'operations' => array(
+          'retrieve' => array(
+            'enabled' => 1,
+          ),
+        ),
+        'actions' => array(
+          'retrieve' => array(
+            'enabled' => 1,
+          ),
+        ),
+      ),
+    );
+    $endpoint->debug = 1;
+    $endpoint->export_type = FALSE;
+    services_endpoint_save($endpoint);
+    $endpoint = services_endpoint_load($endpoint->name);
+    $this->assertTrue($endpoint->name == $edit['name'], 'Endpoint successfully created');
+    return $endpoint;
+  }
+
+  public function populateEndpointFAPI() {
+    return array(
+      'name'   => 'machinename',
+      'title'  => $this->randomName(20),
+      'path'   => $this->randomName(10),
+      'server' => 'rest_server',
+    );
+  }
+}

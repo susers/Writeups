@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall, and update functions for libraries.module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function libraries_schema() {
+  $schema['cache_libraries'] = drupal_get_schema_unprocessed('system', 'cache');
+  $schema['cache_libraries']['description'] = 'Cache table to store library information.';
+  return $schema;
+}
+
+/**
+ * Create the 'cache_libraries' table.
+ */
+function libraries_update_7200() {
+  // Note that previous versions of this function created the table with a
+  // different table comment.
+  if (!db_table_exists('cache_libraries')) {
+    $specs = libraries_schema();
+    db_create_table('cache_libraries', $specs['cache_libraries']);
+  }
+}
+
+/**
+ * Rebuild the class registry.
+ */
+function libraries_update_7201() {
+  // The tests were split from a single libraries.test file into multiple files
+  // during the 7.x-2.x cycle.
+  registry_rebuild();
+}

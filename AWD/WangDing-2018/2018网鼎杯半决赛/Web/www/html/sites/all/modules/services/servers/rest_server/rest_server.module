@@ -1,0 +1,195 @@
+<?php
+
+/**
+ * Implements hook_server_info().
+ */
+function rest_server_server_info() {
+  return array(
+    'name' => 'REST',
+    'path' => 'rest',
+    'settings' => array(
+      'file' => array('inc', 'rest_server'),
+      'form' => '_rest_server_settings',
+      'submit' => '_rest_server_settings_submit',
+    ),
+  );
+}
+
+/**
+ * Starting point of the REST server.
+ *
+ * @return type
+ */
+function rest_server_server() {
+  $endpoint_path = services_get_server_info('endpoint_path', 'services/rest');
+
+  $services_rest_server_factory = variable_get('services_rest_server_factory_class', 'ServicesRESTServerFactory');
+  $rest_server_factory = new $services_rest_server_factory(array('endpoint_path' => $endpoint_path));
+  /* @var $rest_server RESTServer */
+  $rest_server = $rest_server_factory->getRESTServer();
+
+  $canonical_path = $rest_server->getCanonicalPath();
+  if (empty($canonical_path)) {
+    $endpoint_name = services_get_server_info('endpoint', '');
+    $endpoint = services_endpoint_load($endpoint_name);
+    return t('Services Endpoint "@name" has been setup successfully.', array('@name' => $endpoint->name));
+  }
+
+  try {
+    return $rest_server->handle();
+  }
+  catch (Exception $e) {
+    $rest_server->handleException($e);
+  }
+}
+
+/**
+ * Builds a list of request parsers that are available to the RESTServer.
+ *
+ * @return array
+ *  An associative array of parser callbacks keyed by mime-type.
+ */
+function rest_server_request_parsers() {
+  static $parsers = NULL;
+  if (!$parsers) {
+    $parsers = array(
+      'application/x-www-form-urlencoded' => 'ServicesParserURLEncoded',
+      'application/json' => 'ServicesParserJSON',
+      'application/vnd.php.serialized' => 'ServicesParserPHP',
+      'multipart/form-data' => 'ServicesParserMultipart',
+      'application/xml' => 'ServicesParserXML',
+      'text/xml' => 'ServicesParserXML',
+    );
+
+    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
+      $parsers['application/x-yaml'] = 'ServicesParserYAML';
+    }
+
+    drupal_alter('rest_server_request_parsers', $parsers);
+  }
+  return $parsers;
+}
+
+/**
+ * Builds a list of response formatters that are available to the RESTServer.
+ *
+ * @return array
+ *  An associative array of formatter info arrays keyed by type extension. The
+ *  formatter info specifies an array of 'mime types' that corresponds to the
+ *  output format; a 'view' class that is a subclass of RESTServerView; and
+ *  'view arguments' that should be passed to the view when it is created;
+ */
+function rest_server_response_formatters() {
+  static $formatters = NULL;
+  if (!$formatters) {
+    $formatters = array(
+      'xml' => array(
+        'mime types' => array('application/xml', 'text/xml'),
+        'formatter class' => 'ServicesXMLFormatter',
+      ),
+      'json' => array(
+        'mime types' => array('application/json'),
+        'formatter class' => 'ServicesJSONFormatter',
+      ),
+      'jsonp' => array(
+        'mime types' => array('text/javascript', 'application/javascript'),
+        'formatter class' => 'ServicesJSONPFormatter',
+      ),
+      'php' => array(
+        'mime types' => array('application/vnd.php.serialized'),
+        'formatter class' => 'ServicesPHPFormatter',
+      ),
+      'bencode' => array(
+        'mime types' => array('application/x-bencode'),
+        'formatter class' => 'ServicesBencodeFormatter',
+      ),
+    );
+
+    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
+      $formatters['yaml'] = array(
+        'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
+        'formatter class' => 'ServicesYAMLFormatter',
+      );
+    }
+
+    drupal_alter('rest_server_response_formatters', $formatters);
+  }
+  return $formatters;
+}
+
+/**
+ * Set up settings for a rest server endpoint, fills the settings
+ * array with defaults. This is done to ensure that the default state
+ * is consistent between what's shown by default in the settings form
+ * and used by default by the REST server if it hasn't been configured.
+ *
+ * @param array $settings
+ * @return array
+ *  The standardized settings array.
+ */
+function rest_server_setup_settings($settings = array()) {
+  // Apply defaults
+  $settings = $settings + array(
+    'formatters' => array('jsonp' => FALSE),
+    'parsers' => array('application/x-www-form-urlencoded' => FALSE),
+  );
+
+  // Get all available parsers and formatters.
+  $parsers = rest_server_request_parsers();
+  $formatters = rest_server_response_formatters();
+
+  _rest_server_add_default_and_remove_unknown($settings['parsers'], array_keys($parsers), TRUE);
+  _rest_server_add_default_and_remove_unknown($settings['formatters'], array_keys($formatters), TRUE);
+
+  return $settings;
+}
+
+/**
+ * Utility function set set up an array with default values for a set
+ * of keys and remove all entries that does not match a key in the set.
+ *
+ * @param array $array
+ *  The array to modify.
+ * @param array $keys
+ *  An array of keys.
+ * @param mixed $default
+ *  A default value.
+ * @return void
+ */
+function _rest_server_add_default_and_remove_unknown(&$array, $keys, $default) {
+  // Add default values to all keys that do not
+  // exist in $array but exist in $keys.
+  foreach ($keys as $k) {
+    if (!isset($array[$k])) {
+      $array[$k] = $default;
+    }
+  }
+  // Unset all values that key exist in $array
+  // but does not exist in $keys.
+  foreach (array_keys($array) as $key) {
+    if (!in_array($key, $keys)) {
+      unset($array[$key]);
+    }
+  }
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function rest_server_libraries_info() {
+  $libraries['spyc'] = array(
+    'name' => 'Spyc',
+    'version' => '0.5.1',
+    'vendor url' => 'https://github.com/mustangostang/spyc',
+    'download url' => 'https://raw2.github.com/mustangostang/spyc/master/Spyc.php',
+    'version arguments' => array(
+      'file' => 'Spyc.php',
+      'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+    ),
+    'files' => array(
+      'php' => array('Spyc.php'),
+    ),
+  );
+
+  return $libraries;
+}

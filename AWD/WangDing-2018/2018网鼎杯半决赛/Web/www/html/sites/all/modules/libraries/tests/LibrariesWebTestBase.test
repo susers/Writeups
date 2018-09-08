@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * @file
+ * Contains LibrariesWebTestBase.
+ *
+ * Simpletest automatically discovers test files using PSR-4. We cannot,
+ * however, declare a namespace for this class, as that would require PHP 5.3.
+ * To prepare the PHP 5.3 requirement and the usage of PSR-4 in 7.x-3.x, we
+ * place the test files in the correct directory already, but for now register
+ * them explicitly in libraries.info
+ */
+
+/**
+ * Base class for Libraries API web tests.
+ */
+abstract class LibrariesWebTestBase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $profile = 'testing';
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp('libraries', 'libraries_test_module');
+    theme_enable(array('libraries_test_theme'));
+  }
+
+  /**
+   * Retrieves a path making sure a set of permissions is required to access it.
+   *
+   * After calling this method, a user with the given permissions is logged in
+   * and the retrieved page is loaded into the internal browser.
+   *
+   * @param array $permissions
+   *   An array of permission names to assign to user. Note that the user always
+   *   has the default permissions derived from the "authenticated users" role.
+   * @param string $path
+   *   Drupal path or URL to load into the internal browser.
+   * @param array $options
+   *   Options to be forwarded to url().
+   * @param array $headers
+   *   An array containing additional HTTP request headers, each formatted as
+   *   "name: value".
+   *
+   * @return string
+   *   The retrieved HTML string, also available as $this->drupalGetContent().
+   *
+   * @see \DrupalWebTestCase::drupalGet()
+   * @see \DrupalWebTestCase::drupalCreateUser()
+   */
+  protected function getWithPermissions(array $permissions, $path, array $options = array(), array $headers = array()) {
+    $this->drupalGet($path, $options, $headers);
+    $this->assertResponse(403);
+
+    $this->drupalLogin($this->drupalCreateUser($permissions));
+    $this->drupalGet($path, $options, $headers);
+    $this->assertResponse(200);
+  }
+
+}

@@ -1,0 +1,28 @@
+name = REST Server
+description = Provides an REST server.
+package = Services - servers
+
+files[] = rest_server.module
+
+files[] = includes/RESTServer.inc
+files[] = includes/ServicesContentTypeNegotiator.inc
+files[] = includes/ServicesRESTServerFactory.inc
+files[] = includes/ServicesContext.inc
+files[] = includes/ServicesParser.inc
+files[] = includes/ServicesFormatter.inc
+files[] = tests/ServicesRESTServerTests.test
+files[] = tests/rest_server_mock_classes.inc
+files[] = lib/bencode.php
+files[] = lib/mimeparse.php
+
+dependencies[] = services
+dependencies[] = libraries (>=2.x)
+
+core = 7.x
+
+; Information added by Drupal.org packaging script on 2016-12-28
+version = "7.x-3.18"
+core = "7.x"
+project = "services"
+datestamp = "1482949687"
+

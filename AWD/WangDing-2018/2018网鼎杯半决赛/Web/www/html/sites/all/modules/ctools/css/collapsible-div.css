@@ -1,0 +1,23 @@
+.ctools-collapsible-container .ctools-toggle {
+  float: left;
+  width: 21px;
+  height: 21px;
+  cursor: pointer;
+  background: url(../images/collapsible-expanded.png) no-repeat 7px 7px;
+}
+
+.ctools-collapsible-container .ctools-collapsible-handle {
+  display: none;
+}
+
+html.js .ctools-collapsible-container .ctools-collapsible-handle {
+  display: block;
+}
+
+.ctools-collapsible-container .ctools-collapsible-handle {
+  cursor: pointer;
+}
+
+.ctools-collapsible-container .ctools-toggle-collapsed {
+  background-image: url(../images/collapsible-collapsed.png);
+}

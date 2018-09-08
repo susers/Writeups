@@ -1,0 +1,219 @@
+<?php
+
+/**
+ * Tests for the CTools export system.
+ */
+class CtoolsExportCrudTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Export CRUD',
+      'description' => 'Test the CRUD functionality for the ctools export system.',
+      'group' => 'ctools',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    $modules[] = 'ctools_export_test';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Tests CRUD operation: Load.
+   */
+  public function testCrudExportLoad() {
+    $loaded_export = ctools_export_crud_load('ctools_export_test', 'database_test');
+
+    $expected_export = new stdClass();
+    $expected_export->machine = 'database_test';
+    $expected_export->title = 'Database test';
+    $expected_export->number = 0;
+    $expected_export->data = array(
+      'test_1' => 'Test 1',
+      'test_2' => 'Test 2',
+    );
+    $expected_export->table = 'ctools_export_test';
+    $expected_export->export_type = EXPORT_IN_DATABASE;
+    $expected_export->type = 'Normal';
+
+    $this->assertEqual($expected_export, $loaded_export, 'An exportable object has been loaded correctly from the database.');
+  }
+
+  /**
+   * Tests CRUD operation: Load multiple.
+   */
+  public function testCrudExportLoadMultiple() {
+    $exportable_names = array('database_test', 'overridden_test', 'default_test');
+    $loaded_exports = ctools_export_crud_load_multiple('ctools_export_test', $exportable_names);
+
+    $this->assertEqual(count($loaded_exports), 3, 'All exportables have been loaded.');
+  }
+
+  /**
+   * Tests CRUD operation: Load all.
+   */
+  public function testCrudExportLoadAll() {
+    $loaded_exports = ctools_export_crud_load_all('ctools_export_test');
+
+    $this->assertEqual(count($loaded_exports), 3, 'All exportables have been loaded.');
+  }
+
+  /**
+   * Tests CRUD operation: Save.
+   */
+  public function testCrudExportSave() {
+    $default_export = ctools_export_crud_load('ctools_export_test', 'default_test');
+
+    $this->assertTrue($default_export->in_code_only, 'The loaded exportable is in code only.');
+
+    ctools_export_crud_save('ctools_export_test', $default_export);
+
+    // Clear the static cache.
+    ctools_export_load_object_reset('ctools_export_test');
+
+    $overridden_export = ctools_export_crud_load('ctools_export_test', 'default_test');
+
+    $this->assertTrue($overridden_export->export_type === 3, 'The loaded exportable is overridden in the database.');
+  }
+
+  /**
+   * Tests CRUD operation: New.
+   */
+  public function testCrudExportNew() {
+    // Default exportable with defualt values.
+    $new_export = ctools_export_crud_new('ctools_export_test');
+
+    $expected_export = new stdClass();
+    $expected_export->machine = '';
+    $expected_export->title = '';
+    $expected_export->number = 0;
+    $expected_export->data = NULL;
+    $expected_export->export_type = NULL;
+    $expected_export->type = 'Local';
+
+    $this->assertEqual($expected_export, $new_export, 'An exportable with default values is created.');
+
+    // Default exportable without default values.
+    $new_export = ctools_export_crud_new('ctools_export_test', FALSE);
+
+    $expected_export = new stdClass();
+    $expected_export->machine = '';
+    $expected_export->title = '';
+    $expected_export->number = NULL;
+    $expected_export->data = NULL;
+
+    $this->assertEqual($expected_export, $new_export, 'An exportable without default values has been created.');
+  }
+
+  /**
+   * Tests CRUD operation: Revert.
+   */
+  public function testCrudExportRevert() {
+    // Load exportable, will come from database.
+    $original_export = ctools_export_crud_load('ctools_export_test', 'overridden_test');
+
+    $this->assertTrue($original_export->export_type === 3, 'Loaded export is overridden.');
+
+    $machine = $original_export->machine;
+    ctools_export_crud_delete('ctools_export_test', $original_export);
+
+    $result = db_query("SELECT machine FROM {ctools_export_test} WHERE machine = :machine", array(':machine' => $machine))->fetchField();
+
+    $this->assertFalse($result, 'The exportable object has been removed from the database.');
+
+    // Clear the static cache.
+    ctools_export_load_object_reset('ctools_export_test');
+
+    // Reload the same object.
+    $default_export = ctools_export_crud_load('ctools_export_test', 'overridden_test');
+
+    // Check the exportable is now in_code_only.
+    $this->assertTrue($default_export->in_code_only, 'The loaded exportable is in the database only.');
+
+    // Make sure the default object loaded matches the same overridden one in
+    // the database.
+    $this->assertEqual($original_export->machine, $default_export->machine, 'The default exportable has been loaded and matches the overridden exportable.');
+  }
+
+  /**
+   * Tests CRUD operation: Delete.
+   */
+  public function testCrudExportDelete() {
+    // Create a stub entry save it and delete it from the database.
+    $new_export = ctools_export_crud_new('ctools_export_test');
+    ctools_export_crud_save('ctools_export_test', $new_export);
+
+    $machine = $new_export->machine;
+    ctools_export_crud_delete('ctools_export_test', $new_export);
+    $result = ctools_export_crud_load('ctools_export_test', $machine);
+
+    $this->assertFalse($result, 'The new exportable has been removed from the database.');
+
+    // Load the database only exportable.
+    $database_export = ctools_export_crud_load('ctools_export_test', 'database_test');
+
+    $machine = $database_export->machine;
+    ctools_export_crud_delete('ctools_export_test', $database_export);
+
+    // Clear the exportable caches as it's been loaded above.
+    ctools_export_load_object_reset('ctools_export_test');
+    $result = ctools_export_crud_load('ctools_export_test', $machine);
+
+    $this->assertFalse($result, 'The database exportable has been removed from the database.');
+  }
+
+  /**
+   * Tests CRUD operation: Set status.
+   */
+  public function testCrudExportSetStatus() {
+    // Database only object.
+    $database_export = ctools_export_crud_load('ctools_export_test', 'database_test');
+    ctools_export_crud_disable('ctools_export_test', $database_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $disabled_export = ctools_export_crud_load('ctools_export_test', 'database_test');
+
+    $this->assertTrue($disabled_export->disabled, 'The database only exportable has been disabled.');
+
+    ctools_export_crud_enable('ctools_export_test', $disabled_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $enabled_export = ctools_export_crud_load('ctools_export_test', 'database_test');
+
+    $this->assertTrue(empty($enabled_export->disabled), 'The database only exportable has been enabled.');
+
+    // Overridden object.
+    $overridden_export = ctools_export_crud_load('ctools_export_test', 'overridden_test');
+    ctools_export_crud_disable('ctools_export_test', $overridden_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $disabled_export = ctools_export_crud_load('ctools_export_test', 'overridden_test');
+
+    $this->assertTrue($disabled_export->disabled, 'The overridden exportable has been disabled.');
+
+    ctools_export_crud_enable('ctools_export_test', $disabled_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $enabled_export = ctools_export_crud_load('ctools_export_test', 'overridden_test');
+
+    $this->assertTrue(empty($enabled_export->disabled), 'The overridden exportable has been enabled.');
+
+    // Default object.
+    $default_export = ctools_export_crud_load('ctools_export_test', 'default_test');
+    ctools_export_crud_disable('ctools_export_test', $default_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $disabled_export = ctools_export_crud_load('ctools_export_test', 'default_test');
+
+    $this->assertTrue($disabled_export->disabled, 'The default exportable has been disabled.');
+
+    ctools_export_crud_enable('ctools_export_test', $disabled_export);
+    ctools_export_load_object_reset('ctools_export_test');
+    $enabled_export = ctools_export_crud_load('ctools_export_test', 'default_test');
+
+    $this->assertTrue(empty($enabled_export->disabled), 'The default exportable has been enabled.');
+  }
+
+}

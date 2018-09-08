@@ -1,0 +1,136 @@
+<?php
+
+/**
+ * @file
+ * Tests for different parts of the ctools object caching system.
+ *
+ * Needs to be a WebTest because need access to database tables.
+ */
+
+class CtoolsPageTokens extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Page token processing',
+      'description' => 'Verify that page tokens can be set and read.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+
+    // Start each test anew.
+    ctools_reset_page_tokens();
+  }
+
+  /**
+   * Test that we can set page tokens.
+   */
+  public function testSetPageToken() {
+    ctools_set_page_token('id', 'variable', 'test');
+
+    $tokens = ctools_set_page_token();
+    $this->assertTrue(is_array($tokens) && count($tokens) === 1, 'Page tokens no longer empty.');
+    $this->assertEqual($tokens['id'], array('variable', 'test'), 'Page token has correct value.');
+  }
+
+  /**
+   * Test that we can set page tokens.
+   */
+  public function testSetVariableToken() {
+    $string = ctools_set_variable_token('title');
+    $tokens = ctools_set_page_token();
+
+    $this->assertTrue(is_array($tokens) && count($tokens) === 1, 'Page tokens no longer empty');
+    $this->assertEqual($tokens[$string], array('variable', 'title'), 'Page tokens no longer empty');
+  }
+
+  /**
+   * Test that we can set page tokens.
+   */
+  public function testReplaceVariableToken() {
+    $string = ctools_set_variable_token('title');
+    $this->assertEqual($string, '<!-- ctools-page-title -->', 'Expected form of token was found');
+
+    $elements = array(
+      '#type' => 'container',
+      '#attributes' => array('class' => array('test')),
+      'title' => '<h2>Title</h2>',
+      'content' => array(
+        '#type' => 'markup',
+        '#markup' => t('This is my test markup'),
+        '#prefix' => $string,
+      ),
+      'link' => array(
+        '#type' => 'link',
+        '#title' => t('My link'),
+        '#href' => 'node/1',
+      ),
+    );
+    $markup = '<div class="test"><!-- ctools-page-title -->This is my test markup<a href="node/1">My link</a></div>';
+
+    $new_markup = ctools_page_token_processing($markup, $elements);
+
+    $this->assertTrue(is_string($new_markup) && strlen($new_markup) > 1, 'Should return string');
+
+    $this->assertTrue(strstr($new_markup, '<h2>'), 'Variable Token Markup should contain h2 element');
+    $this->assertFalse(strstr($new_markup, 'ctools-page-title'), 'Variable Token Markup should not contain comment element');
+  }
+
+  /**
+   * Test that we can set page tokens.
+   */
+  public function testReplaceCallbackToken() {
+    $string = ctools_set_callback_token('title', 'test_ctools_page_callback_token');
+    $this->assertEqual($string, '<!-- ctools-page-title -->', 'Expected form of token was found');
+
+    $elements = array(
+      '#type' => 'container',
+      '#attributes' => array('class' => array('test')),
+      'content' => array(
+        '#type' => 'markup',
+        '#markup' => t('This is my test markup'),
+        '#prefix' => $string,
+      ),
+      'link' => array(
+        '#type' => 'link',
+        '#title' => t('My link'),
+        '#href' => 'node/1',
+      ),
+    );
+    $markup = '<div class="test"><!-- ctools-page-title -->This is my test markup<a href="node/1">My link</a></div>';
+
+    $new_markup = ctools_page_token_processing($markup, $elements);
+
+    $this->assertTrue(is_string($new_markup) && strlen($new_markup) > 1, 'Should return a non-empty string');
+
+    $this->assertTrue(strstr($new_markup, '<h2>'), 'Callback Token Markup should contain h2 element');
+    $this->assertFalse(strstr($new_markup, 'ctools-page-title'), 'Callback Token Markup should not contain comment element');
+  }
+
+}
+
+/**
+ *
+ * @param $elements
+ *
+ * @return string
+ */
+function test_ctools_page_callback_token($elements) {
+  // Check that 'elements' array looks good.
+  if (isset($elements['content'])) {
+    return '<h2>Title</h2>';
+  }
+  else {
+    return '<!--bad-->';
+  }
+}

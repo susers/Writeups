@@ -1,0 +1,1143 @@
+<?php
+
+/**
+ * @file
+ *  Provides a generic but powerful API for web services.
+ */
+
+/**
+ * Minimum CTools version needed.
+ */
+define('SERVICES_REQUIRED_CTOOLS_API', '1.7');
+define('SERVICES_ALLOWED_EXTENSIONS', 'jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp');
+
+/*
+ * Function to return list of batch options
+ */
+function services_security_get_update_options() {
+  return array(
+    'services_security_update_reset_users_since_date',
+    'services_security_update_reset_users_with_password_one',
+    'services_security_update_do_nothing',
+  );
+}
+
+/*
+ * Function to setup batch processing.
+ */
+function services_security_setup_batch($op, $drush = FALSE) {
+  switch ($op) {
+    case 'services_security_update_reset_users_since_date':
+      services_security_update_reset_users_since_date();
+      services_security_user_update_finish();
+      break;
+
+    case 'services_security_update_reset_users_with_password_one':
+      batch_set(services_security_update_reset_users_with_password_one());
+      if ($drush) {
+        $batch =& batch_get();
+        //Because we are doing this on the back-end, we set progressive to false.
+        $batch['progressive'] = FALSE;
+        //Start processing the batch operations.
+        drush_backend_batch_process();
+      }
+      break;
+
+    case 'services_security_update_do_nothing':
+      services_security_user_update_finish();
+      break;
+  }
+}
+
+function services_security_update_reset_users_since_date() {
+  // Update all users created since August 30th, 2013
+  $result = db_update('users')
+    ->fields(array(
+      'pass' => "ZZZservices_security",
+    ))
+    ->condition('created', 1377892483, '>=')
+    ->execute();
+    drupal_set_message($result . ' users were updated');
+}
+
+function services_security_user_update_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message(t('@count users passwords were reset.', array('@count' => count($results))));
+    services_security_user_update_finish();
+  }
+  else {
+    $error_operation = reset($operations);
+    drupal_set_message(
+      t('An error occurred while processing @operation with arguments : @args',
+        array(
+          '@operation' => $error_operation[0],
+          '@args' => print_r($error_operation[0], TRUE),
+        )
+      )
+    );
+  }
+}
+
+/**
+ * Executes final tasks at the end of the security update follow up.
+ */
+function services_security_user_update_finish() {
+  drupal_set_message('Services security update follow up is complete.');
+  variable_set('services_security_update_1', TRUE);
+  if (!drupal_is_cli()) {
+    drupal_goto('admin/reports/status');
+  }
+}
+
+function services_security_update_reset_users_with_password_one() {
+  $users = array();
+  // Query the database to get all user ID
+  $query = db_select('users', 'u')
+    ->fields('u', array('uid'));
+  $users = $query->execute()->fetchAll();
+  $num_of_users = count($users);
+
+  $progress = 0; // where to start
+  $limit = variable_get('services_security_reset_limit_per_batch', 10); // how many to process for each run
+  $max = $num_of_users; // how many records to process until stop
+
+  //Set up our batch operations
+  while ($progress < $max) {
+    $operations[] = array('services_security_update_reset_users_with_password_one_op', array($progress, $limit, $max));
+    $progress = $progress + $limit;
+  }
+
+  // build the batch instructions
+  $batch = array(
+    'operations' => $operations,
+    'finished' => 'services_security_user_update_finished',
+    'file' => drupal_get_path('module', 'services') . '/services.admin.inc',
+    'progress_message' => t('Processed batch #@current out of @total.'),
+  );
+
+  return $batch;
+}
+
+function services_security_update_reset_users_with_password_one_op($progress, $limit, $max, &$context) {
+  //Set default starting values
+  if (empty($context['sandbox'])) {
+    $context['sandbox'] = array();
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['current_user'] = 0;
+    $context['sandbox']['max'] = $limit;
+  }
+  // Required for user_check_password.
+  require_once DRUPAL_ROOT . '/' . variable_get('password_inc', 'includes/password.inc');
+  //Set the password we are looking for.
+  $password = "1";
+  //Fetch all users in our current range.
+  $result = db_select('users', 'u')
+    ->fields('u', array('uid', 'pass',))
+    ->orderBy('u.uid', 'ASC')
+    ->range($progress, $limit)
+    ->execute()
+    ->fetchAll();
+  // Loop through our ranged results and check their password.
+  foreach ($result as $row) {
+    $uid = $row->uid;
+    $pass = $row->pass;
+    //Setup account object, much faster than user_load
+    $account = new stdClass();
+    $account->uid = $uid;
+    $account->pass = $pass;
+
+    // Check the current user's password against the password.
+    if (user_check_password($password, $account)) {
+      // This means we have a matched password.
+      // Process the user
+      $updated_user = db_update('users')
+        ->fields(array(
+          'pass' => "ZZZservices_security",
+        ))
+        ->condition('uid', $uid)
+        ->execute();
+      $context['results'][] = 'Updating user uid: '. $uid;
+    }
+    // Update our progress information.
+    $context['sandbox']['progress']++;
+    $context['sandbox']['current_user'] = $uid;
+    // update progress for message
+    $shown_progress = $progress + $limit;
+    // update message during each run so you know where you are in the process
+    $context['message'] = 'Checking user uid: '. $uid;
+  }
+
+  // Inform the batch engine that we are not finished,
+  // and provide an estimation of the completion level we reached.
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = (($context['sandbox']['max'] - $context['sandbox']['progress']) <= $limit) || ($context['sandbox']['progress'] >= $context['sandbox']['max']);
+  }
+}
+
+/**
+ * Implements hook_help().
+ */
+function services_help($path, $arg) {
+  $output = NULL;
+
+  switch ($path) {
+    case 'admin/help#services':
+      $output = '<p>' . t('Visit the <a href="@handbook_url">Services Handbook</a> for help and information.', array('@handbook_url' => 'http://drupal.org/node/109782')) . '</p>';
+      break;
+    case 'admin/structure/services':
+      $output = '<p>' . t('Services are collections of methods available to remote applications. They are defined in modules, and may be accessed in a number of ways through server modules. Visit the <a href="@handbook_url">Services Handbook</a> for help and information.', array('@handbook_url' => 'http://drupal.org/node/109782')) . '</p>';
+      $output .= '<p>' . t('All enabled services and methods are shown. Click on any method to view information or test.') . '</p>';
+      break;
+  }
+
+  return $output;
+}
+
+/**
+ * Implements hook_perm().
+ */
+function services_permission() {
+  return array(
+    'administer services' => array(
+      'title' => t('Administer services'),
+      'description' => t('Configure and setup services module.'),
+    ),
+    // File resource permissions
+    'get any binary files' => array(
+      'title' => t('Get any binary files'),
+      'description' => t(''),
+    ),
+    'get own binary files' => array(
+      'title' => t('Get own binary files'),
+      'description' => t(''),
+    ),
+    'save file information' => array(
+      'title' => t('Save file information'),
+      'description' => t(''),
+    ),
+    // System resource permissions
+    'get a system variable' => array(
+      'title' => t('Get a system variable'),
+      'description' => t(''),
+    ),
+    'set a system variable' => array(
+      'title' => t('Set a system variable'),
+      'description' => t(''),
+    ),
+    // Query-limiting permissions
+    'perform unlimited index queries' => array(
+      'title' => t('Perform unlimited index queries'),
+      'description' => t('This permission will allow user to perform index queries with unlimited number of results.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_hook_info().
+ */
+function services_hook_info() {
+  $hooks['services_resources'] = array(
+    'group' => 'services',
+  );
+  return $hooks;
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Services UI is defined in the export-ui plugin.
+ */
+function services_menu() {
+  $items = array();
+  if (module_exists('ctools')) {
+    $endpoints = services_endpoint_load_all();
+    foreach ($endpoints as $endpoint) {
+      if (empty($endpoint->disabled)) {
+        $items[$endpoint->path] = array(
+          'title'             => 'Services endpoint',
+          'access callback'   => 'services_access_menu',
+          'page callback'     => 'services_endpoint_callback',
+          'page arguments'    => array($endpoint->name),
+          'type'              => MENU_CALLBACK,
+        );
+      }
+    }
+  }
+
+  $items['services/session/token'] = array(
+    'page callback' => '_services_session_token',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/config/services/services-security'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => 'Services Security update',
+    'description' => 'Services module security updates',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('services_security_admin_form'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'services.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements of hook_ctools_plugin_api().
+ */
+function services_ctools_plugin_api($module, $api) {
+  if ($module == 'services' && $api == 'plugins') {
+    return array('version' => 3);
+  }
+}
+
+/**
+ * Implement of hook_ctools_plugin_directory().
+ */
+function services_ctools_plugin_directory($module, $type) {
+  // Safety: go away if CTools is not at an appropriate version.
+  if (!module_invoke('ctools', 'api_version', SERVICES_REQUIRED_CTOOLS_API)) {
+    return;
+  }
+  if ($type =='export_ui') {
+    return 'plugins/export_ui';
+  }
+}
+
+/**
+ * Access callback that always returns TRUE.
+ *
+ * This callback is necessary for services like login and logout that should
+ * always be wide open and accessible.
+ *
+ * *** USE THIS WITH GREAT CAUTION ***
+ *
+ * If you think you need it you are almost certainly wrong.
+ */
+function services_access_menu() {
+  return TRUE;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function services_theme() {
+  return array(
+    'services_endpoint_index' => array(
+      'template'  => 'services_endpoint_index',
+      'arguments' => array('endpoints' => NULL),
+    ),
+    'services_resource_table' => array(
+     'render element' => 'table',
+      'file' => 'services.admin.inc',
+    ),
+  );
+}
+
+/**
+ * Returns information about the installed server modules on the system.
+ *
+ * @return array
+ *  An associative array keyed after module name containing information about
+ *  the installed server implementations.
+ */
+function services_get_servers($reset = FALSE) {
+  $servers = &drupal_static(__FUNCTION__);
+
+  if (!$servers || $reset) {
+    $servers = array();
+    foreach (module_implements('server_info') as $module) {
+      if ($module != 'sqlsrv') {
+        $servers[$module] = call_user_func($module . '_server_info');
+        $servers[$module]['module'] = $module;
+      }
+    }
+  }
+
+  return $servers;
+}
+
+/**
+ * Menu system page callback for server endpoints.
+ *
+ * @param string $endpoint
+ *  The endpoint name.
+ * @return void
+ */
+function services_endpoint_callback($endpoint_name) {
+  module_load_include('inc', 'services', 'includes/services.runtime');
+
+  // Explicitly set the title to avoid expensive menu calls in token
+  // and elsewhere.
+  if (!($title = drupal_set_title())) {
+    drupal_set_title('Services endpoint');
+  }
+
+  $endpoint = services_endpoint_load($endpoint_name);
+  $server = $endpoint->server;
+
+  if (function_exists($server . '_server')) {
+    // call the server
+    services_set_server_info_from_array(array(
+      'module'        => $server,
+      'endpoint'      => $endpoint_name,
+      'endpoint_path' => $endpoint->path,
+      'debug'         => $endpoint->debug,
+      'settings'      => $endpoint->server_settings,
+    ));
+    if ($endpoint->debug) {
+      watchdog('services', 'Calling server: %server', array('%server' => $server . '_server'), WATCHDOG_DEBUG);
+      watchdog('services', 'Server info main object: <pre>@info</pre>', array('@info' => print_r(services_server_info_object(), TRUE)), WATCHDOG_DEBUG);
+    }
+    print call_user_func($server . '_server');
+
+    // Do not let this output
+    drupal_page_footer();
+    exit();
+  }
+  // return 404 if the server doesn't exist
+  drupal_not_found();
+}
+
+
+
+/**
+ * Create a new endpoint with defaults appropriately set from schema.
+ *
+ * @return stdClass
+ *  An endpoint initialized with the default values.
+ */
+function services_endpoint_new() {
+  ctools_include('export');
+  return ctools_export_new_object('services_endpoint');
+}
+
+/**
+ * Load a single endpoint.
+ *
+ * @param string $name
+ *  The name of the endpoint.
+ * @return stdClass
+ *  The endpoint configuration.
+ */
+function services_endpoint_load($name) {
+  ctools_include('export');
+  $result = ctools_export_load_object('services_endpoint', 'names', array($name));
+  if (isset($result[$name])) {
+    return $result[$name];
+  }
+  return FALSE;
+}
+
+/**
+ * Load all endpoints.
+ *
+ * @return array
+ *  Array of endpoint objects keyed by endpoint names.
+ */
+function services_endpoint_load_all() {
+  ctools_include('export');
+  return ctools_export_load_object('services_endpoint');
+}
+
+/**
+ * Saves an endpoint in the database.
+ *
+ * @return void
+ */
+function services_endpoint_save($endpoint) {
+  if (is_array($endpoint) && isset($endpoint['build_info'])) {
+    $endpoint = $endpoint['build_info']['args'][0];
+  }
+
+  // Set a default of an array if the value is not present.
+  foreach (array('server_settings', 'resources', 'authentication') as $endpoint_field) {
+    if (empty($endpoint->{$endpoint_field})) {
+      $endpoint->{$endpoint_field} = array();
+    }
+  }
+  ctools_include('export');
+  ctools_export_crud_save('services_endpoint', $endpoint);
+  ctools_export_load_object_reset('services_endpoint');
+  menu_rebuild();
+  cache_clear_all('services:' . $endpoint->name . ':', 'cache', TRUE);
+}
+
+/**
+ * Remove an endpoint.
+ *
+ * @return void
+ */
+function services_endpoint_delete($endpoint) {
+  ctools_include('export');
+  ctools_export_crud_delete('services_endpoint', $endpoint);
+  ctools_export_load_object_reset('services_endpoint');
+  menu_rebuild();
+  cache_clear_all('services:' . $endpoint->name . ':', 'cache', TRUE);
+}
+
+/**
+ * Export an endpoint.
+ *
+ * @return string
+ */
+function services_endpoint_export($endpoint, $indent = '') {
+  ctools_include('export');
+  return ctools_export_object('services_endpoint', $endpoint, $indent);
+}
+
+
+/**
+ * Gets all resource definitions.
+ *
+ * @param string $endpoint_name
+ *   Optional. The endpoint endpoint that's being used.
+ * @return array
+ *  An array containing all resources.
+ */
+function services_get_resources($endpoint_name = '') {
+  $cache_key = 'services:' . $endpoint_name . ':resources';
+
+  $resources = array();
+  if (($cache = cache_get($cache_key)) && isset($cache->data)) {
+    $resources = $cache->data;
+  }
+  else {
+    module_load_include('inc', 'services', 'includes/services.resource_build');
+    $resources = _services_build_resources($endpoint_name);
+    cache_set($cache_key, $resources);
+  }
+
+  return $resources;
+}
+
+/**
+ * Load the resources of the endpoint.
+ *
+ * @return array
+ */
+function services_get_resources_apply_settings($endpoint_name) {
+  $resources = services_get_resources($endpoint_name);
+  module_load_include('inc', 'services', 'includes/services.resource_build');
+  $endpoint = services_endpoint_load($endpoint_name);
+  _services_apply_endpoint($resources, $endpoint, TRUE);
+
+  return $resources;
+}
+
+/**
+ * Returns information about resource API version information.
+ * The resource API is the way modules expose resources to services,
+ * not the API that is exposed to the consumers of your services.
+ *
+ * @return array
+ *  API version information. 'default_version' is the version that's assumed
+ *  if the module doesn't declare an API version. 'versions' is an array
+ *  containing the known API versions. 'current_version' is the current
+ *  version number.
+ */
+function services_resource_api_version_info() {
+  $info = array(
+    'default_version' => 3001,
+    'versions' => array(3002),
+  );
+  $info['current_version'] = max($info['versions']);
+  return $info;
+}
+
+/**
+ * Implements hook_services_resources().
+ */
+function services_services_resources() {
+  module_load_include('inc', 'services', 'includes/services.resource_build');
+  // Return resources representing legacy services
+  return _services_core_resources();
+}
+
+/**
+ * Implementation of hook_services_authentication_info().
+ */
+function services_services_authentication_info() {
+  return array(
+    'title'             => t('Session authentication'),
+    'description'       => t("Uses Drupal's built in sessions to authenticate."),
+    'authenticate_call' => '_services_sessions_authenticate_call',
+  );
+}
+
+/**
+ * Authenticates a call using Drupal's built in sessions
+ *
+ * @return string
+ *   Error message in case error occured.
+ */
+function _services_sessions_authenticate_call($module, $controller) {
+  global $user;
+  $original_user = services_get_server_info('original_user');
+  if ($original_user->uid == 0) {
+    return;
+  }
+
+  if ($controller['callback'] != '_user_resource_get_token') {
+    $non_safe_method_called = !in_array($_SERVER['REQUEST_METHOD'], array('GET', 'HEAD', 'OPTIONS', 'TRACE'));
+    $csrf_token = NULL;
+    if (isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
+      $csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'];
+    }
+    elseif (isset($_REQUEST['services_token'])) {
+      $csrf_token = $_REQUEST['services_token'];
+    }
+    if ($non_safe_method_called && !drupal_valid_token($csrf_token, 'services')) {
+      return t('CSRF validation failed');
+    }
+  }
+
+  if ($user->uid != $original_user->uid) {
+    $user = $original_user;
+  }
+}
+
+/**
+ * Get operation class information.
+ *
+ * @return array An array with operation class information keyed by operation machine name.
+ */
+function services_operation_class_info() {
+  return array(
+    'operations' => array(
+      'title' => t('CRUD operations'),
+      'name' => t('CRUD operation'),
+      'class_singular' => 'operation',
+    ),
+    'actions' => array(
+      'title' => t('Actions'),
+      'name' => t('action'),
+      'class_singular' => 'action',
+    ),
+    'relationships' => array(
+      'title' => t('Relationships'),
+      'name' => t('relationship'),
+      'class_singular' => 'relationship',
+    ),
+    'targeted_actions' => array(
+      'title' => t('Targeted actions'),
+      'name' => t('targeted action'),
+      'class_singular' => 'targeted_action',
+    ),
+  );
+}
+
+/**
+ * Returns all the controller names for a endpoint.
+ *
+ * @param string $endpoint
+ *  The endpoint that should be used.
+ * @return array
+ *  An array containing all controller names.
+ */
+function services_controllers_list($endpoint) {
+  $controllers = array();
+  $class_info = services_operation_class_info();
+
+  $resources = services_get_resources($endpoint);
+  foreach ($resources as $resource_name => $resource) {
+    foreach ($class_info as $class_name => $class) {
+      if (empty($resource[$class_name])) {
+        continue;
+      }
+      foreach ($resource[$class_name] as $op_name => $op) {
+        $method = "{$resource_name}.{$op_name}";
+        if (empty($controllers[$method])) {
+          $controllers[$method] = $method;
+        }
+        else {
+          watchdog('services', 'Naming collision when listing controllers as methods. The %class %operation is not included in the listing.', array(
+            '%class' => $class['name'],
+            '%operation' => $op_name,
+          ), WATCHDOG_WARNING);
+        }
+      }
+    }
+  }
+  return $controllers;
+}
+
+/**
+ * Returns the requested controller.
+ *
+ * @param string $name
+ *  The name of the controller in the format: {resource}.{name} or
+ *  {resource}.{operation}. Examples: "node.retrieve", "system.getVariable".
+ * @param string $endpoint
+ *  The endpoint that should be used.
+ */
+function services_controller_get($name, $endpoint) {
+  list($resource_name, $method) = explode('.', $name);
+
+  $resources = services_get_resources($endpoint);
+  if (isset($resources[$resource_name])) {
+    $res = $resources[$resource_name];
+    if (isset($res[$method])) {
+      return $res[$method];
+    }
+    else {
+      $class_info = services_operation_class_info();
+      // Handle extended operations
+      foreach ($class_info as $class => $info) {
+        if (isset($res[$class]) && isset($res[$class][$method])) {
+          return $res[$class][$method];
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Returns an array of available updates versions for a resource.
+ *
+ * @return
+ *   If services has updates, an array of available updates sorted by version.
+ *   Otherwise, array().
+ */
+function services_get_updates() {
+  $updates = &drupal_static(__FUNCTION__, array());
+  if (!isset($updates) || empty($updates)) {
+    $updates = array();
+    module_load_include('inc', 'services', 'includes/services.resource_build');
+    // Load the resources for services.
+    _services_core_resources();
+    // Prepare regular expression to match all possible defined
+    // _resource_resource_method_update_N_N().
+    $regexp = '/_(?P<resource>.+)_resource_(?P<method>.+)_update_(?P<major>\d+)_(?P<minor>\d+)$/';
+    $functions = get_defined_functions();
+    // Narrow this down to functions ending with an integer, since all
+    // _resource_resource_method_update_N_N() functions end this way, and there are other
+    // possible functions which match '_update_'. We use preg_grep() here
+    // instead of foreaching through all defined functions, since the loop
+    // through all PHP functions can take significant page execution time.
+    // Luckily this only happens when the cache is cleared for an endpoint
+    // and resources are re-generated.
+    foreach (preg_grep('/_\d+$/', $functions['user']) as $function) {
+      // If this function is a service update function, add it to the list of
+      // services updates.
+      if (preg_match($regexp, $function, $matches)) {
+        $resource = $matches['resource'];
+        $method   = $matches['method'];
+        $major    = $matches['major'];
+        $minor    = $matches['minor'];
+
+        $updates[$resource][$method][] = array(
+          'version'  => $major .'_'. $minor,
+          'major'    => $major,
+          'minor'    => $minor,
+          'callback' => $function,
+          'resource' => $resource,
+          'method'   => $method,
+        );
+      }
+    }
+  }
+  return $updates;
+}
+
+/**
+ * Determine if any potential versions exist as valid headers.
+ * returns false if no version is present in the header for the specific call.
+ */
+function _services_version_header_options() {
+  $available_headers = array();
+  $updates = services_get_updates();
+  if(is_array($updates)) {
+    foreach ($updates as $resource => $update) {
+      foreach ($update as $method_name => $method) {
+        $available_headers[] = 'services_'. $resource .'_'.$method_name .'_version';
+      }
+    }
+  }
+  $headers = _services_parse_request_headers();
+
+  foreach($available_headers as $key => $version_header_option) {
+    $header_key = _services_fix_header_key($version_header_option);
+    $headers = _services_parse_request_headers();
+    if(array_key_exists($header_key, $headers)) {
+      $version = $headers[$header_key];
+    }
+  }
+  return isset($version) ? $version : FALSE;
+}
+
+/**
+ * Returns all request headers.
+ * @return
+ * And array with all request headers
+ */
+function _services_parse_request_headers() {
+  $headers = array();
+  foreach($_SERVER as $key => $value) {
+    $length = 5;
+    if (substr($key, 0, $length) <> 'HTTP_') {
+      continue;
+    }
+    $header = _services_fix_header_key($key, $length);
+    $headers[$header] = $value;
+  }
+  return $headers;
+}
+/**
+ * Fixes request headers to match what PHP gives us.
+ * @return
+ *   a string with the correct syntax for a header value.
+ */
+function _services_fix_header_key($key, $length = 0) {
+  return str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, $length)))));
+}
+
+/**
+ * Returns currently set api version for an endpoint resource method.
+ *
+ * @param $endpoint
+ *   A fully loadded endpoint.
+ * @param $resource
+ *   A resource name.
+ * @param $method
+ *   A method name.
+ * @return
+ *   an array with the major and minor api versions
+ */
+function services_get_resource_api_version($endpoint, $resource, $method) {
+  if (isset($endpoint->resources[$resource]) ) {
+    $class_info = services_operation_class_info();
+    foreach ($class_info as $class_name => $class) {
+      if (!empty($endpoint->resources[$resource][$class_name])) {
+        if (isset($endpoint->resources[$resource][$class_name][$method]['settings']['services']['resource_api_version'])) {
+          if($version = _services_version_header_options()) {
+            $split = explode('.', $version);
+          }
+          else {
+            $split = explode('.', $endpoint->resources[$resource][$class_name][$method]['settings']['services']['resource_api_version']);
+          }
+          return array(
+            'major' => $split[0],
+            'minor' => $split[1],
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Apply versions to the controller.
+ *
+ * @param $controller
+ *   A controller array.
+ * @param $options
+ *   A options array filled with verison information.
+ * @return
+ *   An array with the major and minor api versions
+ */
+function services_request_apply_version(&$controller, $options = array()) {
+  if (isset($options)) {
+    extract($options);
+  }
+  if (isset($version) && $version == '1.0') {
+    //do nothing
+    return;
+  }
+  $updates = services_get_updates();
+  if (isset($method) && isset($updates[$resource][$method])) {
+    foreach ($updates[$resource][$method] as $update) {
+      if (!isset($version)) {
+        $endpoint = services_get_server_info('endpoint', '');
+        $endpoint = services_endpoint_load($endpoint);
+        $default_version = services_get_resource_api_version($endpoint, $resource, $method);
+      }
+      else {
+        $default_version = explode('.', $version);
+        $default_version['major'] = $default_version[0];
+        $default_version['minor'] = $default_version[1];
+      }
+
+      // Apply updates until we hit our default update for the site.
+      if ($update['major'] <= $default_version['major'] && $update['minor'] <= $default_version['minor']) {
+        $update_data = call_user_func($update['callback']);
+        $controller = array_merge($controller, $update_data);
+      }
+    }
+  }
+}
+
+/**
+ * Convert a resource to RPC-style methods.
+ *
+ * @param array $resource
+ *   A resource definition.
+ * @param string $resource_name
+ *   The resource name, ie: node.
+ *
+ * @return array
+ *   An array of RPC method definitions
+ */
+function services_resources_as_procedures($resource, $resource_name) {
+  $methods = array();
+  $class_info = services_operation_class_info();
+  foreach ($class_info as $class_name => $class) {
+    if (empty($resource[$class_name])) {
+      continue;
+    }
+    foreach ($resource[$class_name] as $op_name => $op) {
+      $method_name = "{$resource_name}.{$op_name}";
+      if (empty($methods[$method_name])) {
+        $methods[$method_name] = array(
+          'method' => $method_name,
+        ) + $op;
+      }
+      else {
+        watchdog('services', 'Naming collision when listing controllers as methods. The %class %operation wont be available for RPC-style servers.', array(
+          '%class' => $class['name'],
+          '%operation' => $op_name,
+        ), WATCHDOG_WARNING);
+      }
+    }
+  }
+  return $methods;
+}
+
+/**
+ * Helper function to build index queries.
+ *
+ * @param $query
+ *   Object database query object.
+ * @param $page
+ *   Integer page number we are requesting.
+ * @param $fields
+ *   Array fields to return.
+ * @param $parameter
+ *   Array parameters to add to the index query.
+ * @param $page_size
+ *   Integer number of items to be returned.
+ * @param $resource
+ *   String name of the resource building the index query
+ * @param $options
+ *   Additional query options.
+ */
+function services_resource_build_index_query($query, $page, $fields, $parameters, $page_size, $resource, $options = array()) {
+  $default_limit = variable_get("services_{$resource}_index_page_size", 20);
+  if (!user_access('perform unlimited index queries') && $page_size > $default_limit) {
+    $page_size = $default_limit;
+  }
+  $query->range($page * $page_size, $page_size);
+  if ($fields == '*') {
+    $query->fields('t');
+  }
+  else {
+    $query->fields('t', explode(',', $fields));
+  }
+  if (isset($parameters) && is_array($parameters)) {
+    foreach ($parameters as $parameter => $parameter_value) {
+      $op = 'IN';
+      if (isset($options['parameters_op']) && isset($options['parameters_op'][$parameter])) {
+        $op = strtoupper($options['parameters_op'][$parameter]);
+      }
+      $query->condition($parameter, services_str_getcsv($parameter_value), $op);
+    }
+  }
+  if (isset($options['orderby'])) {
+    foreach($options['orderby'] as $column => $sort) {
+      $query->orderBy($column, $sort);
+    }
+  }
+}
+
+
+/**
+ * Emulate str_getcsv on systems where it is not available.
+ *
+ * @ingroup php_wrappers
+ */
+function services_str_getcsv($input, $delimiter = ',', $enclosure = '"', $escape = '\\') {
+  $ret = array();
+
+  if (!function_exists('str_getcsv')) {
+    $temp = fopen("php://memory", "rw");
+    fwrite($temp, $input);
+    fseek($temp, 0);
+    $ret = fgetcsv($temp, 0, $delimiter, $enclosure);
+    fclose($temp);
+  }
+  else {
+    $ret = str_getcsv($input, $delimiter, $enclosure, $escape);
+  }
+  return $ret;
+}
+
+
+/**
+ * Helper function to build a list of items satisfying the index query.
+ *
+ * @param $results
+ *   Object database query results object.
+ * @param $type
+ *   String type of index that is being processed.
+ * @param $field
+ *   String field to use for looking up uri.
+ */
+function services_resource_build_index_list($results, $type, $field) {
+  // Put together array of matching items to return.
+  $items = array();
+  foreach ($results as $result) {
+    if ($uri = services_resource_uri(array($type, $result->{$field}))) {
+      $result->uri = $uri;
+      if ($type == 'user') {
+        services_remove_user_data($result);
+      }
+    }
+    $items[] = $result;
+  }
+
+  return $items;
+}
+
+/**
+ *  Helper function to remove data from the user object.
+ *
+ *  @param $account
+ *    Object user object.
+ */
+function services_remove_user_data(&$account) {
+  global $user;
+
+  // Remove the user password from the account object.
+  unset($account->pass);
+  if (isset($account->current_pass)) { unset($account->current_pass); }
+
+  // Remove the user mail, if current user don't have "administer users"
+  // permission, and the requested account not match the current user.
+  if (!user_access('administer users') && isset($account->uid) && isset($user->uid) && $account->uid !== $user->uid) {
+    unset($account->mail);
+  }
+
+  // Remove the user init, if current user don't have "administer users"
+  // permission.
+  if (!user_access('administer users')) {
+    unset($account->init);
+  }
+
+  drupal_alter('services_account_object', $account);
+
+  // Add the full URL to the user picture, if one is present.
+  if (variable_get('user_pictures', FALSE) && isset($account->picture->uri)) {
+    $account->picture->url = file_create_url($account->picture->uri);
+  }
+}
+
+/**
+ * Helper function to remove fields from an entity according to field_access
+ *
+ * @param $op What you want to do with the entity. ie, view
+ * @param $entity_type The entity type. ie node, or user
+ * @param $entity The physical entity object
+ *
+ * returns $cloned_entity with fields removed that are needed.
+ */
+function services_field_permissions_clean($op, $entity_type, $entity) {
+  $cloned_entity = clone $entity;
+  //Each entity type seems to have a different key needed from field_info_instances
+  //Lets determine that key here.
+  switch ($entity_type) {
+    case 'comment':
+      $key = $cloned_entity->node_type;
+      break;
+    case 'user':
+      $key = $entity_type;
+      break;
+    case 'node':
+      $key = $cloned_entity->type;
+      break;
+    case 'taxonomy_term':
+      $key = $cloned_entity->vocabulary_machine_name;
+      break;
+    default:
+      $key = $entity_type;
+  }
+  //Allow someone to alter the field lookup key in the case they used their own entity.
+  drupal_alter('services_field_permissions_field_lookup_key', $key);
+
+  //load the fields info
+  $fields_info = field_info_instances($entity_type);
+  //Loop through all the fields on the content type
+  foreach ($fields_info[$key] as $field_name => $field_data) {
+    //check for access on our op
+    $access = field_access($op, field_info_field($field_name), $entity_type, $entity);
+    //If no access unset the field.
+    if (!$access) {
+      unset($cloned_entity->$field_name);
+    }
+  }
+  return $cloned_entity;
+}
+
+
+/**
+ * Helper function to execute a index query.
+ *
+ * @param $query
+ *   Object dbtng query object.
+ */
+function services_resource_execute_index_query($query) {
+  try {
+    return $query->execute();
+  }
+  catch (PDOException $e) {
+    return services_error(t('Invalid query provided, double check that the fields and parameters you defined are correct and exist. ' . $e->getMessage()), 406);
+  }
+}
+
+/**
+ * If we are running nginx we need to implement getallheaders our self.
+ *
+ * Code is taken from http://php.net/manual/en/function.getallheaders.php
+ */
+if (!function_exists('getallheaders')) {
+  function getallheaders() {
+    foreach ($_SERVER as $name => $value) {
+      if (substr($name, 0, 5) == 'HTTP_') {
+        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+      }
+    }
+
+    return $headers;
+  }
+}
+
+/**
+ * Page callback to generate token.
+ */
+function _services_session_token() {
+  drupal_page_is_cacheable(FALSE);
+  drupal_add_http_header('Content-Type', 'text/plain');
+  print drupal_get_token('services');
+  drupal_exit();
+}
+
+/**
+ * Implements hook_features_export_alter().
+ */
+function services_features_export_alter(&$export, $module_name) {
+  if (!empty($export['features']['services_endpoint'])) {
+    $servers = services_get_servers();
+    foreach ($export['features']['services_endpoint'] as $name) {
+      $endpoint = services_endpoint_load($name);
+      // Add the server module as a dependency.
+      if (isset($servers[$endpoint->server])) {
+        $export['dependencies'][$servers[$endpoint->server]['module']] = $servers[$endpoint->server]['module'];
+      }
+      // Add the enabled authentication modules as dependencies.
+      foreach ($endpoint->authentication as $module => $settings) {
+        $export['dependencies'][$module] = $module;
+      }
+    }
+
+    // Ensure the dependencies list is still sorted alphabetically.
+    ksort($export['dependencies']);
+  }
+}

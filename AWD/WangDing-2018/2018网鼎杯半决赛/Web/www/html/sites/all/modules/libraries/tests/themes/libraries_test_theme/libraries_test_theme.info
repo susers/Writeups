@@ -1,0 +1,11 @@
+name = Libraries test theme
+description = Tests that themes can provide and alter library information.
+core = 7.x
+hidden = TRUE
+
+; Information added by Drupal.org packaging script on 2016-05-12
+version = "7.x-2.3"
+core = "7.x"
+project = "libraries"
+datestamp = "1463077450"
+

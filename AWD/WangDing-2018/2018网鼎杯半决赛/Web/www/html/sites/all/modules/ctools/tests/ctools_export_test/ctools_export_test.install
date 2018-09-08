@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function ctools_export_test_schema() {
+  $schema['ctools_export_test'] = array(
+    'description' => 'CTools export test data table',
+    'export' => array(
+      'key' => 'machine',
+      'identifier' => 'ctools_export_test',
+      'default hook' => 'default_ctools_export_tests',
+      'bulk export' => TRUE,
+      'api' => array(
+        'owner' => 'ctools_export_test',
+        'api' => 'default_ctools_export_tests',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'machine' => array(
+        'description' => "The unique machine name (required by ctools).",
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'title' => array(
+        'description' => "The human readable title.",
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'number' => array(
+        'description' => "A number.",
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'data' => array(
+        'type' => 'blob',
+        'description' => "A serialized array of data.",
+        'serialize' => TRUE,
+        'serialized default' => 'a:0:{}',
+      ),
+    ),
+    'primary key' => array('machine'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function ctools_export_test_install() {
+  $ctools_export_tests = array();
+  // Put this default in the database only (no default).
+  $ctools_export_test = new stdClass();
+  $ctools_export_test->machine = 'database_test';
+  $ctools_export_test->title = 'Database test';
+  $ctools_export_test->number = 0;
+  $ctools_export_test->data = array(
+    'test_1' => 'Test 1',
+    'test_2' => 'Test 2',
+  );
+  $ctools_export_tests['database_test'] = $ctools_export_test;
+
+  // Put this default in the database, so we have this in code and in the database.
+  $ctools_export_test = new stdClass();
+  $ctools_export_test->machine = 'overridden_test';
+  $ctools_export_test->title = 'Overridden test';
+  $ctools_export_test->number = 1;
+  $ctools_export_test->data = array(
+    'test_1' => 'Test 1',
+    'test_2' => 'Test 2',
+  );
+  $ctools_export_tests['overridden_test'] = $ctools_export_test;
+
+  foreach ($ctools_export_tests as $ctools_export_test) {
+    // Save the record to the database.
+    drupal_write_record('ctools_export_test', $ctools_export_test);
+  }
+}

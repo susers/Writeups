@@ -1,0 +1,100 @@
+<?php
+
+class ServicesSecurityTests extends ServicesWebTestCase {
+  // Class variables
+  protected $privileged_user = NULL ;
+  // Endpoint details.
+  protected $endpoint = NULL;
+
+  /**
+   * Implementation of setUp().
+   */
+  public function setUp() {
+    parent::setUp(
+      'ctools',
+      'services',
+      'rest_server'
+    );
+    // Set up endpoint.
+    $this->endpoint = $this->saveNewEndpoint();
+
+    // Create and log in our privileged user.
+    $this->privileged_user = $this->drupalCreateUser(array('get a system variable', 'set a system variable'));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+   return array(
+     'name'        => t('Security'),
+     'description' => t('Security tests.'),
+     'group'       => t('Services'),
+   );
+  }
+
+  public function testSessionCSRF() {
+    $variable_name = $this->randomName();
+    $variable_value = $this->randomString();
+    $default_variable_value = $this->randomString();
+    $this->servicesPost($this->endpoint->path . '/system/set_variable', array('name' => $variable_name, 'value' => $variable_value));
+
+    $get_variable_args = array('name' => $variable_name, 'default' => $default_variable_value);
+    $response = $this->servicesPostNoCSRFHeader($this->endpoint->path . '/system/get_variable', $get_variable_args);
+    $this->assertEqual($response['status'], 'HTTP/1.1 401 Unauthorized : CSRF validation failed');
+
+    $bad_csrf_token_headers = array('X-CSRF-Token: ' . $this->randomString());
+    $response = $this->servicesPostNoCSRFHeader($this->endpoint->path . '/system/get_variable', $get_variable_args, $bad_csrf_token_headers);
+    $this->assertEqual($response['status'], 'HTTP/1.1 401 Unauthorized : CSRF validation failed');
+
+    $csrf_token = $this->drupalGet('services/session/token');
+    $good_csrf_token_headers = array('X-CSRF-Token: ' . $csrf_token);
+    $response = $this->servicesPostNoCSRFHeader($this->endpoint->path . '/system/get_variable', $get_variable_args, $good_csrf_token_headers);
+    $this->assertEqual($response['body'], $variable_value, 'Value of variable retrieved.');
+  }
+
+  /**
+   * Copy of servicesPost method but without CSRF header.
+   */
+  protected function servicesPostNoCSRFHeader($url, $data = array(), $headers = array(), $call_type = 'php') {
+    switch ($call_type) {
+      case 'php':
+        // Add .php to get serialized response.
+        $url = $this->getAbsoluteUrl($url) . '.php';
+        // Otherwise Services will reject arguments.
+        $headers[] = "Content-type: application/x-www-form-urlencoded";
+        // Prepare arguments.
+        $post = drupal_http_build_query($data, '', '&');
+        break;
+      case 'json':
+        // Add .json to get json encoded response.
+        $url = $this->getAbsoluteUrl($url) . '.json';
+        // Set proper headers.
+        $headers[] = "Content-type: application/json";
+        // Prepare arguments.
+        $post = json_encode($data);
+        break;
+    }
+
+    $content = $this->curlExec(array(
+      CURLOPT_URL => $url,
+      CURLOPT_POST => TRUE,
+      CURLOPT_POSTFIELDS => $post,
+      CURLOPT_HTTPHEADER => $headers,
+      CURLOPT_HEADER => TRUE,
+      CURLOPT_RETURNTRANSFER => TRUE
+    ));
+
+    // Parse response.
+    list($info, $header, $status, $code, $body) = $this->parseHeader($content, $call_type);
+
+    $this->verbose('POST request to: ' . $url .
+      '<hr />Arguments: ' . highlight_string('<?php ' . var_export($data, TRUE), TRUE) .
+      '<hr />Raw POST body: ' . $post .
+      '<hr />Response: ' . highlight_string('<?php ' . var_export($body, TRUE), TRUE) .
+      '<hr />Curl info: ' . highlight_string('<?php ' . var_export($info, TRUE), TRUE) .
+      '<hr />Raw response: ' . $content);
+    return array('header' => $header, 'status' => $status, 'code' => $code, 'body' => $body);
+  }
+}

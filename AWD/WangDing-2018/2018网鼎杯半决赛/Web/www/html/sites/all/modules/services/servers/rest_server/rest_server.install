@@ -1,0 +1,35 @@
+<?php
+/**
+ * @file
+ * Install, uninstall and update the rest server module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function rest_server_requirements($phase) {
+  $requirements = array();
+
+  // Report the version of libraries.
+  if ($phase == 'runtime') {
+    drupal_load('module', 'libraries');
+    $libraries = rest_server_libraries_info();
+    foreach ($libraries as $name => $info) {
+      $library = libraries_detect($name);
+      $requirements[$name] = array(
+        'title' => $library['name'],
+        'severity' => $library['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
+        'value' => $library['installed'] ? l($library['version'], $library['vendor url']) : $library['error message'],
+      );
+    }
+  }
+  
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function rest_server_uninstall() {
+  variable_del('rest_server_default_response_format');
+}

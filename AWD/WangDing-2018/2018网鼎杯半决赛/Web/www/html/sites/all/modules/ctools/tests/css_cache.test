@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * Tests the custom CSS cache handler.
+ */
+class CtoolsCSSObjectCache extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'CSS cache',
+      'description' => 'Tests the custom CSS cache handler.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+  }
+
+  /**
+   * Tests the custom CSS cache handler.
+   *
+   * @see https://drupal.org/node/1313368
+   */
+  public function testCssCache() {
+    // Create a CSS cache entry.
+    $filename = ctools_css_cache('body { color: red; }');
+
+    // Perform a cron run. The CSS cache entry should not be removed.
+    $this->cronRun();
+    $this->assertTrue(file_exists($filename), 'The CSS cache is not cleared after performing a cron run.');
+
+    // Manually clear the caches. The CSS cache entry should be removed.
+    drupal_flush_all_caches();
+    $this->assertFalse(file_exists($filename), 'The CSS cache is cleared after clearing all caches.');
+  }
+
+}

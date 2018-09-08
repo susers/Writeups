@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * Test menu links depending on user permissions.
+ */
+class CtoolsCssTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'CSS Tools tests',
+      'description' => 'Confirm the custom CSS handling works.',
+      'group' => 'ctools',
+      'dependencies' => array('ctools'),
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(array $modules = array()) {
+    $modules[] = 'ctools';
+    parent::setUp($modules);
+    ctools_include('css');
+  }
+
+  /**
+   * Test that Stored CSS snippets can be retrieved, filtered or otherwise.
+   */
+  public function testCssStoreFilterRetrieve() {
+    $css = "#some-id .some-class {\n  color: black;\n  illegal-key: foo;\n}";
+    $filtered_css = '#some-id .some-class{color:black;}';
+
+    $this->assertNull(ctools_css_retrieve('missing-css-test'), 'Missing css snippet is not found');
+
+    $filename1 = ctools_css_store('unfiltered-css-test', $css, FALSE);
+    $filename2 = ctools_css_store('filtered-css-test', $css, TRUE);
+
+    $file_contents = file_get_contents($filename1);
+    $this->assertEqual($css, $file_contents, 'Unfiltered css file contents are correct');
+
+    $this->assertEqual($filename1, ctools_css_retrieve('unfiltered-css-test'), 'Unfiltered css file successfully fetched');
+    $file_contents = file_get_contents($filename1);
+    $this->assertEqual($css, $file_contents, 'Unfiltered css file contents are correct');
+
+    $this->assertEqual($filename2, ctools_css_retrieve('filtered-css-test'), 'Filtered css file succcesfully fetched');
+    $file_contents = file_get_contents($filename2);
+    $this->assertEqual($filtered_css, $file_contents, 'Filtered css file contents are correct');
+  }
+
+  /**
+   * Test that Stored CSS snippets can be correctly overwritten.
+   */
+  public function testCssStoreOverwrite() {
+    $css1 = "#some-id .some-class {\n  color: black;\n  illegal-key: foo;\n}";
+
+    $css2 = "#other-id .other-class {\n  color: blue;\n  illegal-key: foo;\n}";
+    $filtered_css2 = '#other-id .other-class{color:blue;}';
+
+    ctools_css_store('unfiltered-css-test', $css1, FALSE);
+    ctools_css_store('filtered-css-test', $css1, TRUE);
+
+    // Now overwrite the first css with the second version.
+    $filename3 = ctools_css_store('unfiltered-css-test', $css2, FALSE);
+    $filename4 = ctools_css_store('filtered-css-test', $css2, TRUE);
+
+    $file_contents3 = file_get_contents($filename3);
+    $file_contents4 = file_get_contents($filename4);
+
+    $this->assertEqual($css2, $file_contents3, 'Unfiltered CSS has overwritten earlier contents.');
+    $this->assertEqual($filtered_css2, $file_contents4, 'Filtered CSS has overwritten earlier contents.');
+  }
+
+  /**
+   * Test that in case that url is used, the colons survives filtering.
+   */
+  public function testCssFilterURLHandling() {
+    $css = "#some-id {\n  background-image: url(http://example.com/example.gif);\n}";
+    $css_data = ctools_css_disassemble($css);
+    $empty_array = array();
+    $disallowed_values_regex = '/(expression)/';
+
+    $intermediate = ctools_css_filter_css_data($css_data, $empty_array, $empty_array, '', $disallowed_values_regex);
+    $filtered = ctools_css_assemble($intermediate);
+
+    $url = (strpos($filtered, 'http://example.com/example.gif') !== FALSE);
+    $this->assertTrue($url, 'CSS with multiple colons can survive.');
+  }
+
+  /**
+   * Test that when the CSS has two properties defined they are merged.
+   */
+  public function testCssFilterMergeProperties() {
+    $css = "#some-id {\n  font-size: 12px;\n}\n#some-id {\n  color: blue;\n}";
+    $filtered = ctools_css_filter($css);
+    $font_size = (strpos($filtered, 'font-size:12px;') !== FALSE);
+    $color = (strpos($filtered, 'color:blue') !== FALSE);
+    $this->assertTrue($font_size && $color, 'Multiple properties are merged.');
+
+    $css = '@import url("other.css");p {color: red;}';
+    $filtered = ctools_css_filter($css);
+    $other_css = (strpos($filtered, 'other.css') === FALSE);
+    $color = (strpos($filtered, 'color:red') !== FALSE);
+    $this->assertTrue($other_css && $color, 'CSS is properly sanitized.');
+
+    $css = ';p {color: red; font-size: 12px;}';
+    $filtered = ctools_css_filter($css);
+    $font_size = (strpos($filtered, 'font-size:12px;') !== FALSE);
+    $color = (strpos($filtered, 'color:red') !== FALSE);
+    $this->assertTrue($font_size && $color, 'Multiple properties are retained.');
+  }
+
+}

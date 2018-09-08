@@ -1,0 +1,60 @@
+div.ctools-modal-content {
+  text-align: right;
+}
+
+div.ctools-modal-content .modal-header {
+  background-color: #2385c2;
+  padding: 0 1em 0 .25em;
+}
+
+div.ctools-modal-content a.close {
+  color: white;
+  float: left;
+}
+
+/** modal forms CSS **/
+div.ctools-modal-content .form-item label {
+  float: right;
+}
+
+div.ctools-modal-content .form-item .description {
+  clear: right;
+}
+
+div.ctools-modal-content .form-item .description .tips {
+  margin-left: 0;
+  margin-right: 2em;
+}
+
+div.ctools-modal-content fieldset,
+div.ctools-modal-content .form-radios,
+div.ctools-modal-content .form-checkboxes {
+  clear: right;
+}
+
+div.ctools-modal-content .resizable-textarea {
+  margin-left: 5em;
+  margin-right: 15em;
+}
+
+div.ctools-modal-content .container-inline .form-item {
+  margin-right: 0;
+  margin-left: 2em;
+}
+
+div.ctools-modal-content label.hidden-options {
+  background-position: left;
+  padding-right: 0;
+  padding-left: 12px;
+}
+
+div.ctools-modal-content label.expanded-options {
+  background-position: left;
+  padding-right: 0;
+  padding-left: 16px;
+}
+
+div.ctools-modal-content .dependent-options {
+  padding-left: 0;
+  padding-right: 30px;
+}

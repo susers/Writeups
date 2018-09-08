@@ -1,0 +1,99 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <div>TODO write content</div>
+    
+    <div class="uploader-avatar-box">
+						<div class="clear">						
+							<input type="button" id="upload-btn" class="btn btn-large clearfix" value="Choose file">
+              <span style="padding-left:5px;vertical-align:middle;"><i>PNG, JPG, or GIF (500K max file size)</i></span>
+							<div id="errormsg" class="clearfix redtext">
+							</div>	              
+							<div id="pic-progress-wrap" class="progress-wrap" style="margin-top:10px;margin-bottom:10px;">
+							</div>	
+							
+							<div id="picbox" class="clear" style="padding-top:0px;padding-bottom:10px;">
+							</div>
+
+						</div>
+					</div>	
+    
+    <script type="text/javascript" src="../Simple-Ajax-Uploader/SimpleAjaxUploader.js"></script>
+    <script type="text/javascript">
+      function safe_tags(str) {
+          return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+      }
+ window.onload = function() {
+     var dir = "/sites/all/modules/custom/avatar_loader/lib/demo";
+     
+     var btn = document.getElementById('upload-btn'),
+      wrap = document.getElementById('pic-progress-wrap'),
+      picBox = document.getElementById('picbox'),
+      errBox = document.getElementById('errormsg');
+	
+  var uploader = new ss.SimpleUpload({
+        button: btn,
+        url: dir + '/save.php',
+        progressUrl: dir + '/uploadProgress.php',
+        name: 'imgfile',
+        multiple: true,
+        maxUploads: 2,
+        maxSize: 3000,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'],
+        accept: 'image/*',
+        debug: true,
+        hoverClass: 'btn-hover',
+        focusClass: 'active',
+        disabledClass: 'disabled',
+        responseType: 'json',
+        onExtError: function(filename, extension) {
+          alert(filename + ' is not a permitted file type.'+"\n\n"+'Only PNG, JPG, and GIF files are allowed in the demo.');
+        },
+        onSizeError: function(filename, fileSize) {
+          alert(filename + ' is too big. (500K max file size)');
+        },        
+        onSubmit: function(filename, ext) {            
+           var prog = document.createElement('div'),
+               outer = document.createElement('div'),
+               bar = document.createElement('div'),
+               size = document.createElement('div'),
+               self = this;     
+    
+            prog.className = 'prog';
+            size.className = 'size';
+            outer.className = 'progress';
+            bar.className = 'bar';
+            
+            outer.appendChild(bar);
+            prog.innerHTML = '<span style="vertical-align:middle;">'+safe_tags(filename)+' - </span>';
+            prog.appendChild(size);
+            prog.appendChild(outer);
+            wrap.appendChild(prog); // 'wrap' is an element on the page
+            
+            self.setProgressBar(bar);
+            self.setProgressContainer(prog);
+            self.setFileSizeBox(size);                
+            
+            errBox.innerHTML = '';
+            btn.value = 'Choose another file';
+          },		
+        onComplete: function(file, response) {
+            if (response.success === true) {
+              picBox.innerHTML = '<img src="' + dir + '/view.php?file=' + encodeURIComponent(response.file) + '">';
+            } else {
+              errBox.innerHTML = response.msg;
+            }
+          }
+	});
+}
+    </script>
+  </body>
+</html>

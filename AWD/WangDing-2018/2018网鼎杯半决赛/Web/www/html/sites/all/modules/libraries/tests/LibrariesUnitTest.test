@@ -1,0 +1,78 @@
+<?php
+
+/**
+ * @file
+ * Contains LibrariesUnitTest.
+ *
+ * Simpletest automatically discovers test files using PSR-4. We cannot,
+ * however, declare a namespace for this class, as that would require PHP 5.3.
+ * To prepare the PHP 5.3 requirement and the usage of PSR-4 in 7.x-3.x, we
+ * place the test files in the correct directory already, but for now register
+ * them explicitly in libraries.info.
+ */
+
+/**
+ * Tests basic Libraries API functions.
+ */
+class LibrariesUnitTest extends DrupalUnitTestCase {
+
+  /**
+   * Provides metadata about this test.
+   *
+   * @return array
+   *   An array of test metadata with the following keys:
+   *   - name: The name of the test.
+   *   - description: The description of the test.
+   *   - group: The group of the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Libraries API unit tests',
+      'description' => 'Tests basic functions provided by Libraries API.',
+      'group' => 'Libraries API',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    drupal_load('module', 'libraries');
+    parent::setUp();
+  }
+
+  /**
+   * Tests libraries_get_path().
+   */
+  public function testLibrariesGetPath() {
+    // Note that, even though libraries_get_path() doesn't find the 'example'
+    // library, we are able to make it 'installed' by specifying the 'library
+    // path' up-front. This is only used for testing purposed and is strongly
+    // discouraged as it defeats the purpose of Libraries API in the first
+    // place.
+    $this->assertEqual(libraries_get_path('example'), FALSE, 'libraries_get_path() returns FALSE for a missing library.');
+  }
+
+  /**
+   * Tests libraries_prepare_files().
+   */
+  public function testLibrariesPrepareFiles() {
+    $expected = array(
+      'files' => array(
+        'js' => array('example.js' => array()),
+        'css' => array('example.css' => array()),
+        'php' => array('example.php' => array()),
+      ),
+    );
+    $library = array(
+      'files' => array(
+        'js' => array('example.js'),
+        'css' => array('example.css'),
+        'php' => array('example.php'),
+      ),
+    );
+    libraries_prepare_files($library, NULL, NULL);
+    $this->assertEqual($expected, $library, 'libraries_prepare_files() works correctly.');
+  }
+
+}

@@ -1,0 +1,119 @@
+<?php
+
+/**
+ * @file
+ * Contains LibrariesAdminWebTest.
+ *
+ * Simpletest automatically discovers test files using PSR-4. We cannot,
+ * however, declare a namespace for this class, as that would require PHP 5.3.
+ * To prepare the PHP 5.3 requirement and the usage of PSR-4 in 7.x-3.x, we
+ * split each test class into its own file and use the correct base name, but
+ * for now use the 'test' extension and register them explicitly in
+ * libraries.info.
+ *
+ * @see simpletest_test_get_all()
+ */
+
+/**
+ * Tests the administrative interface for libraries.
+ */
+class LibrariesAdminWebTest extends LibrariesWebTestBase {
+
+  /**
+   * Provides metadata about this test.
+   *
+   * @return array
+   *   An array of test metadata with the following keys:
+   *   - name: The name of the test.
+   *   - description: The description of the test.
+   *   - group: The group of the test.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Libraries administration',
+      'description' => 'Tests the administrative interface for libraries.',
+      'group' => 'Libraries API',
+    );
+  }
+
+  /**
+   * Tests the libraries report at /admin/reports/libraries.
+   */
+  public function testLibrariesReportOverview() {
+    $this->getWithPermissions(array('access site reports'), 'admin/reports/libraries');
+    $this->assertRaw('Libraries');
+
+    // Make sure that all the libraries are listed.
+    $libraries = libraries_info();
+    $this->assertTrue($libraries);
+    foreach ($libraries as $library) {
+      $this->assertText($library['name']);
+      $this->assertLinkByHref('admin/reports/libraries/' . $library['machine name']);
+    }
+
+    // Make sure that all possible statuses are displayed.
+    $this->assertText('OK');
+    $this->assertText('Not found');
+    $this->assertText('Not detected');
+    $this->assertText('Not supported');
+    $this->assertText('Missing dependency');
+    $this->assertText('Incompatible dependency');
+
+    // Make sure that the providers are displayed.
+    $this->assertRaw('<em class="placeholder">Libraries test module</em> module');
+    $this->assertRaw('<em class="placeholder">Libraries test theme</em> theme');
+    $this->assertRaw('<em class="placeholder">example_info_file.libraries.info</em> info file');
+
+    // Make sure that homepage and download links are displayed.
+    $this->assertLinkByHref('http://example.com');
+    $this->assertLinkByHref('http://example.com/download');
+  }
+
+  /**
+   * Tests the libraries report for an installed library.
+   */
+  public function testLibrariesReportInstalled() {
+    $this->getWithPermissions(array('access site reports'), 'admin/reports/libraries/example_files');
+    $this->assertRaw('Status report for library <em class="placeholder">Example files</em>');
+    $this->assertRaw('The <em class="placeholder">Example files</em> library is installed correctly.');
+    // Check that the information in the status report is displayed.
+    $this->assertText('Example files');
+    $this->assertText('example_files');
+    $this->assertRaw('<em class="placeholder">Libraries test module</em> module');
+    $this->assertText(drupal_get_path('module', 'libraries') . '/tests/libraries/example');
+    $this->assertText('1');
+  }
+
+  /**
+   * Tests the libraries report for a missing library.
+   */
+  public function testLibrariesReportMissing() {
+    $this->getWithPermissions(array('access site reports'), 'admin/reports/libraries/example_missing');
+    $this->assertRaw('Status report for library <em class="placeholder">Example missing</em>');
+    $this->assertRaw('The <em class="placeholder">Example missing</em> library could not be found.');
+    // Check that the download link is being displayed.
+    $this->assertLinkByHref('http://example.com/download');
+  }
+
+
+  /**
+   * Tests the libraries report for a missing library.
+   */
+  public function testLibrariesReportNotDetected() {
+    $this->getWithPermissions(array('access site reports'), 'admin/reports/libraries/example_undetected_version');
+    $this->assertRaw('Status report for library <em class="placeholder">Example undetected version</em>');
+    $this->assertRaw('The version of the <em class="placeholder">Example undetected version</em> library could not be detected.');
+  }
+
+  /**
+   * Tests the libraries report for a missing library.
+   */
+  public function testLibrariesReportNotSupported() {
+    $this->getWithPermissions(array('access site reports'), 'admin/reports/libraries/example_unsupported_version');
+    $this->assertRaw('Status report for library <em class="placeholder">Example unsupported version</em>');
+    $this->assertRaw('The installed version <em class="placeholder">1</em> of the <em class="placeholder">Example unsupported version</em> library is not supported.');
+    // Check that the download link is being displayed.
+    $this->assertLinkByHref('http://example.com/download');
+  }
+
+}

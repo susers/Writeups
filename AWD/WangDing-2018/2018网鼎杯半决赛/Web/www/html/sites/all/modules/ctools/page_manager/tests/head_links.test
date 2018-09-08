@@ -1,0 +1,77 @@
+<?php
+
+/**
+ * @file
+ * Tests the head links for page manager pages.
+ */
+
+/**
+ * Test the head links.
+ */
+class HeadLinksTestCase extends DrupalWebTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Head links test',
+      'description' => 'Checks that the shortlink and canonical links are present on a node page overriden by Page manager',
+      'group' => 'ctools',
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp('page_manager');
+
+    // First add an override for "node/%node".
+    variable_set('page_manager_node_view_disabled', FALSE);
+
+    $record = (object) array(
+      'name' => 'node_view__http_response_707659df-062d-4252-8c2a-22a8e0289cd4',
+      'task' => 'node_view',
+      'subtask' => '',
+      'handler' => 'http_response',
+      'weight' => '1',
+      'conf' => array(
+        'title' => 'Test',
+        'contexts' => array(
+          0 => array(
+            'identifier' => 'String',
+            'keyword' => 'string',
+            'name' => 'string',
+            'string' => 'Test',
+            'id' => 1,
+          ),
+        ),
+        'relationships' => array(),
+        'code' => '404',
+        'destination' => '',
+        'name' => '',
+      ),
+    );
+
+    page_manager_save_task_handler($record);
+
+    menu_rebuild();
+  }
+
+  /**
+   * Test the presence of the head links.
+   */
+  public function testHeadLinks() {
+    $node = $this->drupalCreateNode();
+    $url = 'node/' . $node->nid;
+    $this->drupalGet($url);
+
+    $shortlink = $this->xpath('//head//link[@rel="shortlink"]');
+    $this->assertEqual(url($url), (string) $shortlink[0]['href'], 'shortlink url found');
+
+    $canonical = $this->xpath('//head//link[@rel="canonical"]');
+    $this->assertEqual(url($url), (string) $canonical[0]['href'], 'canonical url found');
+  }
+
+}

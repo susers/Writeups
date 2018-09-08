@@ -1,0 +1,674 @@
+<?php
+// $Id: ServicesResourceUserTests.test,v 1.1.2.1 2011/01/19 00:34:49 ocyrus Exp $
+
+/**
+ * @file
+ * Call the endpoint tests when no authentication is being used.
+ *
+ */
+
+/**
+ * Run test cases for the endpoint with no authentication turned on.
+ *
+ */
+class ServicesResourceUsertests extends ServicesWebTestCase {
+  // Class variables
+  protected $privileged_user = NULL ;
+  // Endpoint details.
+  protected $endpoint = NULL;
+
+  /**
+   * Implementation of setUp().
+   */
+  public function setUp() {
+    parent::setUp(
+      'ctools',
+      'services',
+      'rest_server'
+    );
+    // Set up endpoint.
+    $this->endpoint =  $this->saveNewEndpoint();
+    // Set up privileged user and login.
+    $this->privileged_user = $this->drupalCreateUser(array('administer users', 'access user profiles'));
+    $this->regular_user = $this->drupalCreateUser(array('access user profiles'));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  /**
+   * Implementation of getInfo().
+   */
+  public static function getInfo() {
+   return array(
+     'name'        => 'Resource User',
+     'description' => 'Test the resource User methods and actions.',
+     'group'       => 'Services',
+   );
+  }
+
+  /**
+   * Test create method.
+   *
+   * Create user, load user, try ti create user without email.
+   */
+  function testCreateUser() {
+    // Create user.
+    $user = array();
+    $user['name']   = $this->randomName();
+    $user['mail']   = $user['name'] . '@example.com';
+    $user['pass']   = user_password();
+    $user['status'] = 1;
+
+    $response = $this->servicesPost($this->endpoint->path . '/user', $user);
+    $account = $response['body'];
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create');
+
+    // Load user.
+    $user_load = user_load($account['uid']);
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create');
+
+    // Try to create user without email.
+    $user = array();
+    $user['name']   = $this->randomName();
+    $user['pass']   = user_password();
+    $user['status'] = 1;
+    $response = $this->servicesPost($this->endpoint->path . '/user', $user);
+    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE,
+      'It is not possible to create user without email.', 'UserResource: Create');
+  }
+
+  /**
+   * Test create method (Legacy).
+   *
+   * TODO: To be removed in future version.
+   * @see http://drupal.org/node/1083242
+   */
+  function testCreateUserLegacy() {
+    // Create user.
+    $user = array();
+    $user['name']   = $this->randomName();
+    $user['mail']   = $user['name'] . '@example.com';
+    $user['pass']   = user_password();
+    $user['status'] = 1;
+
+    $response = $this->servicesPost($this->endpoint->path . '/user', array('account' => $user));
+    $account = $response['body'];
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create (Legacy)');
+
+    // Load user.
+    $user_load = user_load($account['uid']);
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create (Legacy)');
+
+    // Try to create user without email.
+    $user = array();
+    $user['name']   = $this->randomName();
+    $user['pass']   = user_password();
+    $user['status'] = 1;
+    $response = $this->servicesPost($this->endpoint->path . '/user', array('account' => $user));
+    $this->assertTrue(strpos($response['status'], 'E-mail address field is required') !== FALSE,
+      'It is not possible to create user without email.', 'UserResource: Create (Legacy)');
+  }
+
+  /**
+   * Test register method.
+   *
+   * Register user, load user, attempt to login.
+   */
+  function testRegisterUser() {
+    // Verify logged out state can create users
+    $this->drupalLogout();
+
+    $username = $this->randomName();
+    $password = user_password();
+
+    $user = array();
+    $user['name']   = $username;
+    $user['pass']   = $password;
+    $user['mail']   = $user['name'] . '@example.com';
+    $user['status'] = 1;
+
+    variable_set('user_email_verification', FALSE);
+    variable_set('user_register', TRUE);
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/register', $user);
+    $account = $response['body'];
+
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create');
+
+    // Load user.
+    $user_load = user_load($account['uid']);
+
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create');
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/login',
+      array('username' => $username, 'password' => $password));
+
+    $response = $response['body'];
+
+    $proper_answer = isset($response->sessid)
+                  && isset($response->user)
+                  && $response->user->name == $username;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+  }
+
+  /**
+   * Test register method (Legacy).
+   *
+   * TODO: To be removed in future version.
+   * @see http://drupal.org/node/1083242
+   */
+  function testRegisterUserLegacy() {
+    //Verify logged out state can create users
+    $this->drupalLogout();
+
+    $user = array();
+    $user['name']   = $this->randomName();
+    $user['mail']   = $user['name'] . '@example.com';
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/register', array('account' => $user));
+    $account = $response['body'];
+
+    $this->assertTrue(!empty($account['uid']), 'User has been create successfully.', 'UserResource: Create (Legacy)');
+
+    // Load user.
+    $user_load = user_load($account['uid']);
+    $this->assertTrue(!empty($user_load), 'Newly created user has been loaded successfully.', 'UserResource: Create (Legacy)');
+  }
+
+  /**
+   * Test retrieve method.
+   */
+  function testRetrieveUser() {
+    $response = $this->servicesGET($this->endpoint->path . '/user/' . $this->privileged_user->uid);
+    $account = $response['body'];
+
+    $users_are_the_same =  ($account->name == $this->privileged_user->name)
+                        && ($account->mail = $this->privileged_user->mail)
+                        && ($account->roles = $this->privileged_user->roles);
+    $this->assertTrue($users_are_the_same, 'Retrieved user is the same as created.', 'UserResource: Retrieve');
+  }
+  /**
+   * Test updateing a username with administer users permission #1853592.
+   *
+   * Create user, update email.
+   */
+  function testUpdateUserName() {
+    // Create user.
+    $account = $this->drupalCreateUser();
+    $name = $this->randomName();
+    // Update mail of the user.
+    $updated_account = array(
+      'name' => $name,
+    );
+    $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, $updated_account);
+
+    $user_load = user_load($account->uid);
+    $this->assertEqual($name, $user_load->name,
+      'You are allowed to change a username as administer users perm.',
+      'User Resource : Test to check for drupal.org issue #1853592');
+  }
+
+  /**
+   * Test update method.
+   *
+   * Check to see if a regular user can change another user's role.
+   */
+  function testUpdateUserRolesWithRegularAccount() {
+    // Create user.
+    $account = $this->drupalCreateUser();
+    $this->drupalLogout();
+    $this->drupalLogin($this->regular_user);
+    // Update the roles of the user.
+    $updated_account = array(
+      'mail' => $this->randomName() . '@example.com',
+      'pass' => $this->randomString(),
+      'roles' => array( 3 => 'adminstrator'),
+    );
+    $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, $updated_account);
+
+    $user_load = user_load($account->uid);
+    //verify they are not allowed.
+    $this->assertEqual($response['body'], 'Access denied for user ' . $this->regular_user->name,
+      'Regular user CANNOT update roles', 'UserResource: Update');
+  }
+
+  /**
+   * Test update own roles method.
+   *
+   * Check to see if a regular user can change their own role.
+   */
+  function testUpdateUserOwnUserRoles() {
+    // Create user with minimal permission
+    $account = $this->drupalCreateUser();
+    $this->drupalLogout();
+    // Login
+    $this->drupalLogin($account);
+
+    // Not strictly necessary but illustrates the problem
+    $role_name = $this->randomName();
+    $role_rid = $this->drupalCreateRole(array('administer users'), $role_name);
+
+    $user_load_before = user_load($account->uid);
+
+    // Update the roles of the user.
+    $updated_account = array(
+      'roles' => array($role_rid => $role_name),
+    );
+
+    $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, $updated_account);
+
+    $user_load_after = user_load($account->uid, TRUE);
+
+    $this->assertEqual($response['code'], 200, 'Update will should appear to succeed as the roles will be ignored', 'UserResource');
+
+    // The roles must remain unchanged
+    $this->assertEqual($response['body']['roles'], $user_load_before->roles, 'Response shows roles unchanged', 'UserResource');
+    $this->assertEqual($user_load_before->roles, $user_load_after->roles, 'User roles have not been changed', 'UserResource');
+  }
+
+  /**
+   * Test update method.
+   *
+   * Create user, update email.
+   */
+  function testUpdateUser() {
+    // Create user.
+    $account = $this->drupalCreateUser();
+
+    // Update mail of the user.
+    $updated_account = array(
+      'mail' => $this->randomName() . '@example.com',
+      'pass' => $this->randomString(),
+    );
+    $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, $updated_account);
+
+    $user_load = user_load($account->uid);
+    $this->assertEqual($updated_account['mail'], $user_load->mail,
+      'User details have been updated successfully', 'UserResource: Update');
+    $this->assertTrue(user_check_password($updated_account['pass'], $user_load),
+      'Password check succeeds.', 'UserResource: Update');
+  }
+
+  /**
+   * Test update method (Legacy).
+   *
+   * TODO: To be removed in future version.
+   * @see http://drupal.org/node/1083242
+   */
+  function testUpdateUserLegacy() {
+    // Create user.
+    $account = $this->drupalCreateUser();
+
+    // Update mail of the user.
+    $updated_account = array(
+      'mail' => $this->randomName() . '@example.com',
+      'pass' => $this->randomString(),
+    );
+    $response = $this->servicesPut($this->endpoint->path . '/user/' . $account->uid, array('data' => $updated_account));
+
+    $user_load = user_load($account->uid);
+    $this->assertEqual($updated_account['mail'], $user_load->mail,
+      'User details have been updated successfully', 'UserResource: Update (Legacy)');
+    $this->assertTrue(user_check_password($updated_account['pass'], $user_load),
+      'Password check succeeds.', 'UserResource: Update (Legacy)');
+  }
+
+  /**
+   * Test delete method.
+   */
+  function testDeleteUser() {
+    // Create user.
+    $account = $this->drupalCreateUser();
+
+    // Delete user.
+    $response = $this->servicesDelete($this->endpoint->path . '/user/' . $account->uid);
+
+    $user_load = user_load($account->uid);
+    $this->assertTrue(empty($user_load), 'User has been deleted successfully.', 'UserResource: Delete');
+  }
+
+  /**
+   * Test cancel method.
+   */
+  function testCancelUser() {
+    // Create our privileged user.
+    $account = $this->drupalCreateUser(array('administer services'));
+
+    // Cancel user.
+    $response = $this->servicesPost($this->endpoint->path . '/user/' . $account->uid . '/cancel');
+    $this->assertTrue($response['body'],
+      'Resource has to cancel user has been called successfully.',
+      'UserResource: Cancel');
+
+    $user_load = user_load($account->uid);
+    $this->assertFalse($user_load->status, 'User has been canceled successfully.', 'UserResource: Cancel');
+  }
+
+  /**
+   * Test cant cancel user 1.
+   */
+  function testCancelAdmin() {
+    // Cancel user.
+    $response = $this->servicesPost($this->endpoint->path . '/user/1/cancel');
+    $this->assertEqual($response['code'], 403,
+      'Services successfully blocked cancel of user 1', 'UserResource: Cancel');
+
+    $user_load = user_load(1);
+    $this->assertTrue(!empty($user_load), 'User 1 still exits and has not deleted, as this is not allowed.', 'UserResource: Cancel');
+  }
+
+  /**
+   * Test password_reset method.
+   */
+  function testPasswordReset() {
+    // Create user.
+    $account = $this->drupalCreateUser(array('administer services'));
+
+    // Password Reset user.
+    $response = $this->servicesPost($this->endpoint->path . '/user/' . $account->uid . '/password_reset');
+    $this->assertTrue($response['body'],
+      'Resource has to reset a users password has been called successfully.',
+      'UserResource: password_reset');
+
+    $user_load = user_load($account->uid);
+    $this->assertFalse(user_check_password($account->pass, $user_load),
+        'Password successfully changed.', 'UserResource: password_reset');
+  }
+
+  /**
+   * Test password_reset method.
+   */
+  function testResendWelcomeEmail() {
+    // Create user.
+    $account = $this->drupalCreateUser(array('administer services'));
+
+    // Password Reset user.
+    $response = $this->servicesPost($this->endpoint->path . '/user/' . $account->uid . '/resend_welcome_email');
+    $this->assertTrue($response['body'],
+      'Resource has to resent a users welcome email has been called successfully.',
+      'UserResource: resend_welcome_email');
+    // Not sure how to test mail actually sent.
+  }
+
+  /**
+   * Test delete system user method.
+   */
+  function testDeleteSystemUser() {
+    // Delete user 0.
+    $response = $this->servicesDelete($this->endpoint->path . '/user/0');
+
+    $this->assertTrue(strpos($response['code'], '404') !== FALSE,
+      'Anonymous user was not deleted.', 'UserResource: Delete');
+
+    // Delete user 1.
+    $response = $this->servicesDelete($this->endpoint->path . '/user/1');
+
+    $this->assertTrue(strpos($response['status'], 'The admin user cannot be deleted.') !== FALSE,
+      'Admin user was not deleted.', 'UserResource: Delete');
+  }
+
+  /**
+   * Test index method.
+   *
+   * Create several users list them. List one user by name.
+   */
+  function testUserIndex() {
+    // Create several users.
+    $accounts = array();
+    for ($i = 0; $i < 5; $i++) {
+      $account = $this->drupalCreateUser();
+      $accounts[$account->uid] = $account;
+    }
+
+    $accounts_copy = $accounts;
+
+    $response = $this->servicesGet($this->endpoint->path . '/user', array('fields' => 'uid,name,mail'));
+    $response_accounts = $response['body'];
+
+    foreach ($response_accounts as $response_account) {
+      // We do not check anonymous and admin users.
+      if ($response_account->uid < 2) {
+        continue;
+      }
+      // If name and email are the same we believe that accounts are the same.
+      if (isset($accounts[$response_account->uid])) {
+        $saved_account = $accounts[$response_account->uid];
+        if ($response_account->name == $saved_account->name && $response_account->mail == $saved_account->mail) {
+          unset($accounts_copy[$response_account->uid]);
+        }
+      }
+    }
+
+    $this->assertTrue(empty($accounts_copy), 'Users were listed properly.', 'UserResource: Index');
+
+    // Retrieve all the users using a list of uids.
+    $response = $this->servicesGet($this->endpoint->path . '/user',
+      array('parameters' => array('uid' => implode(',', array_keys($accounts)))));
+
+    $response_accounts = $response['body'];
+
+    $accounts_copy = $accounts;
+
+    foreach ($response_accounts as $response_account) {
+      // If name and email are the same we believe that accounts are the same.
+      if (isset($accounts[$response_account->uid])) {
+        $saved_account = $accounts[$response_account->uid];
+        if ($response_account->name == $saved_account->name && $response_account->mail == $saved_account->mail) {
+          unset($accounts_copy[$response_account->uid]);
+        }
+      }
+    }
+
+    $this->assertTrue(empty($accounts_copy), 'Users were listed properly.', 'UserResource: Index');
+
+    $accounts_copy = $accounts;
+    $account = array_pop($accounts_copy);
+
+    // Get user with specific name.
+    $response = $this->servicesGet($this->endpoint->path . '/user', array('parameters' => array('name' => $account->name)));
+    $response_accounts = $response['body'];
+    $response_account = current($response['body']);
+
+    $proper_answer = count($response_accounts) == 1
+                  && $response_account->name == $account->name;
+    $this->assertTrue($proper_answer, 'User was listed by name properly.', 'UserResource: Index');
+  }
+
+  /**
+   * Test login method.
+   *
+   * Create user. Login. Try to login with another user (to get error).
+   * Login with wrong credentials (to get error).
+   */
+  function testUserLogin() {
+    $account = $this->drupalCreateUser();
+
+    // Logout first.
+    $this->drupalLogout();
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw));
+
+    $response_data = $response['body'];
+
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+
+    // Make sure the session exists in the database.
+    $result = db_query("SELECT * FROM {sessions} WHERE :uid=uid", array(':uid' => $account->uid))->fetchObject();
+    $this->assertTrue(!empty($result), 'Session found', 'UserResource: Login');
+
+    // Save session details.
+    $this->session_id = $response_data->sessid;
+    $this->session_name = $response_data->session_name;
+    $this->loggedInUser = $response_data->user;
+
+    // Try to login with another user to get error.
+    $account2 = $this->drupalCreateUser();
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account2->name, 'password' => $account2->pass_raw));
+    $this->assertTrue(strpos($response['status'], 'Already logged in as ' . $account->name) !== FALSE,
+      'Session is properly opened for logged in user.', 'UserResource: Login');
+
+    // Logout.
+    $this->drupalLogout();
+
+    // Try to login with wrong credentials.
+    $response = $this->servicesPost($this->endpoint->path . '/user/login',
+      array('username' => $account->name, 'password' => $this->randomString()));
+    $this->assertTrue(strpos($response['status'], 'Wrong username or password') !== FALSE,
+      'User cannot login with wrong username / password.', 'UserResource: Login');
+  }
+  /**
+   * Test login method. API VERsion 1.1
+   *
+   * Create user. Login. Try to login with another user (to get error).
+   * Login with wrong credentials (to get error).
+   */
+  function testUserLoginMethodAPI_1_1() {
+    $this->endpoint = $this->saveNewVersionEndpoint('1.1');
+    $path = $this->endpoint->path;
+    $account = $this->drupalCreateUser();
+
+    // Logout first.
+    $this->drupalLogout();
+
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw));
+
+    $response_data = $response['body'];
+    $this->assertTrue(strpos($response['status'], 'Missing required argument name') !== FALSE,
+      'User Resource is rejecting old parameter names.', 'UserResource: Login');
+
+    $responseArray = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw),
+      array('services_user_login_version: 1.0'));
+    $this->assertTrue($responseArray['code'] == '200', 'Arguments should be old arguments and we should be logged in.',
+      'Services Version System');
+    $response_data = $responseArray['body'];
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+    $this->drupalLogout();
+    $responseArray = $this->servicesPost($this->endpoint->path . '/user/login', array('name' => $account->name, 'pass' => $account->pass_raw),
+      array('services_user_login_version: 1.1'));
+    $this->assertTrue($responseArray['code'] == '200', 'Arguments should be old arguments and we should be logged in.',
+      'Services Version System');
+    $response_data = $responseArray['body'];
+    $proper_answer = isset($response_data->sessid)
+                  && isset($response_data->user)
+                  && $response_data->user->name == $account->name;
+    $this->assertTrue($proper_answer, 'User successfully logged in.', 'UserResource: Login');
+  }
+  /**
+   * Test flood control during user login
+   *
+   * Account blocking: Create user. Try to login with wrong credentials (get default error).
+   *  Try to login fifth time and get account blocking error.
+   *
+   * IP blocking: Create set of users to provide 50 failed attempts to login (less then 5 to prevent account blocking)
+   *  and get IP blocking error
+   */
+  function testUserLoginFloodControl() {
+    $account = $this->drupalCreateUser();
+
+    // Logout first
+    $this->drupalLogout();
+
+    // First failed login (wrong password)
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $this->randomString()));
+
+    // Get default wrong credentials error
+    $this->assertTrue(strpos($response['status'], 'Wrong username or password') !== FALSE,
+      'User cannot login with wrong username / password.', 'UserResource: Login');
+
+    $account_blocking_limit = variable_get('user_failed_login_user_limit', 5);
+
+    // Go through set of default error while we're having attempts
+    if ($account_blocking_limit > 2) {
+      for ($i = 0; $i < $account_blocking_limit - 1; $i++) {
+        // Just trigger login operation to write fails to flood table
+        $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $this->randomString()));
+      }
+    }
+
+    // Now account will be locked after 5 failed attempts
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw));
+
+    $this->assertTrue(strpos($response['status'], 'Account is temporarily blocked.') !== FALSE,
+      'After ' . $account_blocking_limit . '-th failed login account is temporary blocked.', 'UserResource: Login Flood Control');
+
+    // Test IP blocking
+    $ip_blocking_limit = variable_get('user_failed_login_ip_limit', 50);
+    $account2 = $this->drupalCreateUser();
+
+    // Provide necessary count of test users to get 50 failed attempts without account blocking
+    for ($i = 0; $i < $ip_blocking_limit - $account_blocking_limit - 1; $i++) {
+      if ($i % $account_blocking_limit === 0) {
+        $account2 = $this->drupalCreateUser();
+      }
+
+      $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account2->name, 'password' => $this->randomString()));
+    }
+
+    $account2 = $this->drupalCreateUser();
+
+    // Now ip will be locked after 50 failed attempts
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account2->name, 'password' => $account2->pass_raw));
+
+    $this->assertTrue(strpos($response['status'], 'This IP address is temporarily blocked.') !== FALSE,
+      'After ' . $ip_blocking_limit . '-th failed login ip is temporary blocked.', 'UserResource: Login Flood Control');
+  }
+
+  /**
+   * Test logout method.
+   */
+  function testUserLogout() {
+    // Logout via REST call.
+    $response = $this->servicesPost($this->endpoint->path . '/user/logout');
+    // Try logout second time.
+    $this->drupalGet('user/logout');
+    $this->assertText('You are not authorized to access this page', 'User logout successfully.', 'UserResource: Logout');
+    // Login again.
+    $this->drupalLogin($this->privileged_user);
+    // Logout via REST call.
+    $response = $this->servicesPost($this->endpoint->path . '/user/logout');
+    // Try to logout second time via REST call.
+    $response = $this->servicesPost($this->endpoint->path . '/user/logout');
+    $this->assertTrue(strpos($response['status'], 'User is not logged in'),
+      'User cannot logout when is anonymous', 'UserResource: Logout');
+  }
+
+  /**
+   * Test request_new_password method.
+   */
+  function testRequestNewPassword() {
+    // Create user.
+    $account = $this->drupalCreateUser(array('administer services'));
+
+    // Request new password for user by name.
+    $data = array('name' => $account->name);
+    $response = $this->servicesPost($this->endpoint->path . '/user/request_new_password', $data);
+    $this->assertTrue($response['body'],
+      'Resource to request a new password for user name has been called successfully.',
+      'UserResource: request_new_password');
+
+    // Request new password for user by e-mail address.
+    $data = array('name' => $account->mail);
+    $response = $this->servicesPost($this->endpoint->path . '/user/request_new_password', $data);
+    $this->assertTrue($response['body'],
+      'Resource to request a new password for user name has been called successfully.',
+      'UserResource: request_new_password');
+
+    // Assert 406 response for user that does not exist.
+    $data = array('name' => $this->randomName(10) . '@example.com');
+    $response = $this->servicesPost($this->endpoint->path . '/user/request_new_password', $data);
+    $this->assertEqual(406, $response['code'],
+      'Resource to request new password for non-existing user name returned content not acceptable.',
+      'UserResource: request_new_password');
+
+    // Assert that 2 e-mails were sent in this test. The drupalGetMails()
+    // method does not provide immediate feedback about e-mails sent during the
+    // test, and so this assertion can only be done at this point.
+    $mails = $this->drupalGetMails();
+    $this->assertEqual(2, count($mails), 'Only 2 e-mails were sent during this test.');
+  }
+}
