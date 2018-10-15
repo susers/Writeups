@@ -11,7 +11,7 @@
 2. 发现前四位与'flag'亦或为同一个数字
 
 ## exp
-```
+```python3
 import base64
 
 x="AAoHAR1XICciX1IlXiBUVFFUIyRRJFRQVyUnVVMnUFcgIiNXXhs="
