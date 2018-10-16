@@ -60,7 +60,7 @@ Connection: close
 number=3689348814741910324
 ```
 
-*step 3  
+* step 3  
 购买flag
 
 
