@@ -6,7 +6,7 @@ NULL
 
 ##  Steps
 
-* Step 1   
+* Step 1  
 报错时的error参数存在模板注入
 ```
 http://49.4.78.81:30980/error?msg={{1^0}}
