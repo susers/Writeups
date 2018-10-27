@@ -1,0 +1,217 @@
+@charset "utf-8";
+/* CSS Document */
+
+* {
+	margin: 0px;
+	padding: 0px;
+}
+body {
+	font-family: "Microsoft Yahei", "Calibri";
+	font-size: 14px;
+	background-color: #FFF;
+	color:#777;
+}
+a {
+	/*-webkit-transition: all 0.3s ease-in;
+	-moz-transition: all 1s ease-in;
+	-o-transition: all 1s ease-in;*/
+}
+a {
+	cursor: pointer;
+	text-decoration: none;
+	color: #777;
+}
+a:hover {
+	color: #09C;
+}
+li {
+	list-style: none
+}
+img {
+	border: 0;
+}
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="button"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
+	border-color: rgba(82,168,236,0.8);
+	outline: 0;
+}
+/*头部*/
+.head {
+	width: 100%;
+	height: 50px;
+	background: rgb(35, 119, 152);
+	/*background:#093;*/
+	text-align: center;
+	color: #fff;
+	line-height: 50px;
+	position: fixed;
+	top: 0;
+}
+.head_lf
+{
+	width:10%;
+	float:left;
+}
+.head_lf img
+{
+	vertical-align:middle;
+}
+.head_ct
+{
+	width:65%;
+	float:left;
+}
+.head a
+{
+	color:#fff;
+}
+.head_rg
+{
+	width:13%;
+	float:right;
+}
+
+/*登录*/
+.login
+{
+	width:100%;
+	margin-top:100px;
+}
+.text
+{
+	padding:0px 40px;
+	border-bottom:1px solid #ddd;
+}
+.login .name
+{
+	background:url(../images/name.png) no-repeat;
+	background-position:9px
+}
+.login .pwd
+{
+	background:url(../images/pwd.png) no-repeat;
+	background-position:9px
+}
+.login .text input
+{
+	width:100%;
+	height:42px;
+	line-height:42px;
+	font-family:"Microsoft Yahei", "Calibri";
+	border:0;
+	color:#434343;
+}
+.tip
+{
+	width:100%;
+	margin-top:15px;
+	overflow:hidden;
+}
+.tip a
+{
+	float:right;
+	padding:0px 15px;
+	color:#09C;
+}
+.tip a input
+{
+	margin-right:5px;
+	vertical-align: -1.5px;
+}
+.btndl
+{
+	width:100%;
+	text-align:center;
+	margin-top:40px;
+}
+.btndl input
+{
+	width:88%;
+	height:42px;
+	color:#fff;
+	border:0;
+	font-family:"Microsoft Yahei", "Calibri";
+	cursor:pointer;
+	font-size:16px;
+	background:rgba(51,153,255,1);
+	border-radius:5px;
+}
+/*注册*/
+.img{
+	position: absolute;
+	right: 0;
+}
+/*注册*/
+.zhuce
+{
+	width:70%;
+	margin-top:90px;
+}
+.zhuce .text
+{
+	line-height:42px;
+	padding:3px 10px;
+	border-bottom:1px solid #ddd;
+	display:block;
+	overflow:hidden;
+}
+.zhuce .text span
+{
+	width:20%;
+	float:left;
+	text-align:center;
+}
+.zhuce .text .input
+{
+	width:80%;
+	height:42px;
+	font-family:"Microsoft Yahei", "Calibri";
+	border:0;
+	float:left;
+	text-indent:20px;
+}
+.zhuce .text .yzm
+{
+	width:25%;
+	text-align:left;
+}
+.zhuce .text .yzm input
+{
+	border:0;
+	padding:3px;
+	font-family:"Microsoft Yahei", "Calibri";
+	background-color:rgba(255,153,0,1);
+	color:#fff;
+	cursor:pointer;
+	font-size:12px;
+}
+/*底部*/
+.foot {
+	width: 100%;
+	height: 50px;
+	background: rgba(218,218,218,1);
+	/*background:#D0D0D0;*/
+	text-align: center;
+	color: #666;
+	position: fixed;
+	bottom: 0;
+}
+.foot a {
+	width: 20%;
+	text-align: center;
+	float: left;
+	display: block;
+}
+.foot a:hover{
+	color:#F30
+}
+.now {
+	color: #F30;
+}
+.foot span{
+	width:100%;
+	display:block;
+}
+.foot span img{
+	width:20px;
+	padding-top:5px;
+}
