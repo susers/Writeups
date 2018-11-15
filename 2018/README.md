@@ -9,3 +9,4 @@
 - 2018.8 [whitehat CTF](./whitehat2018)
 - 2018.8 [网鼎杯](./wangding)
 - 2018.10 [护网杯](./huwang)
+- 2018.11 [HCTF](./HCTF)
