@@ -1,0 +1,4 @@
+<code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?php<br />$flag</span><span style="color: #007700">=</span><span style="color: #0000BB">base64_decode</span><span style="color: #007700">(</span><span style="color: #DD0000">"U1VDVEZ7cGhhcl9zM3JpYWwxemVfZjRudDRzNzFDfQ=="</span><span style="color: #007700">);<br /></span>
+</span>
+</code>

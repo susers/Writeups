@@ -1,0 +1,12 @@
+# Challenge configuration
+name: gallery 
+type: web
+value: 1000
+description: >
+        A Simple Gallery.
+        Be careful about tips!
+flag: SUCTF{phar_s3rial1ze_f4nt4s71C}
+hints:
+        - phar with unserialize
+image: true
+

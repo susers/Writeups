@@ -1,0 +1,9 @@
+# Challenge configuration
+name: stack
+value: 1000
+type: pwn
+description: >
+        it's easy
+flag: SUCTF{my_problem_is_water}
+image: true
+

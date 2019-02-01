@@ -1,0 +1,23 @@
+service pwn
+{
+    disable = no
+    socket_type = stream
+    protocol    = tcp
+    wait        = no
+    user        = ctf
+    type        = UNLISTED
+    port        = 20000
+    bind        = 0.0.0.0
+    server      = /home/ctf/pwn
+    #server_args = 
+    banner_fail = /etc/banner_fail
+    # safety options
+    # the maximum instances of this service per source IP address
+    per_source	= 10
+    # the maximum number of CPU seconds that the service may use
+    rlimit_cpu	= 20 
+    # the Address Space resource limit for the service
+    rlimit_as  = 512M 
+    #access_times = 2:00-9:00 12:00-24:00
+    #kafel_rule = /etc/pwn.kafel
+}

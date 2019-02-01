@@ -1,0 +1,12 @@
+# Challenge configuration
+name: where are you from level2
+type: web
+value: 1000
+description: >
+        where are you from? this is level2,try to find vul.
+flag: SUCTF{f**k1n9_T3rr1bl3_5ql1_7r1ck5}
+hints:
+        - sql注入
+        - select fl4g from flaaag
+image: true
+

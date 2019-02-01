@@ -1,0 +1,10 @@
+# Challenge configuration
+name: HelloPython
+type: rev
+value: 1000
+description: >
+        密文 f1f5d29b6e4414ec 加密程序已给出，请计算明文，
+        明文不包含flag格式SUCTF{}，提交时请手动补全encrypt
+flag: SUCTF{6ba18492_34f9b252}
+image: false
+

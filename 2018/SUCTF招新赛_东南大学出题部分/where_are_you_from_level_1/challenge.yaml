@@ -1,0 +1,11 @@
+# Challenge configuration
+name: where are you from level1 
+type: web
+value: 1000
+description: >
+        where are you from?
+flag: SUCTF{X_F0rw4rd3d_F0r_7O_cHe4t_5eV3r}
+hints:
+        - ip伪造
+image: true
+

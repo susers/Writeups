@@ -1,0 +1,12 @@
+
+# SU联合招新 where are you from
+# Author : Imagemlt
+version: "3"
+services:
+
+  web:
+    image: suctf_where_are_you_from
+    build: ./
+    ports: 
+      - "0.0.0.0:6789:80"
+    restart: always

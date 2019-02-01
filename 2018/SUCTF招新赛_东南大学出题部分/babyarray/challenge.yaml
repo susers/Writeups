@@ -1,0 +1,9 @@
+# Challenge configuration
+name: babyarray
+type: pwn
+value: 1000
+description: >
+        it's easy
+flag: SUCTF{4rray_ov3rfloW~}
+image: true
+
