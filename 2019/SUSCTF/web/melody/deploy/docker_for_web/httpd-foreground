@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+java -jar /root/server.jar
