@@ -1,0 +1,472 @@
+.wel{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+#background-3{
+    background: url("../img/preview-1.jpg") no-repeat;
+    background-size: cover;
+    height: 900px;
+}
+.box-1{
+    width: 50%;
+    height: 900px;
+    float: left;
+    overflow: hidden;
+}
+.box-2{
+    width: 50%;
+    position: relative;
+    float: left;
+    overflow: hidden;
+    top: 25%;
+}
+.lefp{
+    background: url("../img/1baa42452320f5d4eb2f5e1f22cacebb.png");
+    -webkit-animation: mylefp 10s;
+    -o-animation: mylefp 10s;
+    animation: mylefp 10s;
+    position: relative;
+    float: left;
+    opacity: 0;
+    background-position: 100% 0;
+}
+.righp{
+    background: url("../img/1baa42452320f5d4eb2f5e1f22cacebb.png") ;
+    -webkit-animation: myrighp 10s;
+    -o-animation: myrighp 10s;
+    animation: myrighp 10s;
+    position: relative;
+    float: right;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+#git{
+    background: url("../img/midground.png");
+    -webkit-animation: mygit 100s linear infinite;
+    -o-animation: mygit 100s linear infinite;
+    animation: mygit 100s linear infinite;
+}
+/*左边云*/
+@keyframes mylefp {
+    0%{
+        left: 0;
+        opacity: 1;
+    }
+    100%{
+        left: -60%;
+        opacity: 0;
+    }
+}
+@-o-keyframes mylefp {
+    0%{
+        left: 0;
+        opacity: 1;
+    }
+    100%{
+        left: -60%;
+        opacity: 0;
+    }
+}
+@-moz-keyframes mylefp {
+    0%{
+        left: 0;
+        opacity: 1;
+    }
+    100%{
+        left: -60%;
+        opacity: 0;
+    }
+}
+@-ms-keyframes mylefp {
+    0%{
+        left: 0;
+        opacity: 1;
+    }
+    100%{
+        left: -60%;
+        opacity: 0;
+    }
+}
+@-webkit-keyframes mylefp {
+    0%{
+        left: 0;
+        opacity: 1;
+    }
+    100%{
+        left: -60%;
+        opacity: 0;
+    }
+}
+/*右边云*/
+@keyframes myrighp {
+    0%{
+        right: 0;
+        opacity: 1;
+    }
+    100%{
+        right: -120%;
+        opacity: 0;
+    }
+}
+@-webkit-keyframes myrighp {
+    0%{
+        right: 0;
+        opacity: 1;
+    }
+    100%{
+        right: -120%;
+        opacity: 0;
+    }
+}
+@-ms-keyframes myrighp {
+    0%{
+        right: 0;
+        opacity: 1;
+    }
+    100%{
+        right: -120%;
+        opacity: 0;
+    }
+}
+@-moz-keyframes myrighp {
+    0%{
+        right: 0;
+        opacity: 1;
+    }
+    100%{
+        right: -120%;
+        opacity: 0;
+    }
+}
+@-o-keyframes myrighp {
+    0%{
+        right: 0;
+        opacity: 1;
+    }
+    100%{
+        right: -120%;
+        opacity: 0;
+    }
+}
+/*荧光点点*/
+@keyframes mygit {
+    0%{
+        background-position: 0 0;
+        /*transform: translateY(0px);*/
+    }
+    100%{
+        background-position: 0 -600%;
+    }
+}
+@-o-keyframes mygit {
+    0%{
+        background-position: 0 0;
+        /*transform: translateY(0px);*/
+    }
+    100%{
+        background-position: 0 -600%;
+    }
+}
+@-moz-keyframes mygit {
+    0%{
+        background-position: 0 0;
+        /*transform: translateY(0px);*/
+    }
+    100%{
+        background-position: 0 -600%;
+    }
+}
+@-ms-keyframes mygit {
+    0%{
+        background-position: 0 0;
+        /*transform: translateY(0px);*/
+    }
+    100%{
+        background-position: 0 -600%;
+    }
+}
+@-webkit-keyframes mygit {
+    0%{
+        background-position: 0 0;
+        /*transform: translateY(0px);*/
+    }
+    100%{
+        background-position: 0 -600%;
+    }
+}
+
+.le-1{
+    position: relative;
+    -webkit-animation: myflrg 10s;
+    -o-animation: myflrg 10s;
+    animation: myflrg 6s;
+}
+.le-2{
+    overflow: hidden;
+    height: 73%;
+}
+.flrg{
+    float: right;
+    width: 300px;
+    background: rgba(255,255,255,.6);
+    text-align: center;
+    padding-bottom: 40px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.a{
+    margin: auto;
+}
+.flrg>.a,.flrg-1>.a{
+    padding: 10px;
+}
+.flrg>.a>.in-1,.flrg-1>.a>.in-1{
+    outline: none;
+    opacity: 0.6;
+    width: 238px;
+    height: 33px;
+    border: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 16px;
+    color: black;
+    padding-left: 15px;
+}
+.in-1:focus{
+    -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    -webkit-animation: myin-1 10s linear infinite;
+    -o-animation: myin-1 10s linear infinite;
+    animation: myin-1 10s linear infinite;
+}
+.flrg>.a>button,.flrg-1>.a>button{
+    width: 91%;
+    padding: 10px;
+    border: none;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 19px rgba(0, 0, 0, .1);
+    -moz-box-shadow: 0 0 19px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 19px rgba(0, 0, 0, .1);
+    background: rgba(6,127,228,0.71);
+    color: white;
+    font-weight: bold;
+    letter-spacing: 12px;
+    text-align: center;
+    outline: none;
+    -webkit-transition: all 2s;
+    -moz-transition: all 2s;
+    -ms-transition: all 2s;
+    -o-transition: all 2s;
+    transition: all 2s;
+}
+.flrg>.a>button:hover,.flrg-1>.a>button:hover{
+    -webkit-box-shadow:0 15px 30px 0 rgba(255,255,255,.15) inset, 0 2px 7px 0 rgba(0,0,0,.2);
+    -moz-box-shadow:0 15px 30px 0 rgba(255,255,255,.15) inset, 0 2px 7px 0 rgba(0,0,0,.2);
+    box-shadow:0 15px 30px 0 rgba(255,255,255,.15) inset, 0 2px 7px 0 rgba(0,0,0,.2);
+}
+.hr{
+    width: 91%;
+    height: 2px;
+    background: rgba(255,255,255,0.6);
+    margin: auto;
+}
+.flrg>.a>a{
+    text-decoration: none;
+    font-weight: bold;
+    color: #545454;
+}
+.flrg-1{
+    float: left;
+    width: 300px;
+    background: rgba(255,255,255,.6);
+    text-align: center;
+    padding-bottom: 40px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    position: absolute;
+    -webkit-animation: myflrg-2 10s;
+    -o-animation: myflrg-2 10s;
+    animation: myflrg-2 6s;
+    overflow: hidden;
+}
+/*登录*/
+@keyframes myflrg {
+    0%{
+        top: -300%;
+
+    }
+    100%{
+        top: 25%;
+    }
+}
+@-webkit-keyframes myflrg {
+    0%{
+        top: -300%;
+    }
+    100%{
+        top: 25%;
+    }
+}
+@-ms-keyframes myflrg {
+    0%{
+        top: -300%;
+    }
+    100%{
+        top: 25%;
+    }
+}
+@-moz-keyframes myflrg {
+    0%{
+        top: -300%;
+    }
+    100%{
+        top: 25%;
+    }
+}
+@-o-keyframes myflrg {
+    0%{
+        top: -300%;
+    }
+    100%{
+        top: 25%;
+    }
+}
+/*注册*/
+@keyframes myflrg-2 {
+    0%{
+        top: 300%;
+    }
+    100%{
+        top: 0;
+    }
+}
+@-o-keyframes myflrg-2 {
+    0%{
+        top: 300%;
+    }
+    100%{
+        top: 0;
+    }
+}
+@-moz-keyframes myflrg-2 {
+    0%{
+        top: 300%;
+    }
+    100%{
+        top: 0;
+    }
+}
+@-ms-keyframes myflrg-2 {
+    0%{
+        top: 300%;
+    }
+    100%{
+        top: 0;
+    }
+}
+@-webkit-keyframes myflrg-2 {
+    0%{
+        top: 300%;
+    }
+    100%{
+        top: 0;
+    }
+}
+/*input呼吸框*/
+@keyframes myin-1 {
+    0%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+    50%{
+        -webkit-box-shadow: 0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        -moz-box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+    }
+    100%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+}
+@-webkit-keyframes myin-1 {
+    0%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+    50%{
+        -webkit-box-shadow: 0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        -moz-box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+    }
+    100%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+}
+@-ms-keyframes myin-1 {
+    0%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+    50%{
+        -webkit-box-shadow: 0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        -moz-box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+    }
+    100%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+}
+@-moz-keyframes myin-1 {
+    0%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+    50%{
+        -webkit-box-shadow: 0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        -moz-box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+    }
+    100%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+}
+@-o-keyframes myin-1 {
+    0%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+    50%{
+        -webkit-box-shadow: 0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        -moz-box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+        box-shadow:  0 0 33px #ff1000 inset, 0 0 18px #ff0300;
+    }
+    100%{
+        -webkit-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        -moz-box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+        box-shadow: 0 0 33px #1b00ff inset, 0 0 18px #1b00ff;
+    }
+}

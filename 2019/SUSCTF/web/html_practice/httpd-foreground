@@ -1,0 +1,10 @@
+#!/bin/bash
+ln -s /var/lib/mysql/mysql.sock /tmp/mysql.sock;chown -R mysql:mysql /var/lib/mysql;
+# Apache gets grumpy about PID files pre-existing
+rm -f /usr/local/apache2/logs/httpd.pid
+apache2ctl start
+service mysql start
+while test "1" = "1"
+do
+sleep 1000
+done
