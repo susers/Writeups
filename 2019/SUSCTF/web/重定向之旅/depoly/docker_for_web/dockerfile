@@ -1,0 +1,3 @@
+FROM php:7.2-apache
+MAINTAINER oc
+COPY src/ /var/www/html/

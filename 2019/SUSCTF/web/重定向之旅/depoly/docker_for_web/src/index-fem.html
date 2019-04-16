@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>第五关</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">SUSCTF</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="" onclick=alert("Oops\nhint：no\x20flag!")>关于</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="font-size:20px;text-align:center;height:700px;display:flex;justify-content:center;align-items:center;">
+
+      <div class="starter-template">
+
+            <h1>SUSCTF 2019</h1>
+            <h2>第五关</h2>
+            <p id="typing"></p>
+            <img id="image" width="300px"></img>
+      </center></div>
+
+    </div>
+  </body>
+</html>
+<script>
+	str = '555，这里没有flag的呢。(*/ω＼*)';
+	i = 0;
+	function typing() {
+		var divTyping = document.getElementById('typing');
+		if (i <= str.length) {
+			divTyping.innerHTML = str.slice(0, i++) + '_';
+			setTimeout(typing, 200);
+		} else {
+			divTyping.innerHTML = str;
+			if(str=='555，这里没有flag的呢。(*/ω＼*)')setTimeout(deleting,400);
+			else document.getElementById('image').src='red-envelope.jpg';
+		}
+	}
+	typing();
+	function deleting() {
+		var divTyping = document.getElementById('typing');
+		if (i >1) {
+			divTyping.innerHTML = str.slice(0, i-=2)+'_';
+			setTimeout(deleting, 200);
+		} else {
+			i=0;
+			divTyping.innerHTML = '';
+			str='不过这里有一个红包ヾ(@^▽^@)ノ';
+			setTimeout(typing,400);
+		}
+	}
+</script>

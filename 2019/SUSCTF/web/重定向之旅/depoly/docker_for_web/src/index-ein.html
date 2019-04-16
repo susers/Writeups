@@ -1,0 +1,56 @@
+<meta http-equiv="refresh" content="6;url=index-dos.php">
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+<!--<?php $part1="3oI";?>-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>第一关</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">SUSCTF</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="" onclick=alert("Source\nhint：源代码的秘密")>关于</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container" style="font-size:20px;text-align:center;height:700px;display:flex;justify-content:center;align-items:center;">
+
+      <div class="starter-template">
+
+            <h1>SUSCTF 2019</h1>
+            <h2>第一关</h2>
+            <p>你的时间不多了……</p>
+            <img src="countdown.gif" style="width:500px"></img>
+            <audio autoplay="autoplay" src="倒计时.mp3"></audio>
+      </center></div>
+
+    </div>
+  </body>
+</html>
+<script>
+function redirect()
+{
+form=document.createElement('form');
+form.action='index-dos.php';
+document.body.appendChild(form);
+form.submit();
+}
+if(navigator.userAgent.indexOf('Chrome')<0)setTimeout(redirect,5000);
+</script>
