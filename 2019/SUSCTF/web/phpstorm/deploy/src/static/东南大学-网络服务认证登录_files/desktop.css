@@ -1,0 +1,189 @@
+html {
+	width:100%;
+	font-family: 微软雅黑;
+	font-size: 11pt;
+	color: #888888;
+}
+
+body {
+	position: relative;
+	height: 100%;
+	line-height: 100%;
+	min-width:  720px;
+	min-height: 550px;
+	margin: 0;
+	font-family: 微软雅黑;
+}
+
+a {
+	font-size: 11pt;
+	text-decoration: none;
+}
+
+a:link, a:visited, a:active {
+    color: #888888;
+}
+
+a:hover {
+    color: #222222;
+}
+
+a img {
+	border: none;
+}
+
+.header {
+	height: 89px;
+    margin: 0 auto;
+    width: 950px;
+    background: #FFFFFF url("./desktop_logo.gif") no-repeat;
+    background-position: center left;
+}
+
+.logo {
+	float: left;
+    width: 400px;
+    padding-top: 16px;
+}
+
+.nav-bar {
+	float: right;
+	color: #777777;
+	padding-top: 25px;
+}
+
+.main {
+	clear: both;
+	height: 520px;
+}
+
+.main-content {
+	height: 100%;
+	width: 950px;
+	margin: 0 auto;
+	background: url("./background.jpg") no-repeat;
+}
+
+.mLeft {
+	float: left;
+	height: 100%;
+	width: 450px;
+	margin: 0 auto;
+}
+
+.panel-notice {
+	background: transparent;
+	background-color: white;
+	filter: alpha(Opacity=100);
+	opacity: 0.9;
+	margin: 145px 85px 0 80px;
+}
+
+.panel-notice a {
+	font-size: 9pt;
+	color: #333333;
+}
+
+.panel-transparent {
+	background: transparent;
+	background-color: white;
+	filter: alpha(Opacity=100);
+	opacity: 0.9;
+	margin: 125px 60px 0 60px;
+}
+
+.panel-title {
+	font-size: 12pt;
+	font-weight: bold;
+	font-family: 微软雅黑;
+}
+
+.panel-body {
+	padding-top: 20px;
+}
+
+.alert {
+	padding: 4px;
+	font-size: 9pt;
+	border-radius: 1px;
+	margin-bottom: 15px;
+	display: none;
+}
+
+.row-space {
+	margin-bottom: 15px;
+}
+
+.info {
+	height: 15px;
+	line-height: 15px;
+	color: #888888;
+	font-size: 9pt;
+	padding: 15px 4px;
+}
+
+.info-left {
+	width: 140px;
+	float: left;
+}
+
+.info-right {
+	float: right;
+}
+
+.info-right a {
+	font-size: 9pt;
+}
+
+p {
+	font-size: 11pt;
+	margin-left: 5px;
+	margin-bottom: 20px;
+}
+
+p span {
+	margin-left: 10px;
+}
+
+.btn-blue {
+  color: #ffffff;
+  background-color: #35759A;
+  border-color: #357ebd;
+  font-size: 11pt;
+}
+
+.btn-blue:hover,
+.btn-blue:focus,
+.btn-blue:active,
+.btn-blue.active,
+.open .dropdown-toggle.btn-blue {
+  color: #ffffff;
+  background-color: #1A5B81;
+  border-color: #285e8e;
+}
+
+.mRight {
+	float: right;
+	height: 100%;
+	width: 500px;
+	margin: 0 auto;
+}
+
+.footer {
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+	color: #888888;
+}
+
+.notice {
+	display: block;
+	position: absolute;
+	background: #ff7675;
+	width: 500px;
+	padding: 20px;
+	color: white;
+	border-radius: 4px;
+}
