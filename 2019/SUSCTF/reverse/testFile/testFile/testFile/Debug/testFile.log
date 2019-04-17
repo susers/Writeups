@@ -1,0 +1,4 @@
+﻿  Dll1.cpp
+    正在创建库 C:\Users\vct\Desktop\testFile\Debug\testFile.lib 和对象 C:\Users\vct\Desktop\testFile\Debug\testFile.exp
+LINK : warning LNK4217: 符号“_printHello”(在“ Dll1.obj”中定义)已由“dllmain.obj”(函数“_DllMain@12”中)导入
+  testFile.vcxproj -> C:\Users\vct\Desktop\testFile\Debug\testFile.dll

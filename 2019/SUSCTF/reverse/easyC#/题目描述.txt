@@ -1,0 +1,7 @@
+题目描述： just easy C#
+flag: SUSCTF{5H@l-[M#DC%]}
+
+
+vs2019 release anyCPU编译
+
+Eziriz加了不是很多的混淆

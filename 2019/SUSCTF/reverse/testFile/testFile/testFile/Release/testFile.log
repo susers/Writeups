@@ -1,0 +1,14 @@
+﻿  Dll1.cpp
+  dllmain.cpp
+C:\Users\vct\Desktop\testFile\testFile\dllmain.cpp(21): warning C4473: “scanf_s”: 没有为格式字符串传递足够的参数
+  C:\Users\vct\Desktop\testFile\testFile\dllmain.cpp(21): note: 占位符和其参数预计 2 可变参数，但提供的却是 1 参数
+  C:\Users\vct\Desktop\testFile\testFile\dllmain.cpp(21): note: 缺失的可变参数 2 为格式字符串“%s”所需
+  C:\Users\vct\Desktop\testFile\testFile\dllmain.cpp(21): note: 此参数用作缓冲区大小
+C:\Users\vct\Desktop\testFile\testFile\dllmain.cpp(25): warning C4018: “<”: 有符号/无符号不匹配
+    正在创建库 C:\Users\vct\Desktop\testFile\Release\testFile.lib 和对象 C:\Users\vct\Desktop\testFile\Release\testFile.exp
+  正在生成代码
+  1 of 10 functions (10.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  testFile.vcxproj -> C:\Users\vct\Desktop\testFile\Release\testFile.dll
