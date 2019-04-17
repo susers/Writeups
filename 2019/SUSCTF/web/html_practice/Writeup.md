@@ -1,5 +1,5 @@
 # Title
-melody
+html_practice
 # Tools
 	* firefox or chrome,burpsuite
 # Steps
