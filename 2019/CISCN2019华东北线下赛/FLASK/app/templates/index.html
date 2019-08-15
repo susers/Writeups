@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block body %}
+        <table class="table table-condensed">
+            <caption>User Info:</caption>
+            <tbody>
+                <tr>
+                <td>ID:</td>
+                <td>{{user[0]}}</td>
+                </tr>
+                <tr>
+                <td>UserName:</td>
+                <td>{{user[1]}}</td>
+                </tr>
+                <tr>
+                <td>mail:</td>
+                <td>{{user[2]}}</td>
+                </tr>
+                <tr>
+                <td>Hint:</td>
+                <td>{{hint}}</td>
+                </tr>
+            </tbody>
+            </table>
+            <!-- All Check is Using Session. -->
+{% endblock %}

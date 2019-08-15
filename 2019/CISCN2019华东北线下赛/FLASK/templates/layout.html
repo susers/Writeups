@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bazinga!</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/assets/css/jumbotron-narrow.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+    <div class="header clearfix">
+        <nav>
+            <ul class="nav nav-pills pull-right">
+                {% if user is defined %}
+                <li role="presentation"><a href="/">首页</a></li>
+                <li role="presentation"><a href="/mail/?mail=example@qq.com">查看邮箱</a></li>
+                <li role="presentation"><a href="/user/logout">注销</a></li>
+                {% if user[1]=='admin' %}
+                <li role="presentation"><a href="/mail/update/">修改邮箱</a></li>
+                {% endif %}
+                {% else %}
+                <li role="presentation"><a href="/user/login">登录</a></li>
+                <li role="presentation"><a href="/user/register">注册</a></li>
+                <li role="presentation"><a href="/user/reset">找回密码</a></li>
+                <li role="presentation"><a href="/mail/?mail=example@qq.com">查看邮箱</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <h3 class="text-muted">Bazinga!</h3>
+    </div>
+        {% with message = get_flashed_messages()[0] %}
+        {% if success == 1 %}
+            <div class="alert alert-success alert-dismissable">
+                {{ message }}
+            </div>
+        {% else %}
+            
+        {% endif%}
+
+
+        {% if danger ==1%}
+            <div class="alert alert-danger alert-dismissable">
+                {{ message }}
+            </div>
+        {% else %}
+        {% endif %}
+
+    {% endwith %}
+    {% block body %}
+    {% endblock %}
+    <footer class="footer">
+        <p>&copy; 2016 Company, Inc.</p>
+    </footer>
+</div> <!-- /container -->
+</body>
+</html>

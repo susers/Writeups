@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="container">
+        <div class="row my-2">
+            <h1>{{ error.type }}</h1>
+        </div>
+    {{ error.message }}
+    </div>
+{% endblock %}

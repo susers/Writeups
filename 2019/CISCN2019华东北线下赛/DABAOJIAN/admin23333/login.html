@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>一个简简单单的网站</title>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    </style>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+  </head>
+    <body>
+    <div class="container">
+        <h2 class="text-center">后台登录界面</h2>
+        <form action="login.php" method="post">
+            <div class="form-group">
+                <label for="username" class="control-label">用户名</label>
+                <div class="col-sm-10">
+                    <input type="text" id="username_" class="form-control" name="username" placeholder="Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label">密码</label>
+                <div class="col-sm-10">
+                    <input type="password" id="password_" class="form-control" name="password" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="verifycode" class="control-label">验证码</label>
+                <div class="col-sm-10">
+                    <input type="text" id="verifycode" name="verifycode" class="form-control" placeholder="Verifycode">
+                    <img src="verifycode.php" id = "refresh" title="刷新验证码" align="absmiddle" onclick="code()">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-default login " id="login" name='submit'>登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+    // 刷新验证码
+    function code() {
+        // var random1=Math.random();
+        document.getElementById('refresh').src='verifycode.php';
+    }
+    </script>
+  </body>
+</html>

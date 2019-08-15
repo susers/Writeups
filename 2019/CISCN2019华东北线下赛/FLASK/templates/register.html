@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block body %}
+        <div class="row">
+            <form action="/user/register/" method="post" class="col-lg-6 col-lg-offset-3">
+                <div class="form-group">
+                    <label>新用户名：</label>
+                    <input type="text" class="form-control" name="username" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label>邮箱：</label>
+                    <input type="text" class="form-control" name="mail" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label>密码：</label>
+                    <input type="password" class="form-control" name="passwd" placeholder="" required>
+                </div>
+                <p></p>
+                <button class="btn btn-primary pull-left" type="submit">注册</button>
+            </form>
+            </div>
+        <br/>
+{% endblock %}

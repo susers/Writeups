@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block body %}
+        <div class="row">
+            {% if code is defined %}
+            <form action="/user/update/" method="post" class="col-lg-6 col-lg-offset-2">
+                <div class="form-group">
+                    <label>用户名:</label>
+                    <input type="text" id="username" class="form-control"  name="username" placeholder="" value="{{username}}" readonly="readonly"
+
+ required>
+                </div>
+                <div class="form-group">
+                </div>
+                <div class="form-group">
+                    <label>验证码:</label>
+                    <input type="text" class="form-control" name="code" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label>新密码:</label>
+                    <input type="password" class="form-control" name="passwd" placeholder="" required>
+                </div>
+                <button class="btn btn-primary" type="submit" lay-filter="reset">重置密码</button>
+            </form>
+            {%else%}
+            <form action="/user/reset/" method="post" class="col-lg-6 col-lg-offset-2">
+                <div class="form-group">
+                    <label>用户名:</label>
+                    <input type="text" id="username" class="form-control"  name="username" placeholder="" required>
+                </div>
+                <div class="form-group">
+                <button class="btn btn-primary "type="submit" lay-filter="sendcode">获取验证码</button>
+                </div>
+            {% endif %}
+            </div>
+        <br/>
+{% endblock %}

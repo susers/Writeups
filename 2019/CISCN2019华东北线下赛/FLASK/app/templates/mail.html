@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% block body %}
+        <div class="row">
+            <form action="/user/setcode/" method="post" class="col-lg-6 col-lg-offset-3">
+                <div class="form-group">
+                    <label>个人邮箱：</label>
+                </div>
+                <p></p>
+                {% if code is defined %}
+                <p>Code:{{code}}</p>
+                {% endif %}
+            </form>
+            </div>
+</br>
+{% endblock %}

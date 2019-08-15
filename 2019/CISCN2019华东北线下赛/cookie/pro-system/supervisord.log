@@ -1,0 +1,48 @@
+2019-05-31 23:22:43,614 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2019-05-31 23:22:43,617 INFO supervisord started with pid 1
+2019-05-31 23:22:44,620 INFO spawned: 'redis-db' with pid 8
+2019-05-31 23:22:44,623 INFO spawned: 'pro-system' with pid 9
+2019-05-31 23:22:44,626 INFO spawned: 'ssh' with pid 10
+2019-05-31 23:22:45,918 INFO success: ssh entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2019-05-31 23:22:47,813 INFO success: redis-db entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-05-31 23:22:47,813 INFO success: pro-system entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-05-31 23:43:26,970 WARN received SIGTERM indicating exit request
+2019-05-31 23:43:26,971 INFO waiting for redis-db, pro-system, ssh to die
+2019-05-31 23:43:26,974 INFO stopped: ssh (exit status 0)
+2019-05-31 23:43:28,642 INFO stopped: pro-system (exit status 0)
+2019-05-31 23:43:30,645 INFO waiting for redis-db to die
+2019-05-31 23:43:33,649 INFO waiting for redis-db to die
+2019-05-31 23:43:36,654 INFO waiting for redis-db to die
+2019-05-31 23:46:15,924 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2019-05-31 23:46:15,928 INFO supervisord started with pid 1
+2019-05-31 23:46:16,930 INFO spawned: 'redis-db' with pid 8
+2019-05-31 23:46:16,932 INFO spawned: 'pro-system' with pid 9
+2019-05-31 23:46:16,934 INFO spawned: 'ssh' with pid 10
+2019-05-31 23:46:18,214 INFO success: ssh entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2019-05-31 23:46:20,724 INFO success: redis-db entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-05-31 23:46:20,724 INFO success: pro-system entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-05-31 23:48:38,908 WARN received SIGTERM indicating exit request
+2019-05-31 23:48:38,908 INFO waiting for redis-db, pro-system, ssh to die
+2019-05-31 23:48:38,910 INFO stopped: ssh (exit status 0)
+2019-05-31 23:48:40,718 INFO stopped: pro-system (exit status 0)
+2019-05-31 23:48:42,721 INFO waiting for redis-db to die
+2019-05-31 23:48:45,726 INFO waiting for redis-db to die
+2019-05-31 23:48:48,730 INFO waiting for redis-db to die
+2019-06-01 00:50:23,919 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
+2019-06-01 00:50:23,922 INFO supervisord started with pid 1
+2019-06-01 00:50:24,925 INFO spawned: 'redis-db' with pid 8
+2019-06-01 00:50:24,927 INFO spawned: 'pro-system' with pid 9
+2019-06-01 00:50:24,929 INFO spawned: 'ssh' with pid 10
+2019-06-01 00:50:26,029 INFO success: ssh entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2019-06-01 00:50:28,635 INFO success: redis-db entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-06-01 00:50:28,635 INFO success: pro-system entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2019-06-01 06:17:49,979 INFO reaped unknown pid 3030
+2019-06-01 06:17:57,558 INFO reaped unknown pid 3036
+2019-06-01 06:18:07,359 INFO reaped unknown pid 3054
+2019-06-01 06:18:43,399 INFO reaped unknown pid 2991
+2019-06-01 06:18:43,399 INFO reaped unknown pid 3056
+2019-06-01 06:18:43,399 INFO reaped unknown pid 3063
+2019-06-01 06:19:12,484 INFO reaped unknown pid 3020
+2019-06-01 06:19:12,484 INFO reaped unknown pid 3038
+2019-06-01 06:19:12,484 INFO reaped unknown pid 3045
+2019-06-01 06:19:17,569 INFO reaped unknown pid 2999

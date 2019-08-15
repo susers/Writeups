@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="container">
+        <div class="row my-2">
+            <h1>贴代码</h1>
+        </div>
+        <div class="row">
+            <form action="#" method="POST">
+                <div class="row">
+                    文件名:<input id="name" name="name" class="form-control mr-sm-2" type="text">
+                    <textarea class="form-control" name="code" id="code" cols="300" rows="30"
+                            style="resize: none;"></textarea>
+                </div>
+                <div class="row">
+                    <button class="btn btn-primary my-2 btn-lg" style="width: 100%;" type="submit">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

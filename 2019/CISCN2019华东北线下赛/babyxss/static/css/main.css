@@ -1,0 +1,807 @@
+/* Space out content a bit */
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color:#fff !important;
+  }
+  
+  /* Everything but the jumbotron gets side spacing for mobile first views */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  
+  /* Custom page header */
+  .header {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  /* Make the masthead heading the same height as the navigation */
+  .header h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
+  }
+  
+  /* Custom page footer */
+  .footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+  }
+  
+  /* Customize container */
+  @media (min-width: 768px) {
+    .container {
+      max-width: 730px;
+    }
+  }
+  .container-narrow > hr {
+    margin: 30px 0;
+  }
+  
+  /* Main marketing message and sign up button */
+  .jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .jumbotron .btn {
+    padding: 14px 24px;
+    font-size: 21px;
+  }
+  
+  /* Supporting marketing content */
+  .marketing {
+    margin: 40px 0;
+  }
+  .marketing p + h4 {
+    margin-top: 28px;
+  }
+  
+  /* Responsive: Portrait tablets and up */
+  @media screen and (min-width: 768px) {
+    /* Remove the padding we set earlier */
+    .header,
+    .marketing,
+    .footer {
+      padding-right: 0;
+      padding-left: 0;
+    }
+    /* Space out the masthead */
+    .header {
+      margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+      border-bottom: 0;
+    }
+  }
+
+
+a {
+    color: #778087;
+}
+
+.topic-list p {
+    margin: 0 0 0 0;
+}
+
+.span10 hr {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.topic-form {
+    width: 100%;
+    height: 34px !important;
+    box-sizing: border-box;
+    display: block;
+    padding: 6px !important;
+    border-radius: 2px !important;
+}
+
+.topic-content {
+    min-height: 40px;
+}
+
+#node, #id_content_raw_wmd_preview {
+    width: 100%;
+}
+
+#id_content_raw_wmd_preview, .wmd-preview {
+    min-height: 25px;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+
+}
+
+.empty-box {
+    min-height: 50px;
+    line-height: 50px;
+}
+
+.info-menu li {
+    position: relative;
+}
+
+.attachment {
+    padding: 5px 10px;
+}
+
+.new_noti::after {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 5px;
+    background-color: #ed1c24;
+    position: absolute;
+    right: 4px;
+    top: -1px;
+    border-radius: 50%;
+}
+
+.empty-box .empty {
+    line-height: 50px;
+}
+
+.user-summary {
+    min-height: 50px;
+    padding: 20px;
+}
+
+.user-summary .l-title {
+    margin-left: 3px;
+}
+
+.user-basic {
+    padding-left: 5px;
+}
+
+.user-basic > em {
+    width: 5px;
+}
+
+.mini-avatar {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.btn.disabled {
+    cursor: pointer;
+}
+
+#follow_show {
+    cursor: default;
+}
+
+.user-summary > .u_nick > #nickname {
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.user-basic .intro {
+    padding: 5px 30px 5px 23px;
+    /*font-weight: bold;*/
+}
+
+.giant{
+    width: 94px!important;
+    height: 94px!important;
+}
+
+.user-basic .intro-label {
+    margin-top: 10px;
+}
+
+.user-basic .intro span {
+    font-size: 16px;
+}
+
+.helptext {
+    font-size: 14px;
+    color: #cccccc;
+    margin-left: 5px;
+}
+
+.info-content {
+    margin-left: 8px;
+}
+
+.collection > i {
+    font-size: 20px;
+    opacity: 0.7;
+}
+
+.errorlist {
+    color: red;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+!important;
+}
+
+.errorlist > li {
+    list-style-type: none;
+    padding: 5px;
+    background: #f2dede;
+}
+
+.post-title {
+    background-color: #cccccc;
+    padding: 5px;
+    border: 1px #cccccc solid;
+    border-radius: 2px;
+}
+
+.preview_avatar {
+    width: 200px;
+    height: 200px;
+}
+
+.collapse form {
+    position: relative;
+    width: 300px;
+    float: right;
+}
+
+div.search {
+    padding: 10px 0
+}
+
+.d1 input {
+    height: 20px;
+    padding-left: 18px;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    outline: none;
+    background: #ffffff;
+    color: #9E9C9C;
+    float: right;
+}
+
+.vote {
+    font-weight: normal;
+    margin-left: 6px;
+}
+
+.d1 button {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    width: 35px;
+    height: 32px;
+    border: none;
+    background: #1890ff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.d1 button:before {
+    content: "\f002";
+    font-family: FontAwesome;
+    font-size: 16px;
+    color: #F9F0DA;
+}
+
+.modal-confirm {
+    position: fixed;
+    left: 39%;
+    top: 32%;
+    width: 300px;
+    min-width: 18%;
+    max-height: 12%;
+    min-height: 190px;
+    bottom: 45%;
+    border: 1px solid white;
+    border-radius: 3px;
+    background-color: white;
+    z-index: 100;
+}
+
+.modal-box {
+    z-index: 50;
+    background-color: black;
+    opacity: 0.4;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+}
+
+.confirm-info {
+    line-height: 140px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 200;
+    color: red;
+}
+
+.modal-confirm button {
+    margin-left: 65px;
+}
+
+.errors, .errors span {
+    /*min-height: 20px;*/
+    color: red;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.reply-info, .r-topic {
+    padding: 5px 8px;
+}
+
+.reply-info > .r-nick {
+    margin-right: 10px;
+}
+
+.errors span {
+    margin: 10px;
+}
+
+#avatar_form label {
+    display: inline;
+}
+
+.info-panel {
+    padding: 8px;
+}
+
+.topic-list {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+/*.topic-list p {*/
+/*margin-left: 60px;*/
+/*}*/
+
+ul {
+    margin: 0 0 10px 0;
+}
+
+.nodes {
+    /*background-color: rgb(249, 249, 249) !important;*/
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+.nodes > li {
+    display: inline-block;
+}
+
+.nodes a {
+    font-size: 13px;
+    color: #666;
+    padding: 3px;
+    margin: 3px;
+    display: block;
+}
+
+.nodes a:hover, .nodes .active {
+    text-decoration: underline;
+}
+
+/*.breadcrumb {*/
+/*!*border-bottom: solid #eee 1px;*!*/
+/*background-color: #eeeeee;*/
+/*}*/
+
+.nodes .active {
+    cursor: default;
+}
+
+.intro span {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.breadcrumb {
+    padding: 8px 10px;
+}
+
+.table td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px 8px 15px;
+}
+
+/*.node_menu {*/
+/*background-color: #ffffff !important;*/
+/*}*/
+
+/*.node_menu a {*/
+/*margin-right: 5px;*/
+/*line-height: 30px;*/
+/*padding: 5px;*/
+/*color: black;*/
+/*font-size: 14px;*/
+/*border-radius: 2px;*/
+/*}*/
+
+.node_menu a:hover {
+    background-color: #f2f2f2;
+}
+
+/*.node_menu .active {*/
+/*color: rgb(249, 249, 249);*/
+/*background-color: #ccc;*/
+/*}*/
+
+.moderator select {
+    margin-bottom: 0;
+}
+
+.thumbs {
+    margin-right: 10px;
+    color: #778087;
+}
+
+.thumbs i {
+    line-height: 20px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+/*.post-info, .topic-info {*/
+/*margin-left: 10px;*/
+/*}*/
+.manual-box {
+    height: 1.7rem;
+    line-height: 1.7rem;
+    text-align: right;
+}
+
+.manual-box > span {
+    margin-left: 0.7rem;
+}
+
+.user-info {
+    padding: 5px 0 5px 0;
+}
+
+.title {
+    padding: 5px;
+    margin-left: 55px;
+}
+
+.title h4 {
+    font-size: 24px !important;
+    font-weight: 500 !important;
+    line-height: 150% !important;
+    margin: 0 0 10px 0 !important;
+    padding: 0 !important;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+}
+
+.post-content {
+    padding: 10px 0 0 0;
+    font-size: 14px;
+    line-height: 18px;
+    /*margin-left: 60px*/
+}
+
+.user-info .post-info span, .topic-info span, .topic-info .topic-content {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #ccc;
+}
+
+.reply-jump {
+    color: #6c6c6c;;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.reply-jump:hover {
+    color: #ccc
+}
+
+.search-box {
+    width: 276px;
+    height: 30px;
+    background-size: 276px 28px;
+    /*background-image: url('/static/img/qbar_light@2x.png');*/
+    background-repeat: no-repeat;
+    display: inline-block;
+    border: 1px solid black;
+    border-radius: 15px;
+    line-height: 30px;
+
+}
+
+.pagination {
+    right: 0;
+}
+
+.search-box input {
+    border: none;
+    background-color: rgb(249, 249, 249);
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+
+.basic-info {
+    padding: 25px;
+}
+
+.basic-info ul li {
+    line-height: 25px;
+}
+
+.basic-info span {
+    word-break: break-all;
+}
+
+.basic-info textarea {
+
+}
+
+.title-detail {
+    padding: 10px 0 10px 0;
+}
+
+/*.topic-title {*/
+/*color: #666;*/
+/*text-decoration: none;*/
+/*font-size: 16px;*/
+/*line-height: 130%;*/
+/*text-shadow: 0 1px 0 #fff;*/
+/*font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", "Microsoft Yahei", sans-serif;*/
+/*}*/
+
+.topic-summary a:hover a:active a:link {
+    text-decoration: solid;
+}
+
+.topic-info a, .topic-info {
+    padding-top: 5px;
+}
+
+.topic-info a:hover {
+    text-decoration: solid;
+}
+
+.top-label {
+    margin-right: 5px;
+}
+
+.reminder {
+    min-height: 200px;
+    border: 1px #ddd solid;
+    border-radius: 3px;
+    line-height: 200px;
+    text-align: center;
+}
+
+.not-post {
+    line-height: 50px;
+    text-align: center;
+    border: dashed 1px #ddd;
+}
+
+.affix {
+    border: 1px dashed #ddd;
+    border-radius: 3px;
+}
+
+/*code {*/
+    /*white-space: normal!important;*/
+/*}*/
+
+.select2, .select2 .select2-selection {
+    height: 32px!important;
+}
+
+.select2 .select2-selection__arrow {
+    height: 29px!important;
+    border: 1px solid #ddd!important;
+    background-color: #f4f4f4!important;
+}
+
+.select2-container input {
+    height: auto;
+}
+
+.select2-container {
+    width: 33.3% !important;
+}
+
+.navbar .nav > li > a {
+    padding: 8px 15px 10px;
+}
+
+.nm-edit {
+    background-position: 38px !important;
+}
+
+.CodeMirror {
+    cursor: text;
+}
+
+.level-info {
+    margin-top: 5px;
+}
+
+.level-info span {
+    font-size: 12px;
+}
+
+.select2-search__field {
+    margin-bottom: 0 !important;
+}
+
+.site-warning {
+    height: 8px;
+    font-size: 17px;
+    color: red;
+}
+
+
+.post-action, .topic-action, .edit-action {
+    cursor: pointer;
+}
+
+.moderator select {
+
+    display: inline-block;
+    width: auto;
+    height: 27px;
+}
+
+.affix_btn {
+    cursor: pointer;
+}
+
+.front-box > hr {
+    margin-top: 1px !important;
+    margin-bottom: 1px;
+}
+
+.span10 {
+/ / width: 75 % !important;
+}
+
+.span3, .sfixed {
+    /*width: 20% !important;*/
+    width: 270px !important;
+}
+
+.to-top, .to-bottom {
+    position: fixed;
+    right: 5%;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.to-top {
+    bottom: 140px;
+}
+
+.to-bottom {
+    bottom: 80px;
+}
+
+.load-more {
+    margin-top: -5px;
+}
+
+.load-more .get-more {
+    color: #108ee9;
+}
+
+.load-more .get-more:hover {
+    color: #ff0000;
+    cursor: pointer;
+}
+
+.load-more .no-more {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.menu-avatar {
+    font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(0, 0, 0, 0.65);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0 15px 0 2px;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    text-align: center;
+    background: #ccc;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 75px;
+    max-width: 100%;
+    vertical-align: middle;
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+}
+
+.toggle-menu span a {
+    line-height: 2.2rem;
+}
+
+.toggle-menu {
+    padding-top: 0.3rem !important;
+}
+
+.toggle-menu .fa-bell + a {
+    margin-left: 0.3rem;
+}
+
+.user-action {
+    position: relative;
+}
+
+.user-action {
+    /*display: inline-block;*/
+
+    margin-right: -0.4rem;
+    width: 4rem;
+}
+
+.user-action > .box {
+    position: absolute;
+    top: 2.88rem;
+    width: 4.45rem;
+    z-index: 99;
+    padding-bottom: 0.2rem !important;
+}
+
+.user-action hr {
+    margin: 0;
+}
+
+.user-action > .avatar {
+    margin-right: 0.1rem;
+    width: 40px;
+    height: 40px;
+}
+
+.toggle-menu {
+    position: absolute;
+    right: 0;
+}
+
+.post-info > i {
+    font-style: normal;
+}
+
+.label-important {
+    background-color: #B15BFF !important;
+    color: #fff !important;
+}
+
+.edit-box button {
+    margin-right: 1%;
+}
+
+.draft-info {
+    padding: 3px 3px 3px 0;
+}
+
+.confirm-btn {
+    min-height: 20px;
+    margin-top: -11px;
+}
+
+.edit-box form {
+    height: 100%;
+}
+
+.article-click {
+    cursor: pointer;
+}
